@@ -1,0 +1,127 @@
+version: 1
+
+# Ejemplos few-shot curados para L3. Se seleccionan por sector/subsector en runtime.
+
+examples:
+  - id: transporte_vialidad_estructurante
+    sector: TRANSPORTE
+    subsector: TRANSPORTE URBANO, Y VIALIDAD PEATONAL
+    tags: [vialidad, estructurante, desambiguacion]
+    proyecto: >
+      Construcción de 3 obras viales de conexión entre eje Balmaceda y zonas de expansión urbana.
+      Incluye prolongación de acceso, pavimentación de avenida estructurante y mejoramiento de eje
+      con 600m de longitud para conectar sectores residenciales con el centro urbano.
+    respuesta:
+      analisis: Obra vial urbana estructurante que conecta sectores con el eje principal de la ciudad.
+      evidencia:
+        - "obras viales de conexión entre el Eje Balmaceda"
+        - "pavimentación de avenida estructurante"
+        - "conexión directa de residentes hacia Balmaceda"
+      candidatos_descartados:
+        - tipo_id: TRANSPORTE.TRANSPORTE_URBANO_Y_VIALIDAD_PEATONAL.VIALIDAD_LOCAL
+          motivo: Las obras conectan ejes troncales/estructurantes, no calles locales ni pasajes.
+        - tipo_id: TRANSPORTE.TRANSPORTE_URBANO_Y_VIALIDAD_PEATONAL.CICLOVIAS_URBANAS
+          motivo: No hay mención de ciclovías ni transporte ciclista.
+      tipo_id: TRANSPORTE.TRANSPORTE_URBANO_Y_VIALIDAD_PEATONAL.VIALIDAD_URBANA_ESTRUCTURANTE
+      confianza: 0.88
+      razonamiento: >
+        El proyecto describe obras de conexión entre ejes urbanos principales (Balmaceda),
+        típico de vialidad estructurante, no vialidad local ni ciclovías.
+
+  - id: hidricos_agua_potable_vs_alcantarillado
+    sector: RECURSOS HIDRICOS
+    subsector: AGUA POTABLE
+    tags: [agua_potable, desambiguacion]
+    proyecto: >
+      Ampliación de red de agua potable para dotar de drinking water a 500 viviendas del sector
+      Los Alamos. Incluye 2,5 km de tubería de agua potable, válvulas y arranques domiciliarios.
+    respuesta:
+      analisis: Extensión de red de agua potable para nuevas viviendas.
+      evidencia:
+        - "Ampliación de red de agua potable"
+        - "tubería de agua potable, válvulas y arranques domiciliarios"
+      candidatos_descartados:
+        - tipo_id: RECURSOS_HIDRICOS.AGUA_POTABLE.RED_DE_ALCANTARILLADO
+          motivo: No hay alcantarillado ni aguas servidas; solo agua potable.
+      tipo_id: RECURSOS_HIDRICOS.AGUA_POTABLE.AMPLIACION_RED_AGUA_POTABLE
+      confianza: 0.92
+      razonamiento: Obra de ampliación de red de agua potable con tuberías y arranques domiciliarios.
+
+  - id: deportes_sintetico_vs_pasto
+    sector: DEPORTES
+    subsector: DEPORTE RECREATIVO
+    tags: [deportes, pares_confusos]
+    proyecto: >
+      Construcción cancha de fútbol con carpeta de pasto sintético estándar para uso comunitario
+      en club deportivo municipal. Incluye iluminación perimetral.
+    respuesta:
+      analisis: Construcción de cancha de fútbol recreativa con carpeta sintética.
+      evidencia:
+        - "cancha de fútbol con carpeta de pasto sintético"
+        - "uso comunitario en club deportivo municipal"
+      candidatos_descartados:
+        - tipo_id: DEPORTE.RECREATIVO.CANCHA_DE_FUTBOL_CARPETA_PASTO_ESTANDAR
+          motivo: El texto especifica pasto sintético, no pasto natural.
+      tipo_id: DEPORTE.RECREATIVO.CANCHA_DE_FUTBOL_CARPETA_SINTETICA_ESTANDAR
+      confianza: 0.95
+      razonamiento: Carpeta sintética explícita distingue de cancha de pasto natural.
+
+  - id: compuesto_jardin_sala_cuna
+    sector: EDUCACION
+    subsector: EDUCACION PREBASICA
+    tags: [compuesto, y]
+    proyecto: >
+      Construcción de jardín infantil y sala cuna para 120 párvulos en sector vulnerable.
+      El proyecto contempla ambos espacios en un mismo recinto educativo prebásico.
+    respuesta:
+      analisis: Obra educativa prebásica que incluye jardín infantil Y sala cuna.
+      evidencia:
+        - "Construcción de jardín infantil y sala cuna"
+        - "ambos espacios en un mismo recinto educativo prebásico"
+      candidatos_descartados:
+        - tipo_id: EDUCACION.EDUCACION_PREBASICA.JARDIN_INFANTIL
+          motivo: Solo jardín infantil; el proyecto también incluye sala cuna.
+        - tipo_id: EDUCACION.EDUCACION_PREBASICA.SALA_CUNA
+          motivo: Solo sala cuna; el proyecto también incluye jardín infantil.
+      tipo_id: EDUCACION.EDUCACION_PREBASICA.JARDIN_INFANTIL_Y_SALA_CUNA
+      confianza: 0.90
+      razonamiento: Texto evidencia ambas componentes; corresponde al tipo compuesto.
+
+  - id: ambiguo_texto_generico
+    sector: null
+    subsector: null
+    tags: [global, null, baja_evidencia]
+    proyecto: >
+      Mejoramiento infraestructura comunal. Proyecto de apoyo al desarrollo local.
+    respuesta:
+      analisis: Texto demasiado genérico para determinar un tipo específico de obra.
+      evidencia:
+        - "Mejoramiento infraestructura comunal"
+        - "apoyo al desarrollo local"
+      candidatos_descartados: []
+      tipo_id: null
+      confianza: 0.25
+      razonamiento: >
+        Sin detalle de la obra (vialidad, agua, educación, etc.) no es posible clasificar
+        con confianza dentro de una taxonomía específica.
+
+  - id: l1_l2_desacuerdo
+    sector: null
+    subsector: null
+    tags: [global, l1_l2]
+    proyecto: >
+      Reposición de colectores de aguas lluvias y construcción de laguna de retención
+      en sector urbano para reducir inundaciones.
+    respuesta:
+      analisis: Obra de drenaje de aguas lluvias con colector y laguna de retención.
+      evidencia:
+        - "Reposición de colectores de aguas lluvias"
+        - "construcción de laguna de retención"
+      candidatos_descartados:
+        - tipo_id: RECURSOS_HIDRICOS.AGUAS_LLUVIAS.LAGUNA_O_TRANQUE_DE_RETENCION
+          motivo: Hay colector Y laguna; es tipo compuesto, no solo laguna.
+      tipo_id: RECURSOS_HIDRICOS.AGUAS_LLUVIAS.COLECTOR_AGUAS_LLUVIAS_Y_LAGUNA_DE_RETENCION
+      confianza: 0.87
+      razonamiento: >
+        Evidencia ambas componentes (colector + laguna). Aplica tipo compuesto aunque L1/L2
+        pudieran sugerir solo uno de los subtipos.

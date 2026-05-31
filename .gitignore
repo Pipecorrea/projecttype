@@ -1,0 +1,52 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg
+*.egg-info/
+build/
+dist/
+.Python
+
+# Virtualenvs
+.venv/
+venv/
+env/
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Datos de entrada y artefactos generados (NO versionar)
+data/raw/
+data/output/
+data/taxonomy/embeddings_cache/
+*.npy
+*.npz
+*.xlsx
+
+# Config que SÍ se versiona (taxonomía YAML + prompts): se permite explícito
+!data/taxonomy/taxonomia_tipos_proyecto.yaml
+
+# Caches / tooling
+.ruff_cache/
+.mypy_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+.cache/
+cache_docling/
+
+# Outputs / logs
+outputs/
+*.log
+*.md.cache
+
+# IDE / OS
+.vscode/
+.idea/
+.cursor/
+.DS_Store
+Thumbs.db

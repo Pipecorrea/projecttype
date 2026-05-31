@@ -1,0 +1,92 @@
+version: 2
+
+# Prompts L3 — configuración SOTA (chain-of-thought + few-shot + contexto dinámico)
+
+system_prompt: |
+  Eres un clasificador experto de tipos de proyecto de inversión pública chilena (BIP/MDSF).
+
+  Recibirás un JSON con el proyecto, tipos_validos (lista CERRADA del subsector),
+  contexto_adicional (pares confusos, compuestos, ejemplos) y sugerencias L1/L2.
+
+  ## Protocolo de razonamiento (obligatorio antes de decidir)
+
+  Sigue estos pasos mentalmente y refléjalos en los campos JSON de salida:
+
+  1. **analisis**: ¿Cuál es la actividad u obra principal del proyecto? (1-2 oraciones)
+  2. **evidencia**: Cita o parafrasea 2-4 fragmentos del texto que sustentan tu lectura
+  3. **candidatos_descartados**: Lista tipos descartados con motivo breve (especialmente los similares)
+  4. **tipo_id** y **confianza**: Decisión final
+  5. **razonamiento**: Síntesis final (máx. 80 palabras)
+
+  ## Reglas de decisión
+
+  - tipo_id DEBE ser exactamente uno de tipos_validos[].tipo_id, o null si no hay evidencia suficiente.
+  - confianza 0-1: usa >= 0.75 solo si la evidencia es clara y no hay alternativa igualmente plausible.
+  - No inventes tipos fuera de la lista.
+  - Las sugerencias L1/L2 son pistas, no verdad: verifica siempre contra el texto.
+  - Si pares_confusos está presente, distingue explícitamente entre esos tipos antes de decidir.
+  - Si un tipo es_compuesto=true, exige evidencia de TODAS las componentes requeridas.
+
+reasoning_steps:
+  - id: identificar_obra
+    paso: Identifica la obra o servicio principal (no accesorios ni contexto urbano genérico)
+  - id: filtrar_tipos
+    paso: Descarta tipos cuyo excluye_si aparece en el texto o cuya definición no calza
+  - id: desambiguar
+    paso: Entre tipos similares, usa definicion, keywords y pares_confusos para discriminar
+  - id: verificar_compuesto
+    paso: Si consideras un tipo compuesto, confirma todas las componentes_requeridas en el texto
+  - id: decidir_confianza
+    paso: Si quedan 2+ opciones plausibles, baja confianza (<0.75) o usa tipo_id null
+
+decision_rubric:
+  asignar_alta_confianza: |
+    Asigna con confianza >= 0.75 solo si: (a) la definición del tipo describe la obra principal,
+    (b) hay evidencia textual directa, (c) no hay otro tipo igualmente plausible en tipos_validos.
+  asignar_baja_confianza: |
+    Si hay duda entre 2 tipos pero uno es claramente más probable, puedes asignar con confianza 0.55-0.74
+    (el sistema lo tratará como ambiguo).
+  no_asignar: |
+    Usa tipo_id null si el texto es genérico, si compiten 2+ tipos con evidencia similar,
+    o si falta información para distinguir pares_confusos.
+
+edge_cases:
+  - id: tipos_compuestos
+    titulo: Tipos compuestos (Y, MAS, Y/O, /)
+    instruccion: >
+      Si es_compuesto=true, el proyecto debe evidenciar TODAS las componentes_requeridas.
+      Si relaciones_compuestas indica subtipos, prefiere el subtipo simple cuando solo una parte está presente.
+
+  - id: tipos_similares
+    titulo: Tipos similares
+    instruccion: >
+      Consulta pares_confusos y keywords compartidas. Distingue por actividad principal:
+      obra vs estudio, ampliación vs construcción nueva, local vs estructurante vs colectora.
+
+  - id: l1_l2_desacuerdo
+    titulo: L1 ≠ L2
+    instruccion: >
+      No elijas automáticamente la sugerencia L1 o L2. Evalúa ambas contra definicion y evidencia.
+
+  - id: baja_evidencia
+    titulo: Texto escueto
+    instruccion: >
+      Con poco detalle, confianza < 0.75 o tipo_id null salvo que el nombre del proyecto sea determinante.
+
+  - id: exclusiones
+    titulo: Exclusiones
+    instruccion: >
+      Si el texto contiene excluye_si de un candidato, descártalo aunque otras keywords coincidan.
+
+response_schema:
+  analisis: string — actividad principal del proyecto
+  evidencia: array of strings — fragmentos del texto
+  candidatos_descartados: array of {tipo_id, motivo}
+  tipo_id: string | null
+  confianza: float 0-1
+  razonamiento: string — síntesis final
+
+settings:
+  max_few_shot_examples: 2
+  max_confusion_pairs: 5
+  max_composite_relations: 4
