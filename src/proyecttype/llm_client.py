@@ -313,6 +313,57 @@ class OllamaClient:
         raise last_error
 
 
+class SniCommonsLLMClient:
+    """Adaptador del cliente unificado `sni_commons.llm` al Protocol L3.
+
+    Implementa `complete_json(system, user) -> dict` delegando en
+    `sni_commons.llm` (ADR-1). El prompt L3 ya pide JSON explícitamente, así que
+    se usa `chat()` (texto) + `_extract_json`, en vez de `structured_output`
+    (que exigiría un esquema estricto e incompatible con el chain-of-thought de
+    campos opcionales del L3).
+
+    `provider` acepta los presets de sni-commons: gemini, openai, groq,
+    openrouter, deepseek, together, ollama, echo. Reemplaza Gemini/OpenAI/Ollama
+    propios sin perder cobertura (Vertex queda pendiente de un backend dedicado).
+    """
+
+    def __init__(self, config: LLMConfig | None = None) -> None:
+        from sni_commons.llm import LLMConfig as _ScLLMConfig
+        from sni_commons.llm import make_provider
+
+        cfg = config or LLMConfig()
+        provider = cfg.provider
+        # 'google' es el nombre histórico de ProyectType para Gemini AI Studio.
+        sc_provider = "gemini" if provider == "google" else provider
+        api_key = ""
+        if sc_provider == "gemini":
+            api_key = cfg.resolved_google_api_key()
+        elif sc_provider not in {"ollama", "echo"}:
+            api_key = os.environ.get(cfg.api_key_env, "")
+        self._provider = make_provider(
+            _ScLLMConfig(
+                provider=sc_provider,
+                model=cfg.resolved_model(),
+                api_key=api_key or None,
+                timeout_seconds=cfg.timeout_seconds,
+                max_retries=cfg.max_retries,
+                request_interval_seconds=cfg.effective_request_interval(),
+            )
+        )
+
+    def complete_json(self, *, system: str, user: str) -> dict:
+        import asyncio
+
+        from sni_commons.llm import Message
+
+        messages = [
+            Message(role="system", content=system),
+            Message(role="user", content=user),
+        ]
+        resp = asyncio.run(self._provider.chat(messages))
+        return _extract_json(resp.text)
+
+
 class MockLLMClient:
     """Cliente de prueba: elige el primer tipo_id válido mencionado en el prompt."""
 
@@ -346,14 +397,28 @@ class MockLLMClient:
         return {"tipo_id": None, "confianza": 0.0, "razonamiento": "Mock: sin tipos."}
 
 
+# Providers que el cliente unificado sni-commons cubre de forma nativa.
+_SNI_COMMONS_PROVIDERS = frozenset({"google", "openai", "ollama"})
+
+
 def create_llm_client(
     config: LLMConfig | None = None,
     *,
     mock: bool = False,
+    use_sni_commons: bool = True,
 ) -> LLMClient:
+    """Crea el cliente L3.
+
+    Por defecto usa el cliente unificado `sni_commons.llm` (ADR-1) para los
+    providers que soporta (google→gemini, openai, ollama). Los clientes legacy
+    (`GeminiClient`/`OpenAIClient`/`OllamaClient`) se conservan como fallback
+    activable con ``use_sni_commons=False``.
+    """
     if mock:
         return MockLLMClient()
     cfg = config or LLMConfig()
+    if use_sni_commons and cfg.provider in _SNI_COMMONS_PROVIDERS:
+        return SniCommonsLLMClient(cfg)
     if cfg.provider == "ollama":
         return OllamaClient(cfg)
     if cfg.provider == "google":
