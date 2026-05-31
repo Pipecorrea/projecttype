@@ -1453,6 +1453,8 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "anthropic", extras = ["vertex"], marker = "extra == 'anthropic'", specifier = ">=0.40" },
+    { name = "duckdb", marker = "extra == 'dev'", specifier = ">=1.0" },
+    { name = "duckdb", marker = "extra == 'store'", specifier = ">=1.0" },
     { name = "ftfy", specifier = ">=6.0" },
     { name = "google-genai", marker = "extra == 'google'", specifier = ">=1.0" },
     { name = "httpx", specifier = ">=0.27" },
@@ -1461,8 +1463,10 @@ requires-dist = [
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8" },
     { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.23" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.5" },
+    { name = "typer", marker = "extra == 'dev'", specifier = ">=0.12" },
+    { name = "typer", marker = "extra == 'store'", specifier = ">=0.12" },
 ]
-provides-extras = ["anthropic", "google", "dev"]
+provides-extras = ["anthropic", "google", "store", "dev"]
 
 [[package]]
 name = "sniffio"
