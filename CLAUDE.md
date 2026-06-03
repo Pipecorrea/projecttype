@@ -1,15 +1,29 @@
-# CLAUDE.md
+# CLAUDE.md — ProyectType
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+> **Contexto del ecosistema:** lee primero **`ECOSISTEMA.md`** (eres un *enriquecedor*:
+> clasificas el tipo de proyecto y escribes `enr_tipo_proyecto` al store). Estado vivo:
+> `/Vs/ESTADO_ECOSISTEMA.md`. Tareas de este repo: `AGENT_WORKPLAN.md`.
+
+ProyectType = clasificador en cascada (L1 keywords → L2 embeddings → L3 LLM) que asigna
+un `TipoProyecto` a cada BIP.
+
+## Conexión con el ecosistema
+
+- **Escribe `enr_tipo_proyecto` al store** (`store_publish.py` + `scripts/enrich_to_store.py`,
+  PT-5); **SNI Intelligence lo consume** para filtrar por tipo (`--filter tipo_proyecto=`).
+- ⚠️ Al escribir, normaliza **EBI_CODIGO sin dígito verificador** (`-N`) o el JOIN con EBI
+  da 0 filas (lo protege `test_bip_code_normalized_for_join`).
+- El cliente LLM L3 usa `sni_commons.llm` por defecto (adaptador `SniCommonsLLMClient`,
+  PT-4); los clientes legacy quedan como fallback.
 
 ## Commands
 
 ```bash
-# Install dependencies (no setup.py/pyproject.toml — install manually)
-pip install -r requirements.txt
+# Install (uv; el repo ya tiene pyproject.toml + uv.lock)
+uv sync
 
-# Run all tests
-python -m pytest tests/           # or: python -m unittest discover tests
+# Tests (los scripts de abajo también corren con `uv run python ...`)
+uv run python -m unittest discover -s tests
 
 # Run a single test file
 python -m unittest tests/test_classifier_l1.py
