@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  python:
+    name: Tests, ruff, mypy
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          path: repo
+
+      # sni-commons se consume por path editable (../sni-commons): el runner
+      # necesita el repo hermano. ECOSYSTEM_PAT = fine-grained PAT read-only
+      # sobre sni-commons (secrets del repo); github.token basta si es público.
+      - name: Checkout sni-commons (dep por path)
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository_owner }}/sni-commons
+          token: ${{ secrets.ECOSYSTEM_PAT || github.token }}
+          path: sni-commons
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: "repo/uv.lock"
+
+      - name: Sync dependencies
+        working-directory: repo
+        run: uv sync --extra dev
+
+      - name: Tests (unittest — migra a pytest en PT-8)
+        working-directory: repo
+        run: uv run python -m unittest discover -s tests
+
+      # TODO(PT-8): volver bloqueantes con la migración a pytest + mypy strict
+      # (los E402 de scripts/ son el patrón sys.path que PT-8 elimina).
+      - name: Ruff (informativo — deuda preexistente)
+        working-directory: repo
+        continue-on-error: true
+        run: uv run ruff check src scripts tests
+
+      - name: mypy (informativo — deuda preexistente)
+        working-directory: repo
+        continue-on-error: true
+        run: uv run mypy src
