@@ -4,17 +4,17 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 
 from pydantic import ValidationError
 
 from .aliases import resolve_sector_subsector
-from .llm_client import JSONParseError, LLMClient, LLMConfig, create_llm_client
 from .l3_schema import L3ResponseModel
+from .llm_client import JSONParseError, LLMClient, LLMConfig, create_llm_client
 from .progress import ProgressCallback
 from .prompts import (
     build_l3_messages,
     build_l3_project_text,
-    get_l3_system_prompt,
     load_l3_prompt_config,
 )
 from .scorer import EstadoClasificacion, ProyectoTexto, ResultadoClasificacion
@@ -40,7 +40,7 @@ class L3Response:
     validation_error: str | None = None
 
 
-def parse_l3_response(raw: dict) -> L3Response:
+def parse_l3_response(raw: dict[str, Any]) -> L3Response:
     try:
         model = L3ResponseModel.from_llm_dict(raw)
         return L3Response(
@@ -271,7 +271,7 @@ class ClassifierL3:
 
     def classify_rows_batch(
         self,
-        rows: list[dict],
+        rows: list[dict[str, Any]],
         *,
         sector: str | None,
         subsector: str | None,
@@ -312,7 +312,7 @@ class ClassifierL3:
 
 
 def _float_or_none(value: object) -> float | None:
-    if value is None:
+    if value is None or not isinstance(value, int | float | str):
         return None
     try:
         return float(value)

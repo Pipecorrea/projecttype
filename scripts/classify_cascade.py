@@ -12,18 +12,20 @@ from pathlib import Path
 
 import polars as pl
 
-ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / "src"))
-
 from proyecttype.classifier_l3 import L3Config
 from proyecttype.embeddings import L2Config
 from proyecttype.env import load_project_env
-from proyecttype.llm_client import LLMConfig, check_gemini_available, check_ollama_available, list_ollama_models
+from proyecttype.llm_client import (
+    LLMConfig,
+    check_gemini_available,
+    check_ollama_available,
+    list_ollama_models,
+)
 from proyecttype.paths import (
     DEFAULT_EMBEDDINGS_CACHE,
     DEFAULT_INPUT_CSV,
-    DEFAULT_L3_PROGRESS_JSONL,
     DEFAULT_L3_CACHE_JSONL,
+    DEFAULT_L3_PROGRESS_JSONL,
     DEFAULT_OUTPUT_CASCADE_CSV,
     DEFAULT_OUTPUT_CASCADE_L3_CSV,
     DEFAULT_TAXONOMY,
@@ -31,6 +33,7 @@ from proyecttype.paths import (
 from proyecttype.pipeline_cascade import classify_cascade_csv
 from proyecttype.scorer import ScorerConfig
 
+ROOT = Path(__file__).resolve().parents[1]
 _DEFAULT_L2 = L2Config()
 _DEFAULT_L3 = L3Config()
 _DEFAULT_LLM = LLMConfig()
@@ -181,7 +184,7 @@ def main() -> int:
         l3_progress_file.write_text("", encoding="utf-8")
         print(f"Avance L3 → {l3_progress_file}")
         print(f"  Monitorear: tail -f {l3_progress_file}")
-        print(f"  Resumen:    python scripts/l3_status.py")
+        print("  Resumen:    python scripts/l3_status.py")
 
     result, csv_path, excel_path = classify_cascade_csv(
         args.input,

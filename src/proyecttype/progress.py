@@ -5,11 +5,11 @@ from __future__ import annotations
 import json
 import sys
 import time
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Callable, TextIO
-
+from typing import TextIO
 
 ProgressCallback = Callable[[int, int, str | None], None]
 
@@ -73,7 +73,7 @@ class BatchProgress:
             return
         self.log_path.parent.mkdir(parents=True, exist_ok=True)
         record = {
-            "ts": datetime.now(timezone.utc).isoformat(),
+            "ts": datetime.now(UTC).isoformat(),
             "done": done,
             "total": total,
             "pct": round(pct, 2),

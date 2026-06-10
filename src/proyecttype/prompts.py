@@ -41,8 +41,8 @@ def get_l3_system_prompt(config: L3PromptConfig | None = None) -> str:
     if cfg.reasoning_steps:
         parts.append("\n\nPasos de razonamiento:")
         for step in cfg.reasoning_steps:
-            paso = step.get("paso") or step.get("instruction") or ""
-            step_id = step.get("id") or ""
+            paso = str(step.get("paso") or step.get("instruction") or "")
+            step_id = str(step.get("id") or "")
             label = step_id.replace("_", " ").title() if step_id else "Paso"
             if paso:
                 parts.append(f"- {label}: {paso}")
@@ -56,8 +56,8 @@ def get_l3_system_prompt(config: L3PromptConfig | None = None) -> str:
     if cfg.edge_cases:
         parts.append("\n\nCasos borde:")
         for case in cfg.edge_cases:
-            titulo = case.get("titulo") or case.get("id") or "Caso"
-            instruccion = (case.get("instruccion") or "").strip()
+            titulo = str(case.get("titulo") or case.get("id") or "Caso")
+            instruccion = str(case.get("instruccion") or "").strip()
             if instruccion:
                 parts.append(f"- {titulo}: {instruccion}")
 

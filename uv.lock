@@ -982,6 +982,7 @@ dependencies = [
     { name = "pyyaml" },
     { name = "sentence-transformers" },
     { name = "sni-commons", extra = ["store"] },
+    { name = "typer" },
     { name = "xlsxwriter" },
 ]
 
@@ -1007,6 +1008,7 @@ requires-dist = [
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.5" },
     { name = "sentence-transformers", specifier = ">=3.0.0" },
     { name = "sni-commons", extras = ["store"], editable = "../sni-commons" },
+    { name = "typer", specifier = ">=0.12" },
     { name = "xlsxwriter", specifier = ">=3.2.0" },
 ]
 provides-extras = ["dev"]
@@ -1536,6 +1538,7 @@ requires-dist = [
     { name = "duckdb", marker = "extra == 'dev'", specifier = ">=1.0" },
     { name = "duckdb", marker = "extra == 'store'", specifier = ">=1.0" },
     { name = "ftfy", specifier = ">=6.0" },
+    { name = "google-genai", marker = "extra == 'dev'", specifier = ">=1.0" },
     { name = "google-genai", marker = "extra == 'google'", specifier = ">=1.0" },
     { name = "httpx", specifier = ">=0.27" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.10" },

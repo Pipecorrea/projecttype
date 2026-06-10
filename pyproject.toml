@@ -10,6 +10,7 @@ requires-python = ">=3.12"
 license = { text = "Proprietary" }
 dependencies = [
     "sni-commons[store]",
+    "typer>=0.12",
     "polars>=1.0.0",
     "pyarrow>=15.0.0",  # puente Arrow: DuckDB lee el DataFrame polars al publicar al store (PT-5)
     "pyyaml>=6.0",
@@ -29,6 +30,9 @@ dev = ["pytest>=8", "ruff>=0.5", "mypy>=1.10"]
 [tool.uv.sources]
 sni-commons = { path = "../sni-commons", editable = true }
 
+[project.scripts]
+proyecttype = "proyecttype.cli:app"
+
 [tool.hatch.build.targets.wheel]
 packages = ["src/proyecttype"]
 
@@ -39,7 +43,8 @@ src = ["src", "scripts", "tests"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
-ignore = ["E501"]
+# UP042 (str+Enum → StrEnum): cambiaría str()/format de los miembros. Criterio ecosistema.
+ignore = ["E501", "UP042"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -47,4 +52,5 @@ pythonpath = ["src"]
 
 [tool.mypy]
 python_version = "3.12"
+strict = true
 ignore_missing_imports = true

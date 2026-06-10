@@ -39,18 +39,15 @@ jobs:
         working-directory: repo
         run: uv sync --extra dev
 
-      - name: Tests (unittest — migra a pytest en PT-8)
+      # PT-8 hecho (2026-06-09): pytest + ruff/mypy strict bloqueantes.
+      - name: Pytest
         working-directory: repo
-        run: uv run python -m unittest discover -s tests
+        run: uv run pytest
 
-      # TODO(PT-8): volver bloqueantes con la migración a pytest + mypy strict
-      # (los E402 de scripts/ son el patrón sys.path que PT-8 elimina).
-      - name: Ruff (informativo — deuda preexistente)
+      - name: Ruff
         working-directory: repo
-        continue-on-error: true
         run: uv run ruff check src scripts tests
 
-      - name: mypy (informativo — deuda preexistente)
+      - name: mypy (--strict)
         working-directory: repo
-        continue-on-error: true
         run: uv run mypy src

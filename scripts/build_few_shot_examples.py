@@ -4,12 +4,8 @@
 from __future__ import annotations
 
 import argparse
-import sys
 from collections import Counter
 from pathlib import Path
-
-ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / "src"))
 
 from proyecttype.few_shot_mining import mine_from_files, write_few_shot_yaml
 from proyecttype.paths import (

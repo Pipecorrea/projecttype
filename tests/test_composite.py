@@ -2,21 +2,15 @@
 
 from __future__ import annotations
 
-import sys
 import unittest
-from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / "src"))
-
+from proyecttype import ClassifierL1, Taxonomia
 from proyecttype.composite import (
     CompositeIndex,
     components_match_text,
     parse_tipo_components,
 )
-from proyecttype import ClassifierL1, Taxonomia
 from proyecttype.paths import DEFAULT_TAXONOMY
-from proyecttype.scorer import EstadoClasificacion
 from proyecttype.text_utils import normalize_tipo_name
 
 

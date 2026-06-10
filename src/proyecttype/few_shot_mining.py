@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -96,8 +95,6 @@ def extract_evidencia(proyecto_text: str, tipo: TipoProyecto, *, max_items: int 
         if kw_norm in text_norm:
             seen.add(kw_norm)
             # fragmento legible del texto original
-            pattern = re.escape(kw_norm)
-            match = re.search(pattern, text_norm, re.IGNORECASE)
             snippet = raw.strip()
             if len(snippet) > 80:
                 snippet = snippet[:77] + "..."
@@ -318,14 +315,14 @@ def mine_few_shot_examples(
         per_subsector[key] = per_subsector.get(key, 0) + 1
         return True
 
-    for nivel in (
+    for nivel_str in (
         NivelMatch.SIN_CLASIFICACION_L1.value,
         NivelMatch.COINCIDENCIA_PARCIAL.value,
         NivelMatch.DISCREPANCIA.value,
     ):
-        quota = quotas.get(nivel, 0)
+        quota = quotas.get(nivel_str, 0)
         taken = 0
-        for cand in by_nivel.get(nivel, []):
+        for cand in by_nivel.get(nivel_str, []):
             if len(selected) >= max_total or taken >= quota:
                 break
             if _try_add(cand):
@@ -383,7 +380,7 @@ def merge_few_shot_banks(
         with mined_path.open(encoding="utf-8") as fh:
             mined = yaml.safe_load(fh) or {"examples": []}
 
-    by_id: dict[str, dict] = {}
+    by_id: dict[str, dict[str, Any]] = {}
     for item in curated.get("examples") or []:
         by_id[str(item.get("id"))] = item
     n_mined = 0

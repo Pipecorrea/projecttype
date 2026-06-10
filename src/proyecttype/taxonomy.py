@@ -4,7 +4,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from proyecttype.composite import CompositeIndex
 
 import yaml
 
@@ -70,7 +73,7 @@ class Taxonomia:
     def __init__(self, tipos: list[TipoProyecto]) -> None:
         self.tipos = tipos
         self._by_sector_subsector: dict[tuple[str, str], list[TipoProyecto]] = {}
-        self._composite_index: dict = {}
+        self._composite_index: dict[tuple[str, str], Any] = {}
         for tipo in tipos:
             key = (normalize_key(tipo.sector), normalize_key(tipo.subsector))
             self._by_sector_subsector.setdefault(key, []).append(tipo)
@@ -94,7 +97,7 @@ class Taxonomia:
         sector_res, subsector_res = resolve_sector_subsector(sector, subsector)
         return list(self._by_sector_subsector.get((sector_res, subsector_res), ()))
 
-    def composite_index_para(self, sector: str | None, subsector: str | None):
+    def composite_index_para(self, sector: str | None, subsector: str | None) -> CompositeIndex:
         from .composite import CompositeIndex
 
         sector_res, subsector_res = resolve_sector_subsector(sector, subsector)
@@ -102,7 +105,8 @@ class Taxonomia:
         if key not in self._composite_index:
             tipos = self._by_sector_subsector.get(key, [])
             self._composite_index[key] = CompositeIndex.from_tipos(tipos)
-        return self._composite_index[key]
+        index: CompositeIndex = self._composite_index[key]
+        return index
 
     def tiene_subsector(self, sector: str | None, subsector: str | None) -> bool:
         return bool(self.tipos_para(sector, subsector))

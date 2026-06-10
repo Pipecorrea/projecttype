@@ -4,11 +4,7 @@
 from __future__ import annotations
 
 import argparse
-import sys
 from pathlib import Path
-
-ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / "src"))
 
 import polars as pl
 
@@ -19,6 +15,8 @@ from proyecttype.paths import (
     DEFAULT_SUBMUESTRA,
 )
 from proyecttype.text_utils import normalize_tipo_name
+
+ROOT = Path(__file__).resolve().parents[1]
 
 EMPEORA = frozenset(
     {

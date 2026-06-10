@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from .classifier_l2 import ClassifierL2
 from .classifier_l3 import ClassifierL3, L3Config
@@ -11,6 +12,10 @@ from .embeddings import L2Config
 from .scorer import EstadoClasificacion, ProyectoTexto, ResultadoClasificacion
 from .taxonomy import Taxonomia
 from .text_utils import join_fields
+
+if TYPE_CHECKING:
+    from .classifier_l1 import ClassifierL1
+    from .scorer import ScorerConfig
 
 
 @dataclass(frozen=True)
@@ -29,7 +34,7 @@ class ClassifierCascade:
 
     def __init__(
         self,
-        l1,
+        l1: ClassifierL1,
         l2: ClassifierL2,
         l3: ClassifierL3 | None = None,
     ) -> None:
@@ -42,7 +47,7 @@ class ClassifierCascade:
         cls,
         taxonomy_path: str | Path,
         *,
-        l1_config=None,
+        l1_config: ScorerConfig | None = None,
         l2_config: L2Config | None = None,
         l3_config: L3Config | None = None,
         cache_dir: Path | None = None,

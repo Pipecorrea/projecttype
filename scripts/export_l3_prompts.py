@@ -5,21 +5,16 @@ from __future__ import annotations
 
 import argparse
 import json
-import sys
 from pathlib import Path
-
-ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / "src"))
 
 import polars as pl
 
 from proyecttype.classifier_cascade import ClassifierCascade
-from proyecttype.classifier_l3 import L3Config, ClassifierL3
+from proyecttype.classifier_l3 import ClassifierL3, L3Config
 from proyecttype.embeddings import L2Config
 from proyecttype.paths import (
     DEFAULT_INPUT_CSV,
     DEFAULT_L3_PROMPTS,
-    DEFAULT_OUTPUT_CASCADE_CSV,
     DEFAULT_TAXONOMY,
     OUTPUT_DIR,
 )

@@ -2,28 +2,23 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from pathlib import Path
+from typing import TYPE_CHECKING, Any
 
-import numpy as np
+if TYPE_CHECKING:
+    from proyecttype.taxonomy import TipoProyecto
+
+from pathlib import Path
 
 from .aliases import resolve_sector_subsector
 from .embeddings import L2Config, cosine_top2, cosine_top2_batch, encode_texts
 from .scorer import EstadoClasificacion, ProyectoTexto, ResultadoClasificacion
 from .taxonomy import Taxonomia
-from .text_utils import join_fields, normalize_key
+from .text_utils import join_fields
 from .tipo_embedder import TipoEmbeddingStore, build_project_text
 
 
-@dataclass(frozen=True)
-class CascadeResult:
-    l1: ResultadoClasificacion
-    l2: ResultadoClasificacion | None
-    final: ResultadoClasificacion
-
-
 def _result_from_similarity(
-    tipos,
+    tipos: list[TipoProyecto],
     sim1: float,
     sim2: float,
     idx1: int,
@@ -133,7 +128,7 @@ class ClassifierL2:
 
     def classify_rows_batch(
         self,
-        rows: list[dict],
+        rows: list[dict[str, Any]],
         *,
         sector: str | None,
         subsector: str | None,
@@ -191,6 +186,6 @@ class ClassifierL2:
             )
         return results
 
-
-# Re-export cascada desde módulo dedicado (compatibilidad)
-from .classifier_cascade import CascadeResult, ClassifierCascade  # noqa: E402, F401
+# El re-export de CascadeResult/ClassifierCascade se eliminó: creaba un ciclo
+# l2→cascade→l2 que dependía del orden de import. Importar desde
+# proyecttype.classifier_cascade (o el paquete raíz).

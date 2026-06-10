@@ -111,4 +111,5 @@ def publish_to_store(
         key_cols=["EBI_CODIGO"],
         source=enricher_version(),
         dry_run=dry_run,
+        writer=enricher_version(),  # ledger _loads (Store v1.1)
     )

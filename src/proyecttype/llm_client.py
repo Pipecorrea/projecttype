@@ -9,13 +9,13 @@ import time
 import urllib.error
 import urllib.request
 from dataclasses import dataclass
-from typing import Literal, Protocol
+from typing import Any, Literal, Protocol
 
 LLMProvider = Literal["openai", "ollama", "google"]
 
 
 class LLMClient(Protocol):
-    def complete_json(self, *, system: str, user: str) -> dict: ...
+    def complete_json(self, *, system: str, user: str) -> dict[str, Any]: ...
 
 
 @dataclass(frozen=True)
@@ -71,15 +71,18 @@ class JSONParseError(ValueError):
     """Respuesta LLM no parseable como JSON."""
 
 
-def _extract_json(text: str) -> dict:
+def _extract_json(text: str) -> dict[str, Any]:
     text = text.strip()
     if text.startswith("```"):
         text = re.sub(r"^```(?:json)?\s*", "", text)
         text = re.sub(r"\s*```$", "", text)
     try:
-        return json.loads(text)
+        data = json.loads(text)
     except json.JSONDecodeError as exc:
         raise JSONParseError(str(exc)) from exc
+    if not isinstance(data, dict):
+        raise JSONParseError(f"se esperaba un objeto JSON, llegó {type(data).__name__}")
+    return data
 
 
 def list_ollama_models(*, base_url: str | None = None, timeout_seconds: float = 10.0) -> list[str]:
@@ -195,7 +198,7 @@ class GeminiClient:
             raise RuntimeError("Gemini devolvió contenido vacío.")
         return str(parts[0].get("text") or "{}")
 
-    def complete_json(self, *, system: str, user: str) -> dict:
+    def complete_json(self, *, system: str, user: str) -> dict[str, Any]:
         max_tokens = self.config.max_tokens
         last_error: JSONParseError | None = None
         for attempt in range(3):
@@ -224,13 +227,13 @@ class OpenAIClient:
             )
         from openai import OpenAI
 
-        kwargs: dict = {"api_key": api_key}
+        kwargs: dict[str, Any] = {"api_key": api_key}
         base_url = os.environ.get(self.config.base_url_env)
         if base_url:
             kwargs["base_url"] = base_url
         self._client = OpenAI(**kwargs)
 
-    def complete_json(self, *, system: str, user: str) -> dict:
+    def complete_json(self, *, system: str, user: str) -> dict[str, Any]:
         response = self._client.chat.completions.create(
             model=self.config.resolved_model(),
             temperature=self.config.temperature,
@@ -254,8 +257,8 @@ class OllamaClient:
         self.base_url = self.config.resolved_ollama_base_url().rstrip("/")
         self.model = self.config.resolved_model()
 
-    def complete_json(self, *, system: str, user: str) -> dict:
-        body = {
+    def complete_json(self, *, system: str, user: str) -> dict[str, Any]:
+        body: dict[str, Any] = {
             "model": self.model,
             "stream": False,
             "format": "json",
@@ -351,7 +354,7 @@ class SniCommonsLLMClient:
             )
         )
 
-    def complete_json(self, *, system: str, user: str) -> dict:
+    def complete_json(self, *, system: str, user: str) -> dict[str, Any]:
         import asyncio
 
         from sni_commons.llm import Message
@@ -367,7 +370,7 @@ class SniCommonsLLMClient:
 class MockLLMClient:
     """Cliente de prueba: elige el primer tipo_id válido mencionado en el prompt."""
 
-    def complete_json(self, *, system: str, user: str) -> dict:
+    def complete_json(self, *, system: str, user: str) -> dict[str, Any]:
         del system
         data = json.loads(user)
         tipos = data.get("tipos_validos") or []

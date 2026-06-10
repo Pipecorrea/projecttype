@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 from pydantic import BaseModel, Field, field_validator
 
 
@@ -35,7 +37,9 @@ class L3ResponseModel(BaseModel):
     def _coerce_confidence(cls, value: object) -> float:
         if value is None:
             return 0.0
-        return float(value)
+        if isinstance(value, int | float | str):
+            return float(value)
+        return 0.0
 
     @field_validator("evidencia", mode="before")
     @classmethod
@@ -44,11 +48,13 @@ class L3ResponseModel(BaseModel):
             return []
         if isinstance(value, str):
             return [value] if value.strip() else []
-        return [str(v) for v in value if str(v).strip()]
+        if isinstance(value, list | tuple | set):
+            return [str(v) for v in value if str(v).strip()]
+        return []
 
     @field_validator("candidatos_descartados", mode="before")
     @classmethod
-    def _coerce_descartados(cls, value: object) -> list:
+    def _coerce_descartados(cls, value: object) -> list[object]:
         if not value:
             return []
         if isinstance(value, list):
@@ -56,7 +62,7 @@ class L3ResponseModel(BaseModel):
         return []
 
     @classmethod
-    def from_llm_dict(cls, raw: dict) -> L3ResponseModel:
+    def from_llm_dict(cls, raw: dict[str, Any]) -> L3ResponseModel:
         descartados = raw.get("candidatos_descartados") or []
         return cls.model_validate(
             {
@@ -89,9 +95,9 @@ class L3ResponseModel(BaseModel):
 class L3PromptConfig(BaseModel):
     version: int = 2
     system_prompt: str
-    reasoning_steps: list[dict] = Field(default_factory=list)
+    reasoning_steps: list[dict[str, object]] = Field(default_factory=list)
     decision_rubric: dict[str, str] = Field(default_factory=dict)
-    edge_cases: list[dict] = Field(default_factory=list)
+    edge_cases: list[dict[str, object]] = Field(default_factory=list)
     response_schema: dict[str, str] = Field(default_factory=dict)
     settings: dict[str, int] = Field(default_factory=dict)
 

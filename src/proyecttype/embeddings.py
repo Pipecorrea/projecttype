@@ -10,6 +10,7 @@ import numpy as np
 
 if TYPE_CHECKING:
     from numpy.typing import NDArray
+    from sentence_transformers import SentenceTransformer
 
 
 DEFAULT_MODEL = "paraphrase-multilingual-MiniLM-L12-v2"
@@ -26,10 +27,11 @@ class L2Config:
 
 
 @lru_cache(maxsize=2)
-def get_embedding_model(model_name: str = DEFAULT_MODEL):
+def get_embedding_model(model_name: str = DEFAULT_MODEL) -> SentenceTransformer:
     from sentence_transformers import SentenceTransformer
 
-    return SentenceTransformer(model_name)
+    model: SentenceTransformer = SentenceTransformer(model_name)
+    return model
 
 
 def encode_texts(

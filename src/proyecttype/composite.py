@@ -2,11 +2,16 @@
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from proyecttype.scorer import ProyectoTexto, ScorerConfig
+
 import re
 from dataclasses import dataclass
 
 from .taxonomy import TipoProyecto
-from .text_utils import contains_component, contains_keyword, normalize_tipo_name
+from .text_utils import contains_component, normalize_tipo_name
 
 
 @dataclass(frozen=True)
@@ -94,8 +99,8 @@ def parse_tipo_components(nombre: str, sibling_names: frozenset[str]) -> TipoCom
         else:
             and_parts = _split_and_segments(name)
 
-    and_parts = tuple(part for part in and_parts if len(part) > 2)
-    return TipoComponents(and_parts, or_groups)
+    and_tuple = tuple(part for part in and_parts if len(part) > 2)
+    return TipoComponents(and_tuple, or_groups)
 
 
 def components_match_text(components: TipoComponents, text: str) -> bool:
@@ -166,7 +171,7 @@ class CompositeIndex:
 
         return cls(tuple(relations))
 
-    def compute_adjustments(self, proyecto, config) -> list[CompositeAdjustment]:
+    def compute_adjustments(self, proyecto: ProyectoTexto, config: ScorerConfig) -> list[CompositeAdjustment]:
         all_text = proyecto.all_norm
         adjustments: list[CompositeAdjustment] = []
         penalize: set[str] = set()

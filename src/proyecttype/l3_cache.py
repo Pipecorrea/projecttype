@@ -4,8 +4,9 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
+from typing import Any
 
 from .scorer import EstadoClasificacion, ResultadoClasificacion
 
@@ -24,7 +25,7 @@ class L3CacheEntry:
     cache_version: str = L3_CACHE_VERSION
     cached_at: str = ""
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "codigo_bip": self.codigo_bip,
             "model": self.model,
@@ -38,7 +39,7 @@ class L3CacheEntry:
         }
 
     @classmethod
-    def from_dict(cls, data: dict) -> L3CacheEntry:
+    def from_dict(cls, data: dict[str, Any]) -> L3CacheEntry:
         return cls(
             codigo_bip=str(data["codigo_bip"]),
             model=str(data.get("model") or ""),
@@ -94,7 +95,7 @@ class L3ResultCache:
             codigo_bip=codigo_bip,
             model=self.model,
             cache_version=L3_CACHE_VERSION,
-            cached_at=datetime.now(timezone.utc).isoformat(),
+            cached_at=datetime.now(UTC).isoformat(),
             l3_estado=result.estado.value,
             l3_tipo_id=result.tipo_id,
             l3_tipo_nombre=result.tipo_nombre,

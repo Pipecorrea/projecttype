@@ -150,7 +150,7 @@ def classify_cascade_dataframe(
                 sector=sector_res,
                 subsector=subsector_res,
             )
-            for idx, l2_res in zip(indices, l2_results):
+            for idx, l2_res in zip(indices, l2_results, strict=False):
                 l2_rows[idx] = _l2_to_dict(l2_res)
                 if l2_res.estado == EstadoClasificacion.ASIGNADO:
                     l2_overrides[idx] = l2_res

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any
 
 from .aliases import resolve_sector_subsector
 from .scorer import (
@@ -69,7 +70,7 @@ class ClassifierL1:
         adjust_composite_scores(scores, proyecto, self.config, composite_index)
         return clasificar_scores(scores, self.config, sector_res, subsector_res)
 
-    def classify_dict(self, row: dict) -> ResultadoClasificacion:
+    def classify_dict(self, row: dict[str, Any]) -> ResultadoClasificacion:
         return self.classify_row(
             sector=row.get("SECTOR") or row.get("sector"),
             subsector=row.get("SUBSECTOR") or row.get("subsector"),

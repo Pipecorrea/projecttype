@@ -3,39 +3,29 @@
 > **Contexto obligatorio:** lee primero **`ECOSISTEMA.md`** (mapa del ecosistema +
 > tu rol) y `/Users/felipecorrea/Vs/ESTADO_ECOSISTEMA.md` (estado vivo).
 >
-> **Estado:** **enriquecedor** funcionando. Cliente LLM unificado en sni-commons
-> (PT-4). **Escribe `enr_tipo_proyecto` al store** (PT-5):
-> `src/proyecttype/store_publish.py` + `scripts/enrich_to_store.py`. py3.12.
-> 52 tests (unittest). Cascada L1 (keywords) → L2 (embeddings) → L3 (LLM).
+> **Estado:** **enriquecedor** funcionando, ciclo **store→store completo** (PT-6):
+> `proyecttype enrich --from-store` lee CONSULTAS_EBI, clasifica y publica
+> `enr_tipo_proyecto`. Cliente LLM unificado en sni-commons (PT-4). py3.12.
+> 55 tests (**pytest**, PT-8), mypy **--strict**, ruff limpio — CI bloqueante.
+> Cascada L1 (keywords) → L2 (embeddings) → L3 (LLM).
 
 ## Verde antes de commitear
-`uv run python -m unittest discover -s tests` (52; filtra el ruido "Could not
-determine dtype" — benigno, de un xlsx ancho) · `uv run --with ruff ruff check src scripts tests`.
+`uv run pytest` (55) · `uv run ruff check src scripts tests` · `uv run mypy src`
+(--strict) — **lo mismo que corre CI (bloqueante)**.
 
 ---
 
 # PENDIENTES (orden sugerido)
 
-## [PT-6] Pipeline directo store→store (sin CSV intermedio) — medio
-Hoy: clasificar → CSV de resultados → `enrich_to_store.py` → store. Idealmente
-ProyectType debería **leer los proyectos del store** (`read_pandas("CONSULTAS_EBI")`)
-en vez de `data/raw/base_datos_extracto.csv`, clasificar, y escribir
-`enr_tipo_proyecto` — todo contra el store, sin CSV locales.
-- **Pasos:** loader que arme el input de la cascada desde `read_pandas("CONSULTAS_EBI")`
-  (mapear columnas EBI → sector/subsector/nombre/descripción que espera L1).
-- **Done-cuando:** `proyecttype enrich --from-store` clasifica leyendo del store y
-  publica `enr_tipo_proyecto`, sin tocar `data/raw`.
-
 ## [PT-7] Re-clasificación incremental — bajo
 `upsert_dataframe` ya es no destructivo. Clasificar solo los BIP nuevos/sin tipo
 (no los 9k cada vez), usando el `l3_cache` + `read_pandas("enr_tipo_proyecto")` para
 saber qué ya está clasificado con la versión actual del enricher.
+⚠️ Relacionado: hoy un publish PARCIAL marca el resto como ausente
+(`_present_in_latest=false`) — el CLI lo advierte y pide confirmación con
+`--limit`; PT-7 debería resolverlo bien (publish incremental que no resetee
+el flag, coordinado con sni-commons).
 - **Done-cuando:** `enrich --incremental` salta BIP ya clasificados.
-
-## [PT-8] Migrar tests a pytest — bajo
-Los tests usan `unittest` con `sys.path` hacks. Migrar a pytest (ya hay
-`[tool.pytest.ini_options]`) homogeneiza con el ecosistema.
-- **Done-cuando:** `uv run pytest` corre la suite; sin `sys.path.insert`.
 
 ---
 ## Notas (NO regresar)
@@ -50,4 +40,11 @@ Los tests usan `unittest` con `sys.path` hacks. Migrar a pytest (ya hay
 ## Hecho (log)
 PT-1/2 (Fase 0: git + N+1 eliminado en la cascada), PT-4 (cliente LLM → sni-commons),
 **PT-5** (escribe `enr_tipo_proyecto` al store; JOIN con EBI 14.806 matches; bug del
-dígito verificador atrapado con datos reales, commit f941fb5).
+dígito verificador atrapado con datos reales, commit f941fb5), **PT-6** (2026-06-09:
+ciclo store→store — `store_input.py` lee CONSULTAS_EBI y mapea SEC/SBS_CLAVE→nombres
+vía `sni_commons.reference`, dedupe por proyecto a la solicitud más reciente; CLI
+`proyecttype enrich --from-store` con guard de publish parcial; smoke real:
+5 proyectos del store clasificados y dry-run del diff), **PT-8** (pytest sin
+`sys.path` hacks + **mypy --strict 0 errores** + ruff limpio en src/scripts/tests;
+de paso se rompió un import circular l2↔cascada que dependía del orden de import,
+y se pasa `writer=` al ledger del store v1.1).

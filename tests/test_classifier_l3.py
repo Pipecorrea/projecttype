@@ -3,13 +3,8 @@
 from __future__ import annotations
 
 import json
-import sys
 import unittest
-from pathlib import Path
 from unittest.mock import MagicMock
-
-ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / "src"))
 
 from proyecttype.classifier_l3 import (
     ClassifierL3,
@@ -152,7 +147,6 @@ class TestPromptFormat(unittest.TestCase):
 
 class TestOllamaClient(unittest.TestCase):
     def test_ollama_complete_json(self) -> None:
-        from io import BytesIO
         from unittest.mock import patch
 
         from proyecttype.llm_client import LLMConfig
