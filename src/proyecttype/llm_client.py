@@ -368,10 +368,24 @@ class SniCommonsLLMClient:
 
 
 class MockLLMClient:
-    """Cliente de prueba: elige el primer tipo_id válido mencionado en el prompt."""
+    """Cliente de prueba: elige el primer tipo_id válido mencionado en el prompt.
+
+    `fail_on_calls` permite simular un fallo transitorio del LLM (p.ej. Gemini
+    503/429): en esas llamadas (1-indexadas) levanta `LLMResponseError`, igual
+    que el cliente real, para verificar que el lote no se aborta.
+    """
+
+    def __init__(self, fail_on_calls: frozenset[int] | None = None) -> None:
+        self.fail_on_calls = fail_on_calls or frozenset()
+        self.calls = 0
 
     def complete_json(self, *, system: str, user: str) -> dict[str, Any]:
         del system
+        self.calls += 1
+        if self.calls in self.fail_on_calls:
+            from sni_commons.llm import LLMResponseError
+
+            raise LLMResponseError(f"Mock 503 UNAVAILABLE en llamada {self.calls}")
         data = json.loads(user)
         tipos = data.get("tipos_validos") or []
         sugerencias = data.get("sugerencias_previas") or {}

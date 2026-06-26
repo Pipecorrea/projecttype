@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any
 
 import polars as pl
+from sni_commons.llm import LLMError
 
 from .classifier_cascade import ClassifierCascade
 from .classifier_l3 import L3Config
@@ -208,6 +209,7 @@ def classify_cascade_dataframe(
             if progress and l3_done:
                 progress(l3_done, l3_total, None)
 
+            l3_failures: list[str] = []
             if uncached_idx:
                 l3_df = (
                     with_l1.filter(pl.col("_row_idx").is_in(uncached_idx))
@@ -219,28 +221,42 @@ def classify_cascade_dataframe(
                     subsector_res = row.get("subsector_resuelto") or ""
                     l2 = l2_rows[idx]
                     codigo = str(row.get("Codigo BIP") or "")
-                    l3_res, razon = cascade.l3.classify_row(
-                        sector=row.get("SECTOR"),
-                        subsector=row.get("SUBSECTOR"),
-                        nombre=row.get("NOMBRE"),
-                        descripcion=row.get("descripción"),
-                        justificacion=row.get("justificacion_proyecto"),
-                        descriptor_1=row.get("descriptor_1"),
-                        descriptor_2=row.get("descriptor_2"),
-                        descriptor_3=row.get("descriptor_3"),
-                        l1_tipo_id=row.get("l1_tipo_id"),
-                        l1_tipo_nombre=row.get("l1_tipo_nombre"),
-                        l1_estado=row.get("l1_estado"),
-                        l1_score=row.get("l1_score"),
-                        l1_margen=row.get("l1_margen"),
-                        l1_alternativas=row.get("l1_alternativas"),
-                        l2_tipo_id=l2["l2_tipo_id"],
-                        l2_tipo_nombre=l2["l2_tipo_nombre"],
-                        l2_estado=l2["l2_estado"],
-                        l2_similitud=l2["l2_similitud"],
-                        l2_margen=l2["l2_margen"],
-                        codigo_bip=codigo or None,
-                    )
+                    try:
+                        l3_res, razon = cascade.l3.classify_row(
+                            sector=row.get("SECTOR"),
+                            subsector=row.get("SUBSECTOR"),
+                            nombre=row.get("NOMBRE"),
+                            descripcion=row.get("descripción"),
+                            justificacion=row.get("justificacion_proyecto"),
+                            descriptor_1=row.get("descriptor_1"),
+                            descriptor_2=row.get("descriptor_2"),
+                            descriptor_3=row.get("descriptor_3"),
+                            l1_tipo_id=row.get("l1_tipo_id"),
+                            l1_tipo_nombre=row.get("l1_tipo_nombre"),
+                            l1_estado=row.get("l1_estado"),
+                            l1_score=row.get("l1_score"),
+                            l1_margen=row.get("l1_margen"),
+                            l1_alternativas=row.get("l1_alternativas"),
+                            l2_tipo_id=l2["l2_tipo_id"],
+                            l2_tipo_nombre=l2["l2_tipo_nombre"],
+                            l2_estado=l2["l2_estado"],
+                            l2_similitud=l2["l2_similitud"],
+                            l2_margen=l2["l2_margen"],
+                            codigo_bip=codigo or None,
+                        )
+                    except LLMError as exc:
+                        # Un fallo transitorio del LLM (p.ej. Gemini 503/429) en un
+                        # proyecto NO debe abortar el lote completo: se registra como
+                        # residual sin clasificar, se sigue con el resto y se reporta
+                        # al final. El caché JSONL permite reanudar estos códigos.
+                        l3_failures.append(codigo or f"_row_idx={idx}")
+                        l3_res = ResultadoClasificacion(
+                            estado=EstadoClasificacion.SIN_MATCH,
+                            sector_resuelto=sector_res,
+                            subsector_resuelto=subsector_res,
+                            nivel=3,
+                        )
+                        razon = f"Error LLM (lote protegido): {exc}"
                     l3_rows[idx] = _l3_to_dict(l3_res, razon)
                     if l3_res.estado == EstadoClasificacion.ASIGNADO:
                         l3_overrides[idx] = l3_res
@@ -252,6 +268,15 @@ def classify_cascade_dataframe(
                     l3_done += 1
                     if progress:
                         progress(l3_done, l3_total, codigo or None)
+
+            if l3_failures:
+                muestra = ", ".join(l3_failures[:10])
+                if len(l3_failures) > 10:
+                    muestra += ", …"
+                print(
+                    f"L3: {len(l3_failures)} proyecto(s) sin clasificar por error LLM "
+                    f"transitorio (lote no abortado): {muestra}"
+                )
 
             if l3_cache is not None:
                 l3_cache.save()
