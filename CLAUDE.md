@@ -2,118 +2,131 @@
 
 > **Contexto del ecosistema:** lee primero **`ECOSISTEMA.md`** (eres un *enriquecedor*:
 > clasificas el tipo de proyecto y escribes `enr_tipo_proyecto` al store). Estado vivo:
-> `/Vs/ESTADO_ECOSISTEMA.md`. Tareas de este repo: `AGENT_WORKPLAN.md`.
+> `/Vs/ESTADO_ECOSISTEMA.md`. Rumbo: `/Vs/PROPUESTA_SOTA_2026-06.md`. Tareas de este
+> repo: `AGENT_WORKPLAN.md`. Visión y alcance: `VISION.md`. Para humanos: `README.md`.
 
 ProyectType = clasificador en cascada (L1 keywords → L2 embeddings → L3 LLM) que asigna
-un `TipoProyecto` a cada BIP.
+un `TipoProyecto` a cada BIP — un atributo que **no existe** en los datos oficiales.
 
 ## Conexión con el ecosistema
 
-- **Escribe `enr_tipo_proyecto` al store** (`store_publish.py` + `scripts/enrich_to_store.py`,
-  PT-5); **SNI Intelligence lo consume** para filtrar por tipo (`--filter tipo_proyecto=`).
+- **Camino de producción (PT-6):** `proyecttype enrich --from-store` — lee
+  `CONSULTAS_EBI` del store (`store_input.py`), clasifica y publica
+  `enr_tipo_proyecto` (`store_publish.py`). **SNI Intelligence lo consume**
+  (`--filter tipo_proyecto=`). El camino CSV (`scripts/classify_cascade.py` +
+  `scripts/enrich_to_store.py`, PT-5) sigue vivo para calibración/eval.
 - ⚠️ Al escribir, normaliza **EBI_CODIGO sin dígito verificador** (`-N`) o el JOIN con EBI
-  da 0 filas (lo protege `test_bip_code_normalized_for_join`).
+  da 0 filas (lo protege `test_bip_code_normalized_for_join`). Regla D-6 del ecosistema.
 - El cliente LLM L3 usa `sni_commons.llm` por defecto (adaptador `SniCommonsLLMClient`,
-  PT-4); los clientes legacy quedan como fallback.
+  PT-4); los clientes legacy (`GeminiClient`/`OpenAIClient`/`OllamaClient`) quedan como
+  fallback con `use_sni_commons=False`.
+- ⚠️ **Publish parcial:** publicar con `--limit` marca el resto como
+  `_present_in_latest=false`; el CLI advierte y pide confirmación. Pilotos → `--dry-run`.
 
-## Commands
+## Comandos
 
 ```bash
-# Install (uv; el repo ya tiene pyproject.toml + uv.lock)
-uv sync
+# Instalar (uv; requiere ../sni-commons como repo hermano)
+uv sync --extra dev
 
-# Tests (los scripts de abajo también corren con `uv run python ...`)
-uv run python -m unittest discover -s tests
+# Verde antes de commitear = lo mismo que CI (bloqueante)
+uv run pytest                          # 56 tests (PT-8: pytest, sin hacks de sys.path)
+uv run ruff check src scripts tests
+uv run mypy src                        # --strict
 
-# Run a single test file
-python -m unittest tests/test_classifier_l1.py
+# Un archivo / un test
+uv run pytest tests/test_classifier_l1.py
+uv run pytest tests/test_classifier_l1.py::TestClassifierL1::test_biblioteca_asignada
 
-# Run a single test case
-python -m unittest tests.test_classifier_l1.TestClassifierL1.test_biblioteca_asignada
+# Producción: ciclo store→store (requiere BIP_DATA_DIR)
+uv run proyecttype enrich --from-store [--enable-l3] [--limit N --dry-run] [--out x.csv]
 
-# L1-only classification
-python scripts/classify_l1.py
+# Camino CSV (calibración/eval)
+uv run python scripts/classify_l1.py                     # solo L1
+uv run python scripts/classify_cascade.py                # L1+L2
+uv run python scripts/classify_cascade.py --enable-l3 --l3-provider google
+uv run python scripts/classify_cascade.py --enable-l3 --l3-limit 100   # piloto L3
+uv run python scripts/enrich_to_store.py data/output/resultados_l1_l2_l3.csv
 
-# Cascade L1 → L2 (keywords + embeddings)
-python scripts/classify_cascade.py
-
-# Cascade L1 → L2 → L3 with Gemini (recommended — free tier)
-python scripts/classify_cascade.py --enable-l3 --l3-provider google
-
-# Cascade L1 → L2 → L3 with Ollama (local default)
-python scripts/classify_cascade.py --enable-l3
-
-# Pilot L3 on first 100 residual rows
-python scripts/classify_cascade.py --enable-l3 --l3-provider google --l3-limit 100
-
-# List installed Ollama models
-python scripts/classify_cascade.py --list-ollama-models
-
-# Build human-review Excel (L1 vs manual labels)
-python scripts/build_revision_manual.py
-
-# Mine few-shot examples from manual labels where L1 failed/was wrong
-python scripts/build_few_shot_examples.py
-
-# Calibrate L2 thresholds against manual labels
-python scripts/calibrate_l2.py
+# Evaluación / calibración / few-shot
+uv run python scripts/build_revision_manual.py     # Excel L1 vs etiquetas manuales
+uv run python scripts/build_few_shot_examples.py   # minar few-shot de la submuestra
+uv run python scripts/calibrate_l2.py              # calibrar umbrales L2
+uv run python scripts/l3_status.py                 # estado caché/progreso L3
 ```
 
-## Architecture
+## Arquitectura
 
-### Classification cascade
+### La cascada
 
-The system classifies public investment projects (BIP) into a taxonomy of project types (`TipoProyecto`). The taxonomy is organised by `(sector, subsector)` and stored in `data/taxonomy/taxonomia_tipos_proyecto.yaml`. Three levels are applied in sequence; each level runs only on the *residual* of the previous one (`ambiguo` or `sin_match` outcomes):
+Taxonomía en `data/taxonomy/taxonomia_tipos_proyecto.yaml` (326 tipos, 16 sectores,
+84 subsectores), organizada por `(sector, subsector)`. Cada nivel corre **solo sobre
+el residual** del anterior (`ambiguo` o `sin_match`):
 
-| Level | Module | Method |
+| Nivel | Módulo | Método | Asigna cuando |
+|---|---|---|---|
+| L1 | `classifier_l1` + `scorer` | Keywords deterministas: fuertes/débiles, exclusiones, bonus por tipos compuestos | score ≥ 1.0 y margen ≥ 2.0 (`ScorerConfig`) |
+| L2 | `classifier_l2` + `embeddings` | Coseno sentence-transformers (`paraphrase-multilingual-MiniLM-L12-v2`) | similitud ≥ 0.48 y margen ≥ 0.12 (`L2Config`) |
+| L3 | `classifier_l3` | LLM con lista cerrada de tipos del subsector, JSON estructurado (pydantic) | confianza ≥ 0.75 y `tipo_id` válido (`L3Config`) |
+
+`ClassifierCascade` (fila a fila) · `pipeline_cascade.classify_cascade_dataframe`
+(lote completo con Polars, integra el caché L3).
+
+### Flujo de datos
+
+```
+PRODUCCIÓN:  store (CONSULTAS_EBI) → store_input → cascada → store_publish → enr_tipo_proyecto
+CSV (eval):  data/raw/base_datos_extracto.csv → classify_cascade.py → resultados_l1_l2_l3.csv
+```
+
+### Módulos clave
+
+- **`taxonomy.py`** — carga el YAML a `Taxonomia`; indexa `TipoProyecto` por clave
+  normalizada `(sector, subsector)`.
+- **`aliases.py`** — mapea nombres de sector/subsector del BIP (tipos, grafías
+  alternativas) a claves canónicas. **Los mapeos nuevos van aquí.**
+- **`scorer.py`** — motor de scoring L1; `ScorerConfig` controla pesos y umbrales.
+- **`composite.py`** — detecta tipos compuestos ("JARDIN INFANTIL Y SALA CUNA"):
+  bonus si todos los componentes tienen evidencia, castigo a los subtipos simples.
+- **`embeddings.py`** / **`tipo_embedder.py`** — sentence-transformers con `lru_cache`;
+  matrices de embeddings por subsector cacheadas en `data/taxonomy/embeddings_cache/`.
+- **`llm_client.py`** — `SniCommonsLLMClient` (default, delega en `sni_commons.llm`)
+  + clientes legacy + `MockLLMClient` para tests. Proveedor vía `LLMConfig.provider`.
+- **`l3_cache.py`** — caché JSONL por `codigo_bip` (+ modelo): un BIP ya clasificado
+  no re-paga la llamada LLM.
+- **`prompts.py`** / `data/prompts/l3.yaml` — prompt L3 (rúbrica, edge cases);
+  `few_shot_examples.yaml` (curado) + `few_shot_mined.yaml` (minado) se inyectan
+  en cada prompt L3. **Reglas discriminantes** (`data/prompts/reglas_discriminantes.yaml`,
+  vía `prompt_context.guia_discriminante_for_subsector`): guía de dominio por subsector
+  confuso (hoy TRANSPORTE URBANO) inyectada como `contexto_adicional` de MÁXIMA prioridad
+  — el saber del experto separado del pipeline, editable sin tocar código.
+- **`store_input.py`** (PT-6) — `CONSULTAS_EBI` → input cascada; dedupe a una fila
+  por proyecto (solicitud más reciente); claves → nombres vía `sni_commons.reference`.
+- **`store_publish.py`** (PT-5) — proyecta al contrato `ENR_TIPO_PROYECTO_CONTRACT`,
+  normaliza EBI_CODIGO, `upsert_dataframe` no destructivo con `writer=` (ledger v1.1).
+- **`evaluation.py`** / **`few_shot_mining.py`** — comparación contra la submuestra
+  manual (`data/raw/Submuestra_tp.xlsx`) y minería de few-shot desde discrepancias.
+
+### Estados de clasificación
+
+`EstadoClasificacion`: `asignado` (corta la cascada) · `ambiguo` / `sin_match`
+(pasan al siguiente nivel) · `sin_taxonomia` (sin tipos para ese sector/subsector).
+
+### Proveedores LLM (L3)
+
+| Proveedor | Flag (scripts CSV) | Variables |
 |---|---|---|
-| L1 | `classifier_l1.ClassifierL1` | Keyword scoring (deterministic): strong/weak keywords, exclusion rules, composite-type bonuses |
-| L2 | `classifier_l2.ClassifierL2` | Sentence-transformer cosine similarity (`paraphrase-multilingual-MiniLM-L12-v2`) |
-| L3 | `classifier_l3.ClassifierL3` | LLM call (Gemini / Ollama / OpenAI) with structured JSON output |
-
-`ClassifierCascade` (`classifier_cascade.py`) wires all three together for single-row classification. `pipeline_cascade.classify_cascade_dataframe` handles full-dataset batch execution using Polars.
-
-### Key data flow
-
-```
-data/raw/base_datos_extracto.csv
-  → classify_dataframe (L1)            → resultados_l1.csv
-  → classify_cascade_dataframe (L1+L2) → resultados_l1_l2.csv
-  → classify_cascade_dataframe (+L3)   → resultados_l1_l2_l3.csv
-```
-
-### Core modules
-
-- **`taxonomy.py`** — loads YAML taxonomy into `Taxonomia`; indexes `TipoProyecto` by normalised `(sector, subsector)` key.
-- **`aliases.py`** — maps BIP sector/subsector strings (with typos or alternate spellings) to canonical taxonomy keys. **Add new mappings here when BIP data uses non-canonical names.**
-- **`scorer.py`** — L1 keyword scoring engine. `ScorerConfig` controls all score weights and thresholds.
-- **`composite.py`** — auto-detects compound type names (e.g. "JARDIN INFANTIL Y SALA CUNA") and adjusts scores: bonus when all components are evidenced, penalty for the simple subtypes.
-- **`embeddings.py`** — wraps `sentence_transformers` with an `lru_cache`; `L2Config` controls model and thresholds.
-- **`tipo_embedder.py`** — builds and caches embedding matrices per subsector in `data/taxonomy/embeddings_cache/`.
-- **`llm_client.py`** — three concrete clients (`GeminiClient`, `OpenAIClient`, `OllamaClient`) plus `MockLLMClient` for tests. Provider is selected at runtime via `LLMConfig.provider`.
-- **`l3_cache.py`** — JSONL-backed cache keyed by `codigo_bip`; avoids re-calling the LLM for already-classified projects.
-- **`prompts.py`** / **`data/prompts/l3.yaml`** — L3 system prompt, chain-of-thought structure, rubric and edge cases. `data/prompts/few_shot_examples.yaml` (curated) and `data/prompts/few_shot_mined.yaml` (auto-mined) supply few-shot examples injected into every L3 prompt.
-- **`evaluation.py`** — compares L1 output against `data/raw/Submuestra_tp.xlsx` (manual labels); produces Excel with conditional formatting.
-- **`few_shot_mining.py`** — mines new few-shot candidates from the manual-label submuestra, prioritising discrepancies and unclassified rows.
-
-### Classification outcomes
-
-`EstadoClasificacion`: `asignado` | `ambiguo` | `sin_match` | `sin_taxonomia`
-
-- `asignado` — confident single classification; stops the cascade.
-- `ambiguo` / `sin_match` — passes to the next level.
-- `sin_taxonomia` — no taxonomy entry for this `(sector, subsector)`.
-
-### LLM providers (L3)
-
-| Provider | Flag | Env var |
-|---|---|---|
-| Ollama (default) | `--l3-provider ollama` | `OLLAMA_BASE_URL`, `OLLAMA_MODEL` |
-| Google Gemini | `--l3-provider google` | `GEMINI_API_KEY`, `GEMINI_MODEL` (default: `gemini-2.5-flash`) |
+| Ollama (default local) | `--l3-provider ollama` | `OLLAMA_BASE_URL`, `OLLAMA_MODEL` |
+| Google Gemini | `--l3-provider google` | `GEMINI_API_KEY`, `GEMINI_MODEL` (def: `gemini-2.5-flash`) |
 | OpenAI | `--l3-provider openai` | `OPENAI_API_KEY` |
 
-Gemini free tier limits to ~15 RPM; the client auto-inserts a 5-second delay between calls (override with `GEMINI_REQUEST_INTERVAL`).
+Free tier de Gemini ≈ 15 RPM; el cliente intercala 5 s entre llamadas
+(`GEMINI_REQUEST_INTERVAL` para cambiarlo). La neutralidad de proveedor es
+estratégica: el proveedor ministerial sigue indefinido (PROPUESTA §4.0).
 
 ### Tests
 
-Tests use `unittest` (no pytest required). Each test file inserts `src/` into `sys.path` directly. The taxonomy YAML at `data/taxonomy/taxonomia_tipos_proyecto.yaml` must be present for most tests to run.
+**pytest** (PT-8; `pythonpath = ["src"]` en pyproject, sin hacks de `sys.path`).
+56 tests; la taxonomía YAML debe estar presente para la mayoría. mypy `--strict`
+y ruff limpios — los tres bloqueantes en CI (`.github/workflows/ci.yml`, que
+también clona `../sni-commons` con `ECOSYSTEM_PAT`).

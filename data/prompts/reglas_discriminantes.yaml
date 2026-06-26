@@ -1,0 +1,70 @@
+version: 1
+
+# Reglas discriminantes curadas por subsector para desambiguación L3.
+# A diferencia de colisiones_keyword.csv (pares por keywords compartidas),
+# estas capturan confusiones SEMÁNTICAS detectadas en la matriz de confusión
+# contra el golden, y fueron validadas por el experto de dominio (2026-06-19).
+# Se inyectan en el prompt L3 como `guia_discriminante` cuando el subsector calza.
+
+subsectores:
+  - sector: TRANSPORTE
+    subsector: TRANSPORTE URBANO, Y VIALIDAD PEATONAL
+    # Llave maestra: la jerarquía de la vía decide primero; el criterio
+    # secundario solo desempata dentro de esa jerarquía.
+    procedimiento: |
+      PASO 1 (obligatorio): determina la JERARQUÍA de la vía intervenida
+      (OGUC): pasaje / calle local · colectora · vía de servicio · troncal/expresa.
+      PASO 2: aplica el criterio secundario según la jerarquía (ver reglas).
+      La jerarquía vial PREVALECE sobre los elementos constructivos (aceras, soleras, pavimento).
+    reglas:
+      - pares: [VIAS VIALIDAD URBANA INTERMEDIA, VIAS URBANAS ESTRUCTURANTES]
+        regla: |
+          Clasifica según la categoría de la vía y su impacto en la red urbana:
+          1. Vía EXPRESA o TRONCAL → siempre ESTRUCTURANTE.
+          2. Vía DE SERVICIO → siempre INTERMEDIA.
+          3. Vía COLECTORA → evalúa el flujo vehicular:
+             - Si el proyecto PROVOCA CAMBIOS EN LA ASIGNACIÓN/REASIGNACIÓN DE FLUJOS
+               en la ciudad (vías alternativas afectadas, cambios en la red mayor) → ESTRUCTURANTE.
+             - Si NO CAMBIA LA ASIGNACIÓN DE FLUJOS (impacto estrictamente local o táctico
+               en el mismo eje) → INTERMEDIA.
+          Usa el impacto en el patrón de flujos globales como criterio principal de corte
+          para las vías colectoras.
+      - pares: [VIAS VIALIDAD URBANA INTERMEDIA, VIALIDAD LOCAL]
+        regla: |
+          Clasifica según la categoría técnica de la vía (taxonomía OGUC):
+          1. VIAL LOCAL si interviene: Pasajes (vías residenciales, tránsito peatonal,
+             uso vehicular eventual, sin veredas diferenciadas); o Calles Locales (vías de
+             acceso a viviendas, industrias o servicios que conectan con la red mayor).
+             Nota: en ejecución, Vialidad Local típicamente tiene longitud menor a 1.000 m.
+          2. INTERMEDIA si interviene: Vías Colectoras (distribuyen flujo entre la red
+             residencial y la estructurante, siempre que NO cambien la asignación global de
+             flujos); o Vías de Servicio (accesibilidad y segregación lateral junto a
+             troncales/expresas).
+          Heurística: ['pasaje','calle local','acceso a vivienda'] → VIAL LOCAL;
+          ['colectora','vía de servicio','calle de servicio'] → INTERMEDIA.
+      - pares: [VIAS VIALIDAD URBANA INTERMEDIA, GESTION DE TRANSITO]
+        regla: |
+          Distingue el propósito operativo frente al cambio de infraestructura estructural:
+          1. GESTIÓN DE TRÁNSITO si es OPERACIONAL (optimiza la capacidad existente de la red
+             o mejora la seguridad vial a corto plazo): semáforos, sistemas SCAT, señalización,
+             demarcación, cambios de sentido, y rediseños geométricos menores en intersecciones
+             (islas canalizadoras, bahías de buses, ajustes de radios de giro). Puede incluir
+             pavimentación menor SIEMPRE que esté acotada a la intersección o al rediseño
+             operativo. Horizonte de evaluación típico: 5 años.
+          2. VIALIDAD INTERMEDIA si implica INFRAESTRUCTURA VIAL a gran escala a lo largo de
+             ejes colectores o de servicio: MEJORAMIENTO (pavimentar calles de tierra/ripio) o
+             REPOSICIÓN estructural (rehabilitar calzadas dañadas en cuadras o tramos continuos).
+          Desempate: si hay pavimentación pero es solo para habilitar un rediseño operativo,
+          una pista de viraje corta o un bandejón en un cruce → GESTIÓN DE TRÁNSITO.
+      - pares: [VIAS VIALIDAD URBANA INTERMEDIA, ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA, ACERAS VIALIDAD PEATONAL]
+        regla: |
+          Prioriza la jerarquía vial del eje por sobre los componentes constructivos:
+          1. ACERAS VIALIDAD PEATONAL si la intervención de aceras (veredas o rutas accesibles)
+             se ejecuta en una VÍA LOCAL o PASAJE. Puede incluir soleras de forma accesoria sin
+             cambiar de categoría (pertenece a la red vial local / peatonal residencial).
+          2. ACERAS Y SOLERAS … INTERMEDIA si el proyecto de aceras o espacio peatonal se emplaza
+             en una VÍA COLECTORA o DE SERVICIO. Independientemente de si el texto menciona soleras,
+             intervenir el espacio peatonal de un eje colector o de servicio arrastra el proyecto a
+             Vialidad Intermedia.
+          Prioridad: jerarquía vial (Local/Pasaje vs Colectora/Servicio) > elementos constructivos
+          (solo aceras vs aceras+soleras).

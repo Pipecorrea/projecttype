@@ -3831,7 +3831,7 @@ sectores:
               - vias
           - tipo_id: TRANSPORTE.TRANSPORTE_URBANO_Y_VIALIDAD_PEATONAL.VIAS_VIALIDAD_URBANA_INTERMEDIA
             nombre: VIAS VIALIDAD URBANA INTERMEDIA
-            definicion: "Corresponde a proyectos en vías colectoras y en el caso de ampliación, intervenciones en longitudes menores a 1.000 m; o Proyectos en vías de servicio."
+            definicion: "Proyectos de obra física en vías de jerarquía intermedia: vías COLECTORAS cuya intervención NO cambia la asignación global de flujos de la ciudad (impacto local o táctico en el mismo eje), o vías DE SERVICIO. Incluye mejoramiento (pavimentar calles de tierra/ripio) y reposición estructural de calzada a lo largo de tramos continuos. Excluye: vías troncales/expresas o colectoras que reasignan flujos de la red (→ estructurantes); calles locales y pasajes de acceso a vivienda (→ vialidad local); intervenciones operacionales acotadas a una intersección como semáforos, señalética o pistas de viraje (→ gestión de tránsito)."
             magnitudes:
               - unidad: METROS LINEALES
                 especificacion: null

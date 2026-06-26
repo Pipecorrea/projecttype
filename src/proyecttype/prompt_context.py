@@ -10,12 +10,14 @@ from typing import Any
 
 import yaml
 
+from .aliases import resolve_sector_subsector
 from .paths import PROJECT_ROOT, TAXONOMY_DIR
 from .text_utils import normalize_key
 
 PROMPTS_DIR = PROJECT_ROOT / "data" / "prompts"
 DEFAULT_FEW_SHOT = PROMPTS_DIR / "few_shot_examples.yaml"
 DEFAULT_FEW_SHOT_MINED = PROMPTS_DIR / "few_shot_mined.yaml"
+DEFAULT_REGLAS_DISCRIMINANTES = PROMPTS_DIR / "reglas_discriminantes.yaml"
 COMPOSITES_CSV = TAXONOMY_DIR / "composites_index.csv"
 COLISIONES_CSV = TAXONOMY_DIR / "colisiones_keyword.csv"
 
@@ -202,6 +204,43 @@ def composite_relations_for_subsector(
     return relations
 
 
+@lru_cache(maxsize=1)
+def _reglas_discriminantes() -> list[dict[str, Any]]:
+    path = DEFAULT_REGLAS_DISCRIMINANTES
+    if not path.exists():
+        return []
+    with path.open(encoding="utf-8") as fh:
+        raw = yaml.safe_load(fh) or {}
+    return list(raw.get("subsectores") or [])
+
+
+def guia_discriminante_for_subsector(sector: str, subsector: str) -> dict[str, Any] | None:
+    """Guía curada de desambiguación para un subsector (jerarquía + reglas por par).
+
+    Captura confusiones SEMÁNTICAS (validadas por experto) que no surgen de
+    keywords compartidas, por lo que complementan `pares_confusos`.
+    """
+    sec_res, sub_res = resolve_sector_subsector(sector, subsector)
+    sec = normalize_key(sec_res)
+    sub = normalize_key(sub_res)
+    for row in _reglas_discriminantes():
+        if normalize_key(resolve_sector_subsector(row.get("sector"), row.get("subsector"))[1]) != sub:
+            continue
+        if normalize_key(resolve_sector_subsector(row.get("sector"), row.get("subsector"))[0]) != sec:
+            continue
+        guia: dict[str, Any] = {}
+        if row.get("procedimiento"):
+            guia["procedimiento"] = str(row["procedimiento"]).strip()
+        reglas = [
+            {"tipos": r.get("pares") or [], "regla": str(r.get("regla") or "").strip()}
+            for r in (row.get("reglas") or [])
+        ]
+        if reglas:
+            guia["reglas_por_par"] = reglas
+        return guia or None
+    return None
+
+
 def build_dynamic_context(
     sector: str,
     subsector: str,
@@ -212,6 +251,9 @@ def build_dynamic_context(
     few_shot_path: Path | None = None,
 ) -> dict[str, Any]:
     context: dict[str, Any] = {}
+    guia = guia_discriminante_for_subsector(sector, subsector)
+    if guia:
+        context["guia_discriminante"] = guia
     pairs = confusion_pairs_for_subsector(subsector, max_pairs=max_confusion_pairs)
     if pairs:
         context["pares_confusos"] = pairs

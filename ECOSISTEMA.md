@@ -7,10 +7,13 @@
 ## Tú en el ecosistema
 
 **Eres `ProyectType`** — un **enriquecedor**: clasificas el **tipo de proyecto** (cascada
-L1 keywords → L2 embeddings → L3 LLM).
+L1 keywords → L2 embeddings → L3 LLM), un atributo que NO existe en los datos del BIP.
 
-- **Tu conexión:** **escribes `enr_tipo_proyecto` al store** (`store_publish.py` +
-  `scripts/enrich_to_store.py`); **SNI Intelligence lo consume** para filtrar por tipo.
+- **Tu conexión:** ciclo **store→store completo** (PT-6): `proyecttype enrich
+  --from-store` lee `CONSULTAS_EBI`, clasifica y **escribe `enr_tipo_proyecto` al
+  store** (`store_input.py` + `store_publish.py`); **SNI Intelligence lo consume**
+  para filtrar por tipo. (El camino CSV `scripts/enrich_to_store.py` queda para
+  calibración/eval.)
 - **Regla #1 tuya:** al escribir, normaliza **EBI_CODIGO sin dígito verificador** (quita
   el `-N`), o el JOIN con `CONSULTAS_EBI` da 0 filas (bug real ya atrapado en PT-5; lo
   protege `test_bip_code_normalized_for_join`). Tu cliente LLM ya usa `sni_commons.llm`.
@@ -69,6 +72,8 @@ en `~/bip_data/`, fuera de los repos — datos, no código).
 ## La verdad viva (no la dupliques aquí)
 
 - **`/Vs/ESTADO_ECOSISTEMA.md`** — foto actual real (estado por proyecto, datos cargados, reglas). **Manda sobre cualquier otro `.md`.**
+- **`/Vs/PROPUESTA_SOTA_2026-06.md`** — el rumbo vigente (R0–R4); para este repo:
+  PT-7 incremental, golden-set bajo formato común y versionar modelo/prompt (§4.1).
 - **`/Vs/FLUJO_ECOSISTEMA.md`** — el flujo en lenguaje no-técnico.
 - **`AGENT_WORKPLAN.md`** (este repo) — las tareas concretas pendientes aquí.
 

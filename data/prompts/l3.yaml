@@ -26,6 +26,10 @@ system_prompt: |
   - Las sugerencias L1/L2 son pistas, no verdad: verifica siempre contra el texto.
   - Si pares_confusos está presente, distingue explícitamente entre esos tipos antes de decidir.
   - Si un tipo es_compuesto=true, exige evidencia de TODAS las componentes requeridas.
+  - Si contexto_adicional.guia_discriminante está presente, es de MÁXIMA prioridad:
+    aplica primero su `procedimiento` (p. ej. establecer la jerarquía antes que los
+    elementos constructivos) y luego la `regla` del par en conflicto. La guía proviene
+    de un experto de dominio y prevalece sobre tu intuición y sobre las sugerencias L1/L2.
 
 reasoning_steps:
   - id: identificar_obra
