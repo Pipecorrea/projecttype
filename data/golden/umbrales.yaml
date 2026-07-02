@@ -1,0 +1,7 @@
+# Umbrales de gate CI para eval L1+L2 (baseline Submuestra 2026-06-19).
+# NUNCA bajar sin decisión anotada en DECISIONES.md.
+umbrales:
+  - metrica: precision_l1_l2
+    minimo: 0.798
+  - metrica: cobertura_l1_l2
+    minimo: 0.656

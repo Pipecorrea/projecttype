@@ -51,3 +51,7 @@ jobs:
       - name: mypy (--strict)
         working-directory: repo
         run: uv run mypy src
+
+      - name: Golden eval gate (PT-10)
+        working-directory: repo
+        run: uv run python scripts/eval_golden.py --ci

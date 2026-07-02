@@ -1,0 +1,185 @@
+nombre: golden-tipo-proyecto
+version: "1.0.0-fixture"
+metrica_principal: precision_l1_l2
+# Fixture curado mientras Submuestra_tp.xlsx no está en el repo (gitignored en data/raw/).
+# Regenerar con: uv run python scripts/convert_submuestra_to_golden.py
+casos:
+  - caso_id: l1-biblioteca
+    input:
+      Codigo BIP: GOLD-L1-001
+      SECTOR: CULTURA Y PATRIMONIO
+      SUBSECTOR: CULTURA
+      NOMBRE: REPOSICION BIBLIOTECA MUNICIPAL TEODORO SCHMIDT
+      descripción: CONSTRUCCION DE UN EDIFICIO PARA BIBLIOTECA COMUNAL
+      justificacion_proyecto: ""
+      descriptor_1: ""
+      descriptor_2: ""
+      descriptor_3: ""
+    esperado:
+      tipo_proyecto: BIBLIOTECA
+    tags: ["l1", "fixture"]
+
+  - caso_id: l1-cesfam
+    input:
+      Codigo BIP: GOLD-L1-002
+      SECTOR: SALUD
+      SUBSECTOR: BAJA COMPLEJIDAD
+      NOMBRE: CONSTRUCCION CESFAM LOS ALAMOS
+      descripción: ""
+      justificacion_proyecto: ""
+      descriptor_1: ""
+      descriptor_2: ""
+      descriptor_3: ""
+    esperado:
+      tipo_proyecto: CENTRO DE SALUD FAMILIAR (CESFAM)
+    tags: ["l1", "fixture"]
+
+  - caso_id: l1-apr
+    input:
+      Codigo BIP: GOLD-L1-003
+      SECTOR: RECURSOS HIDRICOS
+      SUBSECTOR: AGUA POTABLE
+      NOMBRE: MEJORAMIENTO SISTEMA APR COMUNIDAD EL ALMENDRO
+      descripción: ""
+      justificacion_proyecto: ""
+      descriptor_1: ""
+      descriptor_2: ""
+      descriptor_3: ""
+    esperado:
+      tipo_proyecto: SISTEMA AGUA POTABLE RURAL
+    tags: ["l1", "fixture"]
+
+  - caso_id: l1-jardin-compuesto
+    input:
+      Codigo BIP: GOLD-L1-004
+      SECTOR: EDUCACION
+      SUBSECTOR: EDUCACION PREBASICA
+      NOMBRE: CONSTRUCCION JARDIN INFANTIL SECTOR PURINGUE RICO, MARIQUINA
+      descripción: capacidad para 20 lactantes en nivel sala cuna y 24 parvulos en nivel medio
+      justificacion_proyecto: ""
+      descriptor_1: ""
+      descriptor_2: ""
+      descriptor_3: ""
+    esperado:
+      tipo_proyecto: JARDIN INFANTIL Y SALA CUNA
+    tags: ["l1", "fixture"]
+
+  - caso_id: l1-jardin
+    input:
+      Codigo BIP: GOLD-L1-005
+      SECTOR: EDUCACION
+      SUBSECTOR: EDUCACION PREBASICA
+      NOMBRE: CONSTRUCCION JARDIN INFANTIL MUNICIPAL
+      descripción: establecimiento para infantes en edad preescolar
+      justificacion_proyecto: ""
+      descriptor_1: ""
+      descriptor_2: ""
+      descriptor_3: ""
+    esperado:
+      tipo_proyecto: JARDIN INFANTIL
+    tags: ["l1", "fixture"]
+
+  - caso_id: l1-cancha
+    input:
+      Codigo BIP: GOLD-L1-006
+      SECTOR: DEPORTES
+      SUBSECTOR: DEPORTE RECREATIVO
+      NOMBRE: CONSTRUCCION CANCHA DE FUTBOL CARPETA SINTETICA
+      descripción: ""
+      justificacion_proyecto: ""
+      descriptor_1: ""
+      descriptor_2: ""
+      descriptor_3: ""
+    esperado:
+      tipo_proyecto: CANCHA DE FUTBOL
+    tags: ["l1", "fixture"]
+
+  - caso_id: l1-biblioteca-2
+    input:
+      Codigo BIP: GOLD-L1-007
+      SECTOR: CULTURA Y PATRIMONIO
+      SUBSECTOR: CULTURA
+      NOMBRE: AMPLIACION BIBLIOTECA PUBLICA MUNICIPAL
+      descripción: ampliacion de sala de lectura y reposicion de mobiliario biblioteca
+      justificacion_proyecto: ""
+      descriptor_1: ""
+      descriptor_2: ""
+      descriptor_3: ""
+    esperado:
+      tipo_proyecto: BIBLIOTECA
+    tags: ["l1", "fixture"]
+
+  - caso_id: l1-cesfam-2
+    input:
+      Codigo BIP: GOLD-L1-008
+      SECTOR: SALUD
+      SUBSECTOR: BAJA COMPLEJIDAD
+      NOMBRE: REPOSICION CESFAM DR. SOTERO DEL RIO
+      descripción: reposicion centro de salud familiar
+      justificacion_proyecto: ""
+      descriptor_1: ""
+      descriptor_2: ""
+      descriptor_3: ""
+    esperado:
+      tipo_proyecto: CENTRO DE SALUD FAMILIAR (CESFAM)
+    tags: ["l1", "fixture"]
+
+  - caso_id: l1-apr-2
+    input:
+      Codigo BIP: GOLD-L1-009
+      SECTOR: RECURSOS HIDRICOS
+      SUBSECTOR: AGUA POTABLE
+      NOMBRE: CONSTRUCCION SISTEMA APR LOS MAITENES
+      descripción: sistema de agua potable rural para comunidad
+      justificacion_proyecto: ""
+      descriptor_1: ""
+      descriptor_2: ""
+      descriptor_3: ""
+    esperado:
+      tipo_proyecto: SISTEMA AGUA POTABLE RURAL
+    tags: ["l1", "fixture"]
+
+  - caso_id: residual-vago
+    input:
+      Codigo BIP: GOLD-RES-001
+      SECTOR: ENERGIA
+      SUBSECTOR: ALUMBRADO PUBLICO
+      NOMBRE: proyecto vago sin senales
+      descripción: algo generico
+      justificacion_proyecto: x
+      descriptor_1: ""
+      descriptor_2: ""
+      descriptor_3: ""
+    esperado:
+      tipo_proyecto: ALUMBRADO PUBLICO
+    tags: ["residual", "fixture"]
+
+  - caso_id: residual-riego
+    input:
+      Codigo BIP: GOLD-RES-002
+      SECTOR: RECURSOS HIDRICOS
+      SUBSECTOR: AGUA POTABLE
+      NOMBRE: SISTEMA DE RIEGO COMUNIDAD AGRICOLA
+      descripción: riego agricola
+      justificacion_proyecto: ""
+      descriptor_1: ""
+      descriptor_2: ""
+      descriptor_3: ""
+    esperado:
+      tipo_proyecto: SISTEMA DE RIEGO
+    tags: ["residual", "fixture"]
+
+  - caso_id: l2-candidato
+    input:
+      Codigo BIP: GOLD-L2-001
+      SECTOR: TRANSPORTE
+      SUBSECTOR: TRANSPORTE URBANO, VIALIDAD PEATONAL
+      NOMBRE: intervencion urbana mixta
+      descripción: mejoramiento de espacio publico con pavimentos y areas verdes en avenida
+      justificacion_proyecto: ""
+      descriptor_1: ""
+      descriptor_2: ""
+      descriptor_3: ""
+    esperado:
+      tipo_proyecto: MEJORAMIENTO AVENIDA
+    tags: ["l2", "fixture"]

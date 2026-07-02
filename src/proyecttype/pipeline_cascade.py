@@ -338,7 +338,10 @@ def classify_cascade_dataframe(
         .alias("_final")
     ).unnest("_final")
 
-    return pl.concat([merged.drop("_row_idx"), finals], how="horizontal")
+    result = pl.concat([merged.drop("_row_idx"), finals], how="horizontal")
+    if l3_model:
+        result = result.with_columns(pl.lit(l3_model).alias("_modelo_l3"))
+    return result
 
 
 def classify_cascade_csv(

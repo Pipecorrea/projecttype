@@ -1518,7 +1518,7 @@ wheels = [
 
 [[package]]
 name = "sni-commons"
-version = "0.1.0"
+version = "0.2.0"
 source = { editable = "../sni-commons" }
 dependencies = [
     { name = "ftfy" },

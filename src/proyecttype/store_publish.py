@@ -19,14 +19,25 @@ from typing import Any
 import polars as pl
 
 from proyecttype import __version__ as _pt_version
+from proyecttype.inference_metadata import (
+    inference_fields_for_row,
+    prompt_version,
+    taxonomy_hash,
+)
 
 # El código BIP aparece con distinto nombre según la etapa: "Codigo BIP" en el
 # CSV de entrada, "codigo_bip" en el CSV de resultados. Se aceptan ambos.
 _BIP_COL_CANDIDATES = ("codigo_bip", "Codigo BIP", "Código BIP", "EBI_CODIGO")
 _TABLE = "enr_tipo_proyecto"
 
-# Columnas de tipo (cascada) que se publican; el BIP se resuelve aparte.
-_TYPE_COLUMNS = ("tipo_final_id", "tipo_final_nombre", "score_final", "nivel_final")
+_INFERENCE_COLUMNS = (
+    "nivel_asignacion",
+    "confianza",
+    "evidencia_resumen",
+    "modelo",
+    "prompt_version",
+    "taxonomy_hash",
+)
 
 
 def _resolve_bip_column(columns: list[str]) -> str:
@@ -45,35 +56,119 @@ def enricher_version() -> str:
     return f"proyecttype@{_pt_version}"
 
 
+def _ensure_inference_source_columns(resultados: pl.DataFrame) -> pl.DataFrame:
+    """Completa columnas opcionales de evidencia si la cascada no las trajo."""
+    out = resultados
+    if "estado_final" not in out.columns:
+        out = out.with_columns(
+            pl.when(pl.col("tipo_final_id").is_not_null())
+            .then(pl.lit("asignado"))
+            .otherwise(pl.lit("sin_match"))
+            .alias("estado_final")
+        )
+    optional = {
+        "l1_estado": None,
+        "l1_score": None,
+        "l1_evidencia": "",
+        "l2_estado": None,
+        "l2_tipo_id": None,
+        "l2_tipo_nombre": None,
+        "l2_similitud": None,
+        "l3_estado": None,
+        "l3_confianza": None,
+        "l3_razonamiento": "",
+    }
+    for col, default in optional.items():
+        if col not in out.columns:
+            out = out.with_columns(pl.lit(default).alias(col))
+    return out
+
+
+def _attach_inference_metadata(resultados: pl.DataFrame) -> pl.DataFrame:
+    """Añade columnas SC-13 derivadas de la evidencia por nivel."""
+    prompt_ver = prompt_version()
+    tax_hash = taxonomy_hash()
+    default_modelo = "n/a"
+    if "_modelo_l3" in resultados.columns and resultados.height:
+        default_modelo = str(resultados.get_column("_modelo_l3")[0] or "n/a")
+
+    def _row_meta(row: dict[str, Any]) -> dict[str, Any]:
+        return inference_fields_for_row(
+            row,
+            prompt_ver=prompt_ver,
+            tax_hash=tax_hash,
+            default_modelo=default_modelo,
+        )
+
+    meta = resultados.select(
+        pl.struct(pl.all())
+        .map_elements(
+            _row_meta,
+            return_dtype=pl.Struct(
+                {
+                    "nivel_asignacion": pl.Utf8,
+                    "confianza": pl.Float64,
+                    "evidencia_resumen": pl.Utf8,
+                    "modelo": pl.Utf8,
+                    "prompt_version": pl.Utf8,
+                    "taxonomy_hash": pl.Utf8,
+                }
+            ),
+        )
+        .alias("_meta")
+    ).unnest("_meta")
+    return pl.concat([resultados, meta], how="horizontal")
+
+
 def to_enrichment_frame(resultados: pl.DataFrame) -> pl.DataFrame:
     """Proyecta el DataFrame de la cascada al shape del contrato enr_tipo_proyecto.
 
-    Selecciona y renombra las columnas relevantes, añade ``enricher_version`` y
-    descarta filas sin código BIP o sin tipo asignado (no aportan al enriquecimiento).
+    Selecciona y renombra las columnas relevantes, añade metadatos SC-13,
+    ``enricher_version`` y descarta filas sin código BIP o sin tipo asignado.
     """
+    from sni_commons.contracts import ENR_TIPO_PROYECTO_CONTRACT
+
     bip_col = _resolve_bip_column(resultados.columns)
-    missing = [c for c in _TYPE_COLUMNS if c not in resultados.columns]
+    core_required = (
+        "tipo_final_id",
+        "tipo_final_nombre",
+        "score_final",
+        "nivel_final",
+    )
+    missing = [c for c in core_required if c not in resultados.columns]
     if missing:
         raise ValueError(
             f"El DataFrame de resultados no tiene las columnas de tipo esperadas: "
             f"{missing}. Presentes: {resultados.columns}"
         )
+
+    prepared = _ensure_inference_source_columns(resultados)
+    with_meta = _attach_inference_metadata(prepared)
+    select_cols = [
+        bip_col,
+        "tipo_final_id",
+        "tipo_final_nombre",
+        "score_final",
+        "nivel_final",
+        *_INFERENCE_COLUMNS,
+    ]
     rename = {bip_col: "EBI_CODIGO"}
-    out = resultados.select([bip_col, *_TYPE_COLUMNS]).rename(rename)
+    out = with_meta.select(select_cols).rename(rename)
     out = out.with_columns(
-        # Código BIP canónico del store: sin el dígito verificador "-N".
-        # ProyectType trae "30069417-0"; CONSULTAS_EBI usa "30069417". Sin esta
-        # normalización el JOIN enr × EBI da 0 filas (joinabilidad = razón de ser
-        # del store). split antes del primer '-'.
-        pl.col("EBI_CODIGO").cast(pl.Utf8).str.strip_chars().str.split("-").list.first().alias("EBI_CODIGO"),
         pl.lit(enricher_version()).alias("enricher_version"),
+        pl.col("EBI_CODIGO")
+        .cast(pl.Utf8)
+        .str.strip_chars()
+        .str.split("-")
+        .list.first()
+        .alias("EBI_CODIGO"),
     )
-    # Solo filas con BIP y con un tipo asignado.
     out = out.filter(
         pl.col("EBI_CODIGO").is_not_null()
         & (pl.col("EBI_CODIGO") != "")
         & pl.col("tipo_final_id").is_not_null()
     )
+    ENR_TIPO_PROYECTO_CONTRACT.validate(out.columns, source="proyecttype.to_enrichment_frame")
     return out
 
 

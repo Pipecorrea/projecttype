@@ -8,13 +8,17 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 DATA_DIR = PROJECT_ROOT / "data"
 RAW_DIR = DATA_DIR / "raw"
+GOLDEN_DIR = DATA_DIR / "golden"
 TAXONOMY_DIR = DATA_DIR / "taxonomy"
 OUTPUT_DIR = DATA_DIR / "output"
 DOCS_DIR = PROJECT_ROOT / "docs"
+EVAL_DIR = DOCS_DIR / "eval"
 
 DEFAULT_TAXONOMY = TAXONOMY_DIR / "taxonomia_tipos_proyecto.yaml"
 DEFAULT_INPUT_CSV = RAW_DIR / "base_datos_extracto.csv"
 DEFAULT_SUBMUESTRA = RAW_DIR / "Submuestra_tp.xlsx"
+DEFAULT_GOLDEN = GOLDEN_DIR / "golden_tipo_proyecto.yaml"
+DEFAULT_UMBRALES = GOLDEN_DIR / "umbrales.yaml"
 DEFAULT_OUTPUT_CSV = OUTPUT_DIR / "resultados_l1.csv"
 DEFAULT_OUTPUT_CASCADE_CSV = OUTPUT_DIR / "resultados_l1_l2.csv"
 DEFAULT_OUTPUT_CASCADE_L3_CSV = OUTPUT_DIR / "resultados_l1_l2_l3.csv"

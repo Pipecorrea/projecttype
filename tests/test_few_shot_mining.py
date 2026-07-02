@@ -37,6 +37,8 @@ class TestFewShotMining(unittest.TestCase):
     def test_mine_from_files(self) -> None:
         if not DEFAULT_OUTPUT_CASCADE_CSV.exists():
             self.skipTest("sin resultados cascada")
+        if not DEFAULT_SUBMUESTRA.exists():
+            self.skipTest("sin Submuestra_tp.xlsx (ver PT-10 / golden fixture)")
         examples = mine_from_files(
             resultados_path=DEFAULT_OUTPUT_CASCADE_CSV,
             submuestra_path=DEFAULT_SUBMUESTRA,
