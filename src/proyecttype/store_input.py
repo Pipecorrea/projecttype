@@ -22,11 +22,15 @@ por proyecto quedándose con la solicitud más reciente (SOL_CLAVE máxima).
 
 from __future__ import annotations
 
+import logging
 import os
+from collections.abc import Collection
 from pathlib import Path
 
 import polars as pl
-from sni_commons.reference import descripcion_sector, descripcion_subsector
+from sni_commons.reference import descripcion_sector, descripcion_subsector, to_store_key
+
+LOG = logging.getLogger(__name__)
 
 _EBI_TABLE = "CONSULTAS_EBI"
 _NEEDED_COLS = (
@@ -44,12 +48,14 @@ def load_cascade_input_from_store(
     data_dir: str | Path | None = None,
     *,
     limit: int | None = None,
+    bips: Collection[str] | None = None,
 ) -> pl.DataFrame:
     """Lee CONSULTAS_EBI del store y devuelve el input de la cascada.
 
     Args:
         data_dir: directorio del store; si es None usa ``BIP_DATA_DIR``.
         limit: si se indica, recorta a los primeros N proyectos (pilotos).
+        bips: si se indica, filtra a estos códigos (clave de store, sin DV).
     """
     from sni_commons.store import BipDataStore
 
@@ -95,6 +101,50 @@ def load_cascade_input_from_store(
         pl.lit("").alias("descriptor_3"),
     ).sort("Codigo BIP")
 
+    if bips is not None:
+        wanted = {to_store_key(b) for b in bips}
+        present = set(out.get_column("Codigo BIP").to_list())
+        missing = sorted(wanted - present)
+        if missing:
+            LOG.warning(
+                "Selección: %d código(s) sin fila en CONSULTAS_EBI: %s",
+                len(missing),
+                ", ".join(missing[:10]) + ("…" if len(missing) > 10 else ""),
+            )
+        out = out.filter(
+            pl.col("Codigo BIP").map_elements(to_store_key, return_dtype=pl.Utf8).is_in(wanted)
+        )
+
     if limit is not None:
         out = out.head(limit)
     return out
+
+
+def load_selection_bips(seleccion_id: str, data_dir: str | Path | None = None) -> list[str]:
+    """Lee ``sel_tipo_proyecto_<id>`` del store y devuelve claves BIP canónicas."""
+    from sni_commons.contracts import SEL_PROYECTOS_CONTRACT
+    from sni_commons.store import BipDataStore, StoreError
+
+    base = data_dir or os.environ.get("BIP_DATA_DIR")
+    if not base:
+        raise RuntimeError(
+            "load_selection_bips requiere data_dir o la variable BIP_DATA_DIR."
+        )
+    tabla = f"sel_tipo_proyecto_{seleccion_id}"
+    store = BipDataStore(Path(base))
+    try:
+        df = store.read_polars(tabla, only_present=True)
+    except StoreError as exc:
+        raise FileNotFoundError(
+            f"No existe la selección '{tabla}' en el store. Publícala primero con "
+            "snii seleccion-proyectos --destino tipo-proyecto --publish … y reintenta."
+        ) from exc
+
+    SEL_PROYECTOS_CONTRACT.validate(df.columns, source=f"store:{tabla}")
+    if df.height == 0:
+        raise ValueError(f"La selección '{tabla}' no tiene proyectos.")
+
+    return [
+        to_store_key(str(c))
+        for c in df.get_column("EBI_CODIGO").cast(pl.Utf8).to_list()
+    ]
