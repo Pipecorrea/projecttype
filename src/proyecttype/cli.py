@@ -16,7 +16,9 @@ from typing import Annotated
 
 import typer
 
+from proyecttype.inference_metadata import prompt_version, taxonomy_hash
 from proyecttype.paths import DEFAULT_L3_CACHE_JSONL, DEFAULT_TAXONOMY
+from proyecttype.store_publish import enricher_version
 
 app = typer.Typer(
     help="ProyectType — enriquecedor de tipo de proyecto del ecosistema SNI/BIP.",
@@ -35,6 +37,13 @@ def enrich(
         bool,
         typer.Option("--from-store", help="Leer proyectos de CONSULTAS_EBI en el store."),
     ] = False,
+    from_selection: Annotated[
+        str | None,
+        typer.Option(
+            "--from-selection",
+            help="Clasificar solo los BIP de sel_tipo_proyecto_<id> (SNI-38).",
+        ),
+    ] = None,
     data_dir: Annotated[
         str | None,
         typer.Option("--data-dir", help="Directorio del store (default: BIP_DATA_DIR)."),
@@ -43,6 +52,20 @@ def enrich(
         int | None,
         typer.Option("--limit", help="Clasificar solo los primeros N proyectos (piloto)."),
     ] = None,
+    incremental: Annotated[
+        bool,
+        typer.Option(
+            "--incremental",
+            help="Solo clasificar proyectos sin clasificación vigente con la misma taxonomía/prompt.",
+        ),
+    ] = False,
+    force_selection: Annotated[
+        bool,
+        typer.Option(
+            "--force-selection",
+            help="Con --from-selection, reclasificar aunque ya existan en el store.",
+        ),
+    ] = False,
     enable_l3: Annotated[
         bool,
         typer.Option("--enable-l3", help="Activar el nivel LLM (L3) para el residual."),
@@ -61,19 +84,68 @@ def enrich(
     ] = None,
 ) -> None:
     """Clasifica el tipo de proyecto y publica ``enr_tipo_proyecto`` al store."""
-    if not from_store:
+    if from_store and from_selection is not None:
+        raise typer.BadParameter("Usa --from-store o --from-selection, no ambos.")
+    if not from_store and from_selection is None:
         raise typer.BadParameter(
-            "Este comando opera contra el store: usa --from-store. "
+            "Indica --from-store o --from-selection <id>. "
             "(El camino CSV vive en scripts/classify_cascade.py.)"
         )
+    if force_selection and from_selection is None:
+        raise typer.BadParameter("--force-selection solo aplica con --from-selection.")
+    if incremental and from_selection is not None:
+        raise typer.BadParameter("--incremental no aplica con --from-selection (usa el anti-join por defecto).")
 
     from proyecttype.classifier_cascade import ClassifierCascade
+    from proyecttype.incremental import filter_pending
     from proyecttype.pipeline_cascade import classify_cascade_dataframe
-    from proyecttype.store_input import load_cascade_input_from_store
+    from proyecttype.store_input import load_cascade_input_from_store, load_selection_bips
     from proyecttype.store_publish import publish_to_store
 
-    typer.echo("→ Leyendo proyectos del store (CONSULTAS_EBI)…")
-    df = load_cascade_input_from_store(data_dir, limit=limit)
+    tax_hash = taxonomy_hash()
+    prompt_ver = prompt_version()
+    enricher_ver = enricher_version()
+    source_label: str | None = None
+    mark_missing = True
+    apply_incremental = incremental or from_selection is not None
+
+    if from_selection is not None:
+        typer.echo(f"→ Leyendo selección sel_tipo_proyecto_{from_selection}…")
+        bips = load_selection_bips(from_selection, data_dir)
+        typer.echo(f"  {len(bips)} proyectos en la selección.")
+        df = load_cascade_input_from_store(data_dir, bips=bips)
+        source_label = f"seleccion:{from_selection}"
+        mark_missing = False
+    else:
+        typer.echo("→ Leyendo proyectos del store (CONSULTAS_EBI)…")
+        df = load_cascade_input_from_store(data_dir, limit=limit)
+        if incremental:
+            mark_missing = False
+
+    if apply_incremental and not force_selection:
+        split = filter_pending(
+            df,
+            data_dir=data_dir,
+            tax_hash=tax_hash,
+            prompt_ver=prompt_ver,
+            enricher_ver=enricher_ver,
+        )
+        typer.echo(
+            f"  a clasificar: {split.pendientes.height} / saltados: {split.saltados.height}"
+        )
+        if dry_run:
+            typer.echo("  (dry-run: no se clasificó ni publicó)")
+            return
+        df = split.pendientes
+    elif dry_run and incremental:
+        typer.echo(f"  {df.height} proyectos a clasificar.")
+        typer.echo("  (dry-run: no se clasificó ni publicó)")
+        return
+
+    if df.height == 0:
+        typer.echo("  Nada pendiente de clasificar.")
+        return
+
     typer.echo(f"  {df.height} proyectos a clasificar.")
 
     cascade = ClassifierCascade.from_yaml(DEFAULT_TAXONOMY, enable_l3=enable_l3)
@@ -90,11 +162,7 @@ def enrich(
         result.write_csv(out_csv)
         typer.echo(f"  Resultados crudos → {out_csv}")
 
-    if limit is not None and not dry_run:
-        # Un publish PARCIAL marca _present_in_latest=false en todo lo que no
-        # vino en este lote → los consumidores (p. ej. SNI --filter
-        # tipo_proyecto=…) dejarían de ver lo ya clasificado. Los pilotos van
-        # con --dry-run; el publish real es de corrida completa.
+    if limit is not None and not dry_run and not incremental and from_selection is None:
         typer.confirm(
             f"⚠ Vas a publicar solo {df.height} proyectos: el resto de "
             "enr_tipo_proyecto quedará marcado como ausente del último snapshot. "
@@ -102,11 +170,19 @@ def enrich(
             abort=True,
         )
 
-    typer.echo("→ Publicando enr_tipo_proyecto al store…")
-    diag = publish_to_store(result, data_dir=data_dir, dry_run=dry_run)
-    typer.echo(diag.summary())
     if dry_run:
         typer.echo("  (dry-run: no se escribió nada)")
+        return
+
+    typer.echo("→ Publicando enr_tipo_proyecto al store…")
+    diag = publish_to_store(
+        result,
+        data_dir=data_dir,
+        dry_run=False,
+        mark_missing=mark_missing,
+        source_label=source_label,
+    )
+    typer.echo(diag.summary())
 
 
 if __name__ == "__main__":  # pragma: no cover

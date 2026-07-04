@@ -177,6 +177,8 @@ def publish_to_store(
     *,
     data_dir: str | Path | None = None,
     dry_run: bool = False,
+    mark_missing: bool = True,
+    source_label: str | None = None,
 ) -> Any:
     """Publica el tipo de proyecto al store (tabla ``enr_tipo_proyecto``).
 
@@ -185,6 +187,8 @@ def publish_to_store(
             ``tipo_final_id``, etc.).
         data_dir: directorio del store; si es None usa ``BIP_DATA_DIR``.
         dry_run: si True, calcula el diagnóstico sin escribir.
+        mark_missing: si False, publish parcial (no toca claves ausentes del lote).
+        source_label: origen en el ledger ``_loads``; default ``enricher_version()``.
 
     Returns:
         ``LoadDiagnostics`` del store (nuevas/cambiadas/sin-cambio/desaparecidas).
@@ -199,12 +203,14 @@ def publish_to_store(
         )
     frame = to_enrichment_frame(resultados)
     store = BipDataStore(Path(base))
+    source = source_label or enricher_version()
     return store.upsert_dataframe(
         _TABLE,
         frame,
         contract=ENR_TIPO_PROYECTO_CONTRACT,
         key_cols=["EBI_CODIGO"],
-        source=enricher_version(),
+        source=source,
         dry_run=dry_run,
         writer=enricher_version(),  # ledger _loads (Store v1.1)
+        mark_missing=mark_missing,
     )
