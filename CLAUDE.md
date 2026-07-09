@@ -3,7 +3,8 @@
 > **Contexto del ecosistema:** lee primero **`ECOSISTEMA.md`** (eres un *enriquecedor*:
 > clasificas el tipo de proyecto y escribes `enr_tipo_proyecto` al store). Estado vivo:
 > `/Vs/ESTADO_ECOSISTEMA.md`. Rumbo: `/Vs/PROPUESTA_SOTA_2026-06.md`. Tareas:
-> `AGENT_WORKPLAN.md`. Visión y alcance: `VISION.md`.
+> `AGENT_WORKPLAN.md`. Visión y alcance: `VISION.md`. **Diagnóstico SOTA y plan
+> PT-15…PT-22:** `DIAGNOSTICO_Y_PLAN_SOTA_2026-07.md`.
 
 ## Qué es
 

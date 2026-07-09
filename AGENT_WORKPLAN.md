@@ -1,7 +1,7 @@
 ---
 tipo: workplan
 ambito: ProjectType
-actualizado: 2026-07-06
+actualizado: 2026-07-09
 ---
 
 # AGENT_WORKPLAN — ProjectType
@@ -14,11 +14,12 @@ actualizado: 2026-07-06
 > **Estado:** **enriquecedor** funcionando, ciclo **store→store completo** (PT-6):
 > `projecttype enrich --from-store` lee CONSULTAS_EBI, clasifica y publica
 > `enr_tipo_proyecto`. Cliente LLM unificado en sni-commons (PT-4). py3.12.
-> 63 tests (**pytest**, PT-8/9/10), mypy **--strict**, ruff limpio — CI bloqueante.
+> **72 tests** (**pytest**, PT-8/9/10/14), mypy **--strict**, ruff limpio — CI bloqueante.
+> Diagnóstico SOTA: `DIAGNOSTICO_Y_PLAN_SOTA_2026-07.md` (tickets PT-15…PT-22).
 > Cascada L1 (keywords) → L2 (embeddings) → L3 (LLM).
 
 ## Verde antes de commitear
-`uv run pytest` (63) · `uv run ruff check src scripts tests` · `uv run mypy src`
+`uv run pytest` (72) · `uv run ruff check src scripts tests` · `uv run mypy src`
 (--strict) · `uv run python scripts/eval_golden.py --ci` — **lo mismo que corre CI (bloqueante)**.
 
 ---
@@ -43,9 +44,9 @@ actualizado: 2026-07-06
 
 # ⭐ PLAN 2026-07 — lo que ordena la evaluación estratégica (creado 2026-07-02)
 
-> Master de referencia: `/Vs/EVALUACION_ESTRATEGICA_2026-07.md` §8.4.
-> Absorbe los pendientes previos: [PROPUESTA §4.1] versionar inferencia → **PT-9**;
-> [PROPUESTA §4.1/R3 §19] golden-set → **PT-10**; PT-7 conserva su ID y se precisa abajo.
+> Master de referencia: `DIAGNOSTICO_Y_PLAN_SOTA_2026-07.md` (specs completas PT-15…PT-22).
+> Reconcilia `/Vs/EVALUACION_ESTRATEGICA_2026-07.md` §8.4 → §9.11.
+> Absorciones: PT-9 (re-publish) → **PT-18** · PT-10 → **PT-17** · PT-11 (guard) → **PT-18**.
 
 > **Origen:** `/Vs/EVALUACION_ESTRATEGICA_2026-07.md` (§3 score 560, §4.1, §5.1 filas 1/6/9, §5.2-A/B).
 > **Los tres hallazgos que ordenan el plan:** (1) la trazabilidad rica (evidencia L1,
@@ -72,16 +73,17 @@ actualizado: 2026-07-06
 5. **Toda corrida con LLM pagado la dispara el dueño (👤)** — el agente deja el
    comando listo y probado con `--dry-run`/stub.
 
-#### Secuencia
+#### Secuencia (plan SOTA 2026-07 — ver DIAGNOSTICO §6)
 
 ```
-PT-9 (metadatos de inferencia)  ← espera SC-13 de sni-commons (shim local si no está)
-  └→ PT-10 (golden en el repo + gate CI)  ← espera SC-14 (formato común)
-       └→ PT-7 (incremental real)  ← espera SC-13 (mark_missing=False)
-            └→ PT-11 (saneo del fósil PT-5)
-PT-12 (rutas/entrada única) — en cualquier momento, no bloquea
-PT-13 (escala a cartera vigente 👤) — SOLO con PT-9+PT-10+PT-7 cerrados
+Paralelo: PT-15 + SC-17 + PT-12 + PT-17 + 👤 push
+PT-15 → PT-16 → PT-18 → 👤 re-publish → PT-19 → PT-20 → PT-21
+PT-13 (escala 👤) — GATED por PT-15+PT-17+PT-18; recomendado tras PT-20
+PT-22 (editor v2) — GATED por PT-17+PT-20
 ```
+
+**Regla:** no tocar `data/taxonomy/taxonomia_tipos_proyecto.yaml` fuera de **PT-22**
+(cualquier cambio altera `taxonomy_hash`).
 
 #### [PT-9] Metadatos de inferencia en `enr_tipo_proyecto` — **HECHO 2026-07-02 (✅ verificado; falta el re-publish real 👤 — el store aún no tiene las columnas, la query SQL de cumplimiento queda pendiente)**
 
@@ -119,90 +121,28 @@ contrato de OBSRATE ya modela — copiarlo, no inventarlo (evaluación §5.2-A).
 **Implementado:** `inference_metadata.py` + proyección en `store_publish.py` +
 `_modelo_l3` en `pipeline_cascade.py`. Tests: `tests/test_inference_metadata.py` (4).
 
-#### [PT-10] Golden-set EN el repo + gate en CI — **🟡 PARCIAL 2026-07-02 (verificado — NO declararlo hecho)**
+#### [PT-10] Golden-set EN el repo + gate en CI — **🟡 PARCIAL → absorbido por PT-17**
 
-> **Verificación 2026-07-02:** andamiaje completo y de calidad — `eval_golden.py --ci`
-> exit 0, umbrales versionados (0.798/0.656, regla NUNCA bajar), test de degradación,
-> job en CI. **Falta lo central:** el golden tiene **12 casos** (fixture), no la
-> submuestra formalizada — `Submuestra_tp.xlsx` sigue fuera del repo (un test skipea
-> por eso) y `docs/eval/` está sin commitear. Con n=12 el umbral 0.798 no mide lo que
-> el baseline midió. Se cierra al convertir la submuestra completa. Ver evaluación §9.5.
+> Andamiaje completo (eval_golden, umbrales, CI). **Falta lo central:** golden n=12
+> (fixture). Insumo 👤 entregado 2026-07-09: `data/raw/informe_expost.duckdb`
+> (n=2.357). Spec completa en `DIAGNOSTICO_Y_PLAN_SOTA_2026-07.md` §4 PT-17.
 
-**Objetivo.** La vara fija. Hoy la submuestra de calibración no está en el repo y el
-baseline (prec 79,8% / cob 65,6% / e2e 52,3%, 2026-06-19) vive en la memoria.
-
-**Cambios:**
-- Convertir `data/raw/Submuestra_tp.xlsx` (col `tipo_proyecto`, header fila 0;
-  descriptores = input) al formato `sni_commons.eval` (SC-14) →
-  `data/golden/golden_tipo_proyecto.yaml` **commiteado** (es etiqueta humana, chica,
-  cara de regenerar — política de datos derivados, misma que RAG).
-- Script `scripts/eval_golden.py`: corre L1+L2 REALES (deterministas, sin red) +
-  L3 con `MockLLMClient` en modo CI; con `--real` usa el proveedor configurado (👤).
-  Emite `ResultadoEval` (JSON versionado en `docs/eval/`) + matriz de confusión
-  (CSV en `docs/eval/`).
-- Gate: `scripts/eval_golden.py --ci` → exit 1 si precisión L1+L2 < baseline
-  registrado (79,8%) o cobertura < 65,6% (umbrales en `data/golden/umbrales.yaml`,
-  versionados — se suben cuando mejore, NUNCA se bajan sin decisión del dueño
-  anotada en DECISIONES.md). Job nuevo en `.github/workflows/ci.yml`.
-- **Regla de cambio (va al workplan y a CLAUDE.md):** ningún cambio de modelo /
-  prompt / umbral / taxonomía sin corrida antes/después registrada en `docs/eval/`.
-
-**Done-cuando:**
-- `uv run python scripts/eval_golden.py --ci` verde en local y en CI; un cambio
-  deliberado que degrade L1 (test que muta un umbral del scorer) lo pone rojo.
-- El baseline queda REPRODUCIDO desde el repo limpio (clonar → sync → eval) y
-  anotado con fecha en `docs/eval/`. La mejora de TRANSPORTE URBANO (reglas
-  discriminantes, hoy "no reproducible en CI") queda medida aquí o se declara
-  no confirmada.
-
-**Implementado:** `data/golden/golden_tipo_proyecto.yaml` (fixture 12 casos —
-⚠️ **bloqueador:** `Submuestra_tp.xlsx` ausente; regenerar con
-`scripts/convert_submuestra_to_golden.py`), `umbrales.yaml`, `scripts/eval_golden.py`,
-`golden_eval.py`, job CI, tests `tests/test_eval_golden.py` (3). Gate verde en fixture.
-
-#### [PT-7] Re-clasificación incremental REAL (spec previa, ahora desbloqueada)
+#### [PT-7] Re-clasificación incremental REAL — **✅ HECHO 2026-07-06 (`242af99`)**
 
 **Objetivo.** Clasificar solo BIP nuevos/cambiados; publish parcial que NO marca el
-resto como ausente. (La spec original de PT-7 sigue válida; esto la precisa.)
+resto como ausente.
 
-**Cambios:**
-- `enrich --incremental`: anti-join contra
-  `read_pandas("enr_tipo_proyecto", where=…)` por (`EBI_CODIGO`,
-  `taxonomy_hash`, `enricher_version`, `prompt_version`): si los 4 coinciden, la
-  fila se salta; si cambió taxonomía/prompt/versión, se re-clasifica.
-- Publicar con `upsert_dataframe(..., mark_missing=False)` (SC-13). El guard actual
-  de publish parcial (`--limit` + confirmación) se conserva para el modo NO incremental.
+**Implementado:** `enrich --from-store --incremental` — anti-join contra
+`enr_tipo_proyecto` vigente por (`EBI_CODIGO`, `taxonomy_hash`, `enricher_version`,
+`prompt_version`); publica con `mark_missing=False` (SC-13). Tests en
+`tests/test_incremental.py` (4).
 
-**Done-cuando:**
-- Tests: corrida incremental sobre store fixture con 3 clasificados vigentes + 2
-  nuevos → clasifica SOLO 2; ninguno de los 3 pierde `_present_in_latest`; cambiar
-  `taxonomy_hash` fuerza re-clasificación de los 3.
-- `uv run projecttype enrich --from-store --incremental --dry-run` imprime el conteo
-  a clasificar vs saltados (pegar salida real en el log).
+**Done-cuando:** ✅ tests verdes; CLI `--incremental --dry-run` imprime conteos.
 
-#### [PT-11] Saneo del fósil PT-5 en el store — **hallazgo 2026-07-02: la métrica principal YA se cumple** (las 2.331 claves viejas están `_present_in_latest=false`; huérfanas vigentes = 0 verificado en el store). Queda SOLO el paso 3: el guard permanente en `store_publish`.
+#### [PT-11] Saneo del fósil PT-5 — **parcial; guard permanente → PT-18**
 
-**Objetivo.** Eliminar del dato vigente las 2.331 claves huérfanas con formato viejo
-(con dígito verificador) que conviven con las 2.331 canónicas.
-
-**Pasos:**
-1. Diagnóstico reproducible: `scripts/diagnosticar_fosil.py` — cuenta filas vigentes
-   cuya clave NO es `to_store_key(clave)` (SC-12) y las lista a CSV local.
-2. El próximo publish completo (o el primer incremental PT-7) escribe SOLO claves
-   canónicas; las huérfanas deben quedar `_present_in_latest=false` (el upsert
-   completo con `mark_missing=True` lo hace solo — verificar, no borrar filas:
-   el store es no destructivo, el fósil queda como historia).
-3. Guard permanente en `store_publish.py`: si alguna clave saliente difiere de su
-   `to_store_key`, ABORTA (test).
-
-**Done-cuando (pegar salida en el log):**
-```sql
-SELECT count(*) FROM enr_tipo_proyecto
-WHERE _present_in_latest AND EBI_CODIGO LIKE '%-%';   -- = 0
-```
-y el JOIN de control con EBI vuelve a 100%:
-`SELECT count(*) FROM enr_tipo_proyecto e LEFT JOIN CONSULTAS_EBI c USING (EBI_CODIGO)
-WHERE e._present_in_latest AND c.EBI_CODIGO IS NULL;` → = 0.
+> Métrica principal cumplida (huérfanas vigentes = 0). Guard en `store_publish` y
+> re-publish con metadatos → **PT-18** (absorbe PT-9 re-publish + PT-11 guard).
 
 #### [PT-12] Rutas y entrada única (defaults rotos → store-first)
 
@@ -225,7 +165,8 @@ nada; test de config para el error claro; `grep` de rutas hardcodeadas a
 #### [PT-13] Escala a cartera vigente — por tramos, con presupuesto (👤 GATED)
 
 **Objetivo.** Cobertura 1,3% → cartera vigente completa, SIN deuda inauditable.
-**Bloqueada hasta cerrar PT-9 + PT-10 + PT-7.**
+**Bloqueada hasta cerrar PT-15 + PT-17 + PT-18 (re-publish). Recomendado tras PT-20**
+(la UI valida cada tramo).
 
 **Estrategia por tramos:**
 1. L1+L2 (gratis, deterministas) sobre TODO el universo vigente → publica lo
@@ -251,36 +192,64 @@ nada; test de config para el error claro; `grep` de rutas hardcodeadas a
 | Claves huérfanas vigentes | 2.331 | 0 | SQL PT-11 = 0 |
 | Incremental | flag aspiracional | real (anti-join + parcial) | test PT-7 |
 | Cobertura cartera vigente | 1,3% | tramos publicados con presupuesto | docs/eval/ESCALA |
-| Tests | 63 | ≥ 75 | `uv run pytest` |
+| Tests | 72 | ≥ 76 (post PT-16) | `uv run pytest` |
 
 ---
 
+# PLAN SOTA 2026-07 (PT-15…PT-22) — specs completas en `DIAGNOSTICO_Y_PLAN_SOTA_2026-07.md`
 
-## [PT-7] Re-clasificación incremental — **pendiente principal** (PROPUESTA R2 §13; PRECISADO en el plan 2026-07 arriba — implementar esa versión)
-`upsert_dataframe` ya es no destructivo. Clasificar solo los BIP nuevos/sin tipo
-(no los 9k cada vez), usando el `l3_cache` + `read_pandas("enr_tipo_proyecto")` para
-saber qué ya está clasificado con la versión actual del enricher. Pensado para
-integrarse al futuro comando `eco refresh` del ecosistema.
-⚠️ Relacionado: hoy un publish PARCIAL marca el resto como ausente
-(`_present_in_latest=false`) — el CLI lo advierte y pide confirmación con
-`--limit`; PT-7 debería resolverlo bien (publish incremental que no resetee
-el flag, coordinado con sni-commons).
-- **Done-cuando:** `enrich --incremental` salta BIP ya clasificados.
+#### [PT-15] Fuga `modelo` + caché prompt-aware — **S-M, P0, pendiente**
 
-## ~~[PROPUESTA §4.1] Versionar la inferencia en el dato~~ — **ABSORBIDO por PT-9 (plan 2026-07, arriba)**
-`enr_tipo_proyecto` ya registra `enricher_version` y writer/schema_version en el
-ledger; falta añadir **taxonomía, modelo y versión de prompt** como metadato al
-escribir, para que filas viejas y nuevas sean distinguibles cuando cambie el
-clasificador (o el proveedor LLM — §4.0).
+Resolver `l3_model` en pipeline (patrón `classify_cascade_csv`); `L3CacheEntry` +
+`prompt_version`; bump caché v1→v2. Done: modelo real en L3; grep `"gemini-2.5-flash"` → 0.
 
-## ~~[PROPUESTA §4.1/R3 §19] Golden-set bajo formato común~~ — **ABSORBIDO por PT-10 (plan 2026-07, arriba)**
-Formalizar la submuestra manual (`data/raw/Submuestra_tp.xlsx` + `evaluation.py`)
-como golden-set del ecosistema (formato común casos + esperado + métrica; corre
-en CI con stub, real programado). Regla de cambio: ningún cambio de modelo/prompt
-/umbral sin corrida antes/después registrada.
+#### [PT-16] Saneo / simplificación — **M, pendiente**
+
+~900 LOC muertas; consolidar `_pick_column`; commitear `docs/eval/`; `test_classifier_l2.py`.
+Done: pytest ≥76; `taxonomy_hash` idéntico.
+
+#### [PT-17] Golden real (absorbe PT-10) — **M, insumo 👤 entregado**
+
+Fuente: `informe_expost.duckdb` (n=2.357). Conversor + aliases + gate estrato `expost`.
+Done: `eval_golden.py --ci` verde con golden completo.
+
+#### [PT-18] Gate publicación + re-publish (absorbe PT-9/PT-11) — **M + 👤, pendiente**
+
+Réplica `store_gate.py` OBSRATE; `--allow-rejected`; 👤 re-publish ~500 L3.
+Done: SQL PT-9/PT-11 = 0.
+
+#### [PT-19] Backend HITL — **L, pendiente**
+
+`review/` + `api/` FastAPI; `projecttype serve` puerto 8788. Dep: re-publish PT-18.
+
+#### [PT-20] SPA v1 — **L, pendiente**
+
+React/Vite clon OBSRATE; `/revision` + `/manual`. CI job `web` bloqueante.
+
+#### [PT-21] Loop salida HITL — **M, pendiente**
+
+`hitl export-golden` + `hitl publish`; `--enable-publish` opt-in; guard anti-pisada.
+Dep: SC-17 + PT-18 + PT-19.
+
+#### [PT-22] v2 editor catálogo/prompts — **L, DIFERIDA**
+
+Patrón config-router OBSRATE + eval obligatorio. Gated: PT-17 + PT-20.
+
+---
+
+#### [PT-14] Selección desde SNI — **✅ HECHO 2026-07-06 (`3200751`)**
+
+**Objetivo.** Consumir `sel_tipo_proyecto_<id>` publicada por SNI Intelligence.
+
+**Implementado:** `enrich --from-selection <id>` lee tabla de selección vía commons
+(`SEL_PROYECTOS_CONTRACT` / SC-16). Tests en `tests/test_from_selection.py` (5).
+
+**Done-cuando:** ✅ tests verdes; `--from-store` y `--from-selection` mutuamente excluyentes.
 
 ---
 ## Notas (NO regresar)
+- **Regla taxonomía:** no editar `data/taxonomy/taxonomia_tipos_proyecto.yaml` fuera de
+  PT-22 — altera `taxonomy_hash` e invalida incremental/caché/store.
 - El código BIP en el store es canónico **SIN** dígito verificador (`store_publish`
   ya normaliza quitando `-N`; test `test_bip_code_normalized_for_join` lo protege).
 - Añadir tipos a la taxonomía = editar `data/taxonomy/taxonomia_tipos_proyecto.yaml`,
@@ -301,4 +270,6 @@ vía `sni_commons.reference`, dedupe por proyecto a la solicitud más reciente; 
 de paso se rompió un import circular l2↔cascada que dependía del orden de import,
 y se pasa `writer=` al ledger del store v1.1), **PT-9** (2026-07-02: metadatos SC-13
 en publish — `inference_metadata.py`, contrato validado, 4 tests), **PT-10** (2026-07-02:
-golden fixture + `eval_golden.py --ci` + gate CI; Submuestra_tp.xlsx pendiente 👤, 3 tests).
+golden fixture + `eval_golden.py --ci` + gate CI; golden real → **PT-17**, 3 tests),
+**PT-7** (2026-07-06: incremental `242af99`, 4 tests), **PT-14** (2026-07-06:
+`--from-selection` `3200751`, 5 tests).

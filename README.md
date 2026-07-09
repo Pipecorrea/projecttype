@@ -41,7 +41,7 @@ Variables de entorno (ver `.env.example`):
 ## Verde antes de commitear (lo mismo que corre CI, bloqueante)
 
 ```bash
-uv run pytest                          # 56 tests
+uv run pytest                          # 72 tests
 uv run ruff check src scripts tests
 uv run mypy src                        # --strict (configurado en pyproject)
 ```
@@ -150,16 +150,13 @@ clasificados** publicados en `enr_tipo_proyecto` (14.806 matches con las filas
 de `CONSULTAS_EBI`), ya consumidos por SNI Intelligence (`--filter
 tipo_proyecto=`).
 
-**Todavía NO (PT-7, pendiente principal):** clasificación **incremental**.
-Hoy cada corrida completa re-clasifica los ~9.4k proyectos (el caché L3 evita
-re-pagar el LLM, pero L1/L2 corren igual y el publish es de corrida completa).
-PT-7 = clasificar solo los BIP nuevos/sin tipo, pensado para integrarse al
-futuro `eco refresh` del ecosistema. Ver `AGENT_WORKPLAN.md` y
-`/Vs/PROPUESTA_SOTA_2026-06.md` §4.1 (versionar modelo/prompt como metadato,
-golden-set común).
+**Todavía NO (plan SOTA 2026-07):** golden real (PT-17), gate publish (PT-18),
+UI HITL (PT-19…21). Ver `DIAGNOSTICO_Y_PLAN_SOTA_2026-07.md` y `AGENT_WORKPLAN.md`.
 
-**Fuera de alcance:** UI, análisis y reportes. ProjectType es un enriquecedor
-puro — clasifica y publica; el análisis vive aguas abajo (SNI Intelligence).
+**Incremental (PT-7 ✅) y selección SNI (PT-14 ✅)** ya funcionan en código.
+
+**Fuera de alcance:** análisis/reportes (SNI Intelligence). **Dentro (D-19):** UI
+de validación/clasificación del atributo — tooling interno, no reportería.
 
 ## Estructura del repo
 
@@ -180,5 +177,5 @@ src/projecttype/
 data/taxonomy/           # taxonomía YAML + caché de embeddings
 data/prompts/            # prompt L3 + few-shot (curado y minado)
 scripts/                 # camino CSV, calibración y evaluación
-tests/                   # 56 tests (pytest)
+tests/                   # 72 tests (pytest)
 ```

@@ -1,7 +1,7 @@
 ---
 tipo: vision
 ambito: ProjectType
-actualizado: 2026-07-06
+actualizado: 2026-07-09
 ---
 
 # ProjectType — Visión y alcance
@@ -42,15 +42,16 @@ que de verdad lo necesita, con caché por BIP para no pagar dos veces.
 - ✅ **Neutralidad de proveedor LLM.** L3 va por `sni_commons.llm` (PT-4):
   Gemini, OpenAI u Ollama local intercambiables — clave mientras el proveedor
   ministerial siga indefinido.
-- ✅ **Calidad de ingeniería.** 56 tests pytest (PT-8), mypy `--strict`, ruff —
+- ✅ **Calidad de ingeniería.** 72 tests pytest (PT-8/14), mypy `--strict`, ruff —
   los tres bloqueantes en CI.
-- 🧪 **Evaluación contra submuestra manual.** `evaluation.py` + scripts de
-  calibración (L2) y revisión (Excel) existen y se usaron para calibrar
-  umbrales, pero no corren en CI ni tienen formato común de golden-set: es
-  herramienta de desarrollo, no control de regresión.
-- 🔜 **Clasificación incremental (PT-7).** Hoy cada corrida completa
-  re-clasifica los ~9.4k proyectos (el caché L3 evita re-pagar el LLM, pero el
-  publish es de corrida completa). Lo incremental está diseñado, no construido.
+- ✅ **Incremental y selección (PT-7/PT-14).** `enrich --incremental` salta BIP ya
+  clasificados con la misma era; `enrich --from-selection` consume selecciones de SNI.
+- 🧪 **Evaluación contra golden.** Andamiaje CI existe (fixture n=12); golden real
+  (n≈2.357 desde `informe_expost.duckdb`) pendiente en PT-17 — ver
+  `DIAGNOSTICO_Y_PLAN_SOTA_2026-07.md`.
+- 🔜 **UI HITL de validación/clasificación (D-19).** Cola de revisión de propuestas
+  L1/L2/L3 + clasificación manual de subsectores sin cobertura — herramienta interna
+  del enriquecedor (patrón OBSRATE), no reportería. Spec: PT-19…PT-21.
 
 ## Lo que debería llegar a hacer (visión)
 
@@ -67,30 +68,27 @@ corrida antes/después registrada" (PROPUESTA §4.1).
 
 ## Lo que falta para llegar (brechas, en orden)
 
-1. **PT-7 — incremental** (la brecha principal): `enrich --incremental` que
-   salte BIP ya clasificados, con publish parcial que no marque el resto como
-   ausente (coordinado con sni-commons). Es el prerrequisito para colgarse de
-   `eco refresh`.
-2. **Versionar la inferencia en el dato**: añadir taxonomía/modelo/prompt como
-   metadato al escribir (hoy solo va `enricher_version` y el ledger del store).
-3. **Golden-set formal**: pasar la submuestra de `data/raw/Submuestra_tp.xlsx`
-   + `evaluation.py` al formato común de evaluación del ecosistema; stub en CI,
-   corrida real programada con presupuesto.
-4. **Cobertura de taxonomía**: los tipos que el negocio pida y no existan se
-   agregan editando el YAML — trabajo de dominio continuo, no de pipeline.
-   (Ej. ya cubierto: "ciclovía" → `CICLOVIAS URBANAS`.)
+Ver plan completo en `DIAGNOSTICO_Y_PLAN_SOTA_2026-07.md`. Resumen:
+
+1. **PT-15 (P0)** — fuga de `modelo` y caché L3 ciego a `prompt_version`.
+2. **PT-17** — golden real n≈2.357 + gate CI recalibrado (absorbe PT-10).
+3. **PT-18** — gate de publicación + re-publish con metadatos (absorbe PT-9/PT-11).
+4. **PT-19…PT-21** — UI HITL (validar, clasificar manual, exportar/publish) — [[DECISIONES#D-19 · ProjectType gana loop humano propio (UI de validación/clasificación manual)|D-19]].
+5. **PT-13** — escala a cartera vigente por tramos (gated; recomendado tras UI).
+6. **PT-16** — saneo ~900 LOC muertas; **PT-22** (v2) — editor catálogo/prompts con eval obligatorio.
 
 ## Lo que queda fuera del alcance (y por qué)
 
-- **UI, análisis y reportes.** ProjectType es un enriquecedor **puro**:
-  clasifica y publica. Todo lo que sea mirar, cruzar o reportar el atributo
-  vive aguas abajo (SNI Intelligence). Duplicarlo aquí rompería el modelo
-  hub-and-spoke.
+- **Análisis y reportes.** Todo lo que sea mirar, cruzar o reportar el atributo
+  tipo vive aguas abajo ([[SNI Intelligence]]). Duplicarlo aquí rompería el modelo
+  hub-and-spoke. **Excepción ([[DECISIONES#D-19 · ProjectType gana loop humano propio (UI de validación/clasificación manual)|D-19]]):** la UI de **validación y clasificación manual** del propio atributo SÍ entra — es tooling interno del enriquecedor (cola HITL, picker de tipos, clasificar pendientes), no reportería ni dashboards de cartera.
 - **Hablar con otros repos directamente.** La comunicación es SOLO vía el
   store; el único código compartido es sni-commons.
 - **Elegir proveedor LLM definitivo.** Decisión ministerial pendiente; la
   postura del repo es neutralidad (cualquier backend de `sni_commons.llm`).
 - **Versionar datos.** Ni el store, ni CSV, ni `.duckdb` entran al repo, nunca.
+- **Editor de catálogo/prompts en v1.** Diferido a PT-22 (v2) con eval
+  obligatorio antes/después de cada cambio.
 
 ## Cómo encaja en el ecosistema (de quién depende, quién depende de él)
 
