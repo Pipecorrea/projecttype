@@ -31,7 +31,7 @@ def _seed_store(base: Path) -> None:
 
 class TestStoreInput(unittest.TestCase):
     def test_mapea_dedup_y_nombres(self) -> None:
-        from proyecttype.store_input import load_cascade_input_from_store
+        from projecttype.store_input import load_cascade_input_from_store
 
         with TemporaryDirectory() as tmp:
             base = Path(tmp)
@@ -57,7 +57,7 @@ class TestStoreInput(unittest.TestCase):
         )
 
     def test_limit(self) -> None:
-        from proyecttype.store_input import load_cascade_input_from_store
+        from projecttype.store_input import load_cascade_input_from_store
 
         with TemporaryDirectory() as tmp:
             base = Path(tmp)
@@ -68,7 +68,7 @@ class TestStoreInput(unittest.TestCase):
     def test_sin_data_dir_error_claro(self) -> None:
         import os
 
-        from proyecttype.store_input import load_cascade_input_from_store
+        from projecttype.store_input import load_cascade_input_from_store
 
         old = os.environ.pop("BIP_DATA_DIR", None)
         try:

@@ -4,14 +4,14 @@ from __future__ import annotations
 
 import unittest
 
-from proyecttype.evaluation import NivelMatch
-from proyecttype.few_shot_mining import (
+from projecttype.evaluation import NivelMatch
+from projecttype.few_shot_mining import (
     extract_evidencia,
     mine_from_files,
     resolve_manual_tipo,
 )
-from proyecttype.paths import DEFAULT_OUTPUT_CASCADE_CSV, DEFAULT_SUBMUESTRA, DEFAULT_TAXONOMY
-from proyecttype.taxonomy import Taxonomia
+from projecttype.paths import DEFAULT_OUTPUT_CASCADE_CSV, DEFAULT_SUBMUESTRA, DEFAULT_TAXONOMY
+from projecttype.taxonomy import Taxonomia
 
 
 class TestFewShotMining(unittest.TestCase):

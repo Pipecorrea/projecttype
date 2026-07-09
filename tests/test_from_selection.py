@@ -10,9 +10,9 @@ from unittest.mock import patch
 import polars as pl
 from typer.testing import CliRunner
 
-from proyecttype.cli import app
-from proyecttype.inference_metadata import prompt_version, taxonomy_hash
-from proyecttype.store_publish import enricher_version
+from projecttype.cli import app
+from projecttype.inference_metadata import prompt_version, taxonomy_hash
+from projecttype.store_publish import enricher_version
 
 
 def _seed_store(base: Path, *, seleccion_id: str = "testsel") -> None:
@@ -86,7 +86,7 @@ def _seed_store(base: Path, *, seleccion_id: str = "testsel") -> None:
 
 class TestFromSelection(unittest.TestCase):
     def test_load_selection_bips(self) -> None:
-        from proyecttype.store_input import load_selection_bips
+        from projecttype.store_input import load_selection_bips
 
         with tempfile.TemporaryDirectory() as d:
             base = Path(d)
@@ -95,7 +95,7 @@ class TestFromSelection(unittest.TestCase):
             self.assertEqual(sorted(bips), ["1", "2", "3", "4", "5"])
 
     def test_seleccion_inexistente_error_claro(self) -> None:
-        from proyecttype.store_input import load_selection_bips
+        from projecttype.store_input import load_selection_bips
 
         with tempfile.TemporaryDirectory() as d:
             with self.assertRaises(FileNotFoundError) as ctx:
@@ -136,7 +136,7 @@ class TestFromSelection(unittest.TestCase):
         )
         with tempfile.TemporaryDirectory() as d:
             _seed_store(d, seleccion_id="abc")
-            with patch("proyecttype.pipeline_cascade.classify_cascade_dataframe", return_value=fake_result):
+            with patch("projecttype.pipeline_cascade.classify_cascade_dataframe", return_value=fake_result):
                 runner = CliRunner()
                 r = runner.invoke(
                     app,

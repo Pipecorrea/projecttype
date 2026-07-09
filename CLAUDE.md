@@ -1,4 +1,4 @@
-# CLAUDE.md — ProyectType
+# CLAUDE.md — ProjectType
 
 > **Contexto del ecosistema:** lee primero **`ECOSISTEMA.md`** (eres un *enriquecedor*:
 > clasificas el tipo de proyecto y escribes `enr_tipo_proyecto` al store). Estado vivo:
@@ -20,7 +20,7 @@ uv sync --extra dev     # requiere ../sni-commons como repo hermano
 uv run pytest && uv run ruff check src scripts tests && uv run mypy src   # mypy --strict
 
 # Producción: ciclo store→store (requiere BIP_DATA_DIR)
-uv run proyecttype enrich --from-store | --from-selection <id>   # excluyentes; SNI publica sel_tipo_proyecto_<id>
+uv run projecttype enrich --from-store | --from-selection <id>   # excluyentes; SNI publica sel_tipo_proyecto_<id>
                           [--enable-l3] [--limit N --dry-run]
 
 # Camino CSV (calibración/eval; vivo a propósito, PT-5)

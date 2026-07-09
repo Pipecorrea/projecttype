@@ -8,8 +8,8 @@ from itertools import product
 
 import polars as pl
 
-from proyecttype.evaluation import NivelMatch, clasificar_match, load_submuestra
-from proyecttype.paths import DEFAULT_OUTPUT_CASCADE_CSV, DEFAULT_SUBMUESTRA
+from projecttype.evaluation import NivelMatch, clasificar_match, load_submuestra
+from projecttype.paths import DEFAULT_OUTPUT_CASCADE_CSV, DEFAULT_SUBMUESTRA
 
 
 def _simulate(

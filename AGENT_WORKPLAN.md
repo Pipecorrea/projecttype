@@ -1,4 +1,10 @@
-# AGENT_WORKPLAN — ProyectType
+---
+tipo: workplan
+ambito: ProjectType
+actualizado: 2026-07-06
+---
+
+# AGENT_WORKPLAN — ProjectType
 
 > **Contexto obligatorio:** lee primero **`ECOSISTEMA.md`** (mapa del ecosistema +
 > tu rol) y `/Users/felipecorrea/Vs/ESTADO_ECOSISTEMA.md` (estado vivo). Rumbo:
@@ -6,7 +12,7 @@
 > repo salen de ahí). Visión y alcance del repo: `VISION.md`.
 >
 > **Estado:** **enriquecedor** funcionando, ciclo **store→store completo** (PT-6):
-> `proyecttype enrich --from-store` lee CONSULTAS_EBI, clasifica y publica
+> `projecttype enrich --from-store` lee CONSULTAS_EBI, clasifica y publica
 > `enr_tipo_proyecto`. Cliente LLM unificado en sni-commons (PT-4). py3.12.
 > 63 tests (**pytest**, PT-8/9/10), mypy **--strict**, ruff limpio — CI bloqueante.
 > Cascada L1 (keywords) → L2 (embeddings) → L3 (LLM).
@@ -77,7 +83,7 @@ PT-12 (rutas/entrada única) — en cualquier momento, no bloquea
 PT-13 (escala a cartera vigente 👤) — SOLO con PT-9+PT-10+PT-7 cerrados
 ```
 
-#### [PT-9] Metadatos de inferencia en `enr_tipo_proyecto` — **HECHO 2026-07-02**
+#### [PT-9] Metadatos de inferencia en `enr_tipo_proyecto` — **HECHO 2026-07-02 (✅ verificado; falta el re-publish real 👤 — el store aún no tiene las columnas, la query SQL de cumplimiento queda pendiente)**
 
 **Objetivo.** Cada fila publicada lleva su procedencia completa. Es el patrón que el
 contrato de OBSRATE ya modela — copiarlo, no inventarlo (evaluación §5.2-A).
@@ -113,7 +119,14 @@ contrato de OBSRATE ya modela — copiarlo, no inventarlo (evaluación §5.2-A).
 **Implementado:** `inference_metadata.py` + proyección en `store_publish.py` +
 `_modelo_l3` en `pipeline_cascade.py`. Tests: `tests/test_inference_metadata.py` (4).
 
-#### [PT-10] Golden-set EN el repo + gate en CI — **HECHO 2026-07-02 (fixture; Submuestra pendiente 👤)**
+#### [PT-10] Golden-set EN el repo + gate en CI — **🟡 PARCIAL 2026-07-02 (verificado — NO declararlo hecho)**
+
+> **Verificación 2026-07-02:** andamiaje completo y de calidad — `eval_golden.py --ci`
+> exit 0, umbrales versionados (0.798/0.656, regla NUNCA bajar), test de degradación,
+> job en CI. **Falta lo central:** el golden tiene **12 casos** (fixture), no la
+> submuestra formalizada — `Submuestra_tp.xlsx` sigue fuera del repo (un test skipea
+> por eso) y `docs/eval/` está sin commitear. Con n=12 el umbral 0.798 no mide lo que
+> el baseline midió. Se cierra al convertir la submuestra completa. Ver evaluación §9.5.
 
 **Objetivo.** La vara fija. Hoy la submuestra de calibración no está en el repo y el
 baseline (prec 79,8% / cob 65,6% / e2e 52,3%, 2026-06-19) vive en la memoria.
@@ -164,10 +177,10 @@ resto como ausente. (La spec original de PT-7 sigue válida; esto la precisa.)
 - Tests: corrida incremental sobre store fixture con 3 clasificados vigentes + 2
   nuevos → clasifica SOLO 2; ninguno de los 3 pierde `_present_in_latest`; cambiar
   `taxonomy_hash` fuerza re-clasificación de los 3.
-- `uv run proyecttype enrich --from-store --incremental --dry-run` imprime el conteo
+- `uv run projecttype enrich --from-store --incremental --dry-run` imprime el conteo
   a clasificar vs saltados (pegar salida real en el log).
 
-#### [PT-11] Saneo del fósil PT-5 en el store
+#### [PT-11] Saneo del fósil PT-5 en el store — **hallazgo 2026-07-02: la métrica principal YA se cumple** (las 2.331 claves viejas están `_present_in_latest=false`; huérfanas vigentes = 0 verificado en el store). Queda SOLO el paso 3: el guard permanente en `store_publish`.
 
 **Objetivo.** Eliminar del dato vigente las 2.331 claves huérfanas con formato viejo
 (con dígito verificador) que conviven con las 2.331 canónicas.
@@ -205,7 +218,7 @@ WHERE e._present_in_latest AND c.EBI_CODIGO IS NULL;` → = 0.
   CLAUDE.md); los scripts de eval declaran sus inputs explícitos.
 
 **Done-cuando:** en un clone limpio con solo `BIP_DATA_DIR` seteado,
-`uv run proyecttype enrich --from-store --dry-run --limit 5` funciona sin editar
+`uv run projecttype enrich --from-store --dry-run --limit 5` funciona sin editar
 nada; test de config para el error claro; `grep` de rutas hardcodeadas a
 `data/output/...` en `src/` → 0 (quedan solo en `scripts/` de eval).
 
@@ -282,7 +295,7 @@ PT-1/2 (Fase 0: git + N+1 eliminado en la cascada), PT-4 (cliente LLM → sni-co
 dígito verificador atrapado con datos reales, commit f941fb5), **PT-6** (2026-06-09:
 ciclo store→store — `store_input.py` lee CONSULTAS_EBI y mapea SEC/SBS_CLAVE→nombres
 vía `sni_commons.reference`, dedupe por proyecto a la solicitud más reciente; CLI
-`proyecttype enrich --from-store` con guard de publish parcial; smoke real:
+`projecttype enrich --from-store` con guard de publish parcial; smoke real:
 5 proyectos del store clasificados y dry-run del diff), **PT-8** (pytest sin
 `sys.path` hacks + **mypy --strict 0 errores** + ruff limpio en src/scripts/tests;
 de paso se rompió un import circular l2↔cascada que dependía del orden de import,

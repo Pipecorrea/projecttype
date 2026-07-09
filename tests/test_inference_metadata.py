@@ -8,15 +8,15 @@ from pathlib import Path
 
 import polars as pl
 
-from proyecttype.classifier_cascade import ClassifierCascade
-from proyecttype.inference_metadata import (
+from projecttype.classifier_cascade import ClassifierCascade
+from projecttype.inference_metadata import (
     EVIDENCIA_MAX_CHARS,
     prompt_version,
     truncate_evidencia,
 )
-from proyecttype.paths import DEFAULT_TAXONOMY, PROMPTS_DIR
-from proyecttype.pipeline_cascade import classify_cascade_dataframe
-from proyecttype.store_publish import publish_to_store, to_enrichment_frame
+from projecttype.paths import DEFAULT_TAXONOMY, PROMPTS_DIR
+from projecttype.pipeline_cascade import classify_cascade_dataframe
+from projecttype.store_publish import publish_to_store, to_enrichment_frame
 
 
 def _five_level_rows() -> pl.DataFrame:

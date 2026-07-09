@@ -1,6 +1,6 @@
 """PT-5 — publicar el tipo de proyecto clasificado al store canónico.
 
-ProyectType es un *enriquecedor*: crea el atributo `tipo_proyecto` que NO existe
+ProjectType es un *enriquecedor*: crea el atributo `tipo_proyecto` que NO existe
 en las BBDD del BIP (EBI/RATE). El caso de uso del dueño ("quiero todos los
 proyectos de ciclovía") se resuelve aquí: la cascada clasifica, y este módulo
 escribe el resultado a la tabla `enr_tipo_proyecto` del store, donde SNI (u otro
@@ -18,8 +18,8 @@ from typing import Any
 
 import polars as pl
 
-from proyecttype import __version__ as _pt_version
-from proyecttype.inference_metadata import (
+from projecttype import __version__ as _pt_version
+from projecttype.inference_metadata import (
     inference_fields_for_row,
     prompt_version,
     taxonomy_hash,
@@ -53,7 +53,7 @@ def _resolve_bip_column(columns: list[str]) -> str:
 
 def enricher_version() -> str:
     """Identificador de versión del enriquecedor para trazabilidad en el store."""
-    return f"proyecttype@{_pt_version}"
+    return f"projecttype@{_pt_version}"
 
 
 def _ensure_inference_source_columns(resultados: pl.DataFrame) -> pl.DataFrame:
@@ -168,7 +168,7 @@ def to_enrichment_frame(resultados: pl.DataFrame) -> pl.DataFrame:
         & (pl.col("EBI_CODIGO") != "")
         & pl.col("tipo_final_id").is_not_null()
     )
-    ENR_TIPO_PROYECTO_CONTRACT.validate(out.columns, source="proyecttype.to_enrichment_frame")
+    ENR_TIPO_PROYECTO_CONTRACT.validate(out.columns, source="projecttype.to_enrichment_frame")
     return out
 
 

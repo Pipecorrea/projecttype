@@ -8,9 +8,9 @@ import unittest
 
 from sni_commons.eval import cargar_golden
 
-from proyecttype.golden_eval import evaluar_golden_cascada, gate_golden, load_umbrales
-from proyecttype.paths import DEFAULT_GOLDEN, DEFAULT_UMBRALES, PROJECT_ROOT
-from proyecttype.scorer import ScorerConfig
+from projecttype.golden_eval import evaluar_golden_cascada, gate_golden, load_umbrales
+from projecttype.paths import DEFAULT_GOLDEN, DEFAULT_UMBRALES, PROJECT_ROOT
+from projecttype.scorer import ScorerConfig
 
 
 class TestEvalGolden(unittest.TestCase):

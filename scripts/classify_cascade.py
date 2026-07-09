@@ -12,16 +12,16 @@ from pathlib import Path
 
 import polars as pl
 
-from proyecttype.classifier_l3 import L3Config
-from proyecttype.embeddings import L2Config
-from proyecttype.env import load_project_env
-from proyecttype.llm_client import (
+from projecttype.classifier_l3 import L3Config
+from projecttype.embeddings import L2Config
+from projecttype.env import load_project_env
+from projecttype.llm_client import (
     LLMConfig,
     check_gemini_available,
     check_ollama_available,
     list_ollama_models,
 )
-from proyecttype.paths import (
+from projecttype.paths import (
     DEFAULT_EMBEDDINGS_CACHE,
     DEFAULT_INPUT_CSV,
     DEFAULT_L3_CACHE_JSONL,
@@ -30,8 +30,8 @@ from proyecttype.paths import (
     DEFAULT_OUTPUT_CASCADE_L3_CSV,
     DEFAULT_TAXONOMY,
 )
-from proyecttype.pipeline_cascade import classify_cascade_csv
-from proyecttype.scorer import ScorerConfig
+from projecttype.pipeline_cascade import classify_cascade_csv
+from projecttype.scorer import ScorerConfig
 
 ROOT = Path(__file__).resolve().parents[1]
 _DEFAULT_L2 = L2Config()

@@ -9,18 +9,18 @@ from pathlib import Path
 
 import polars as pl
 
-from proyecttype.classifier_cascade import ClassifierCascade
-from proyecttype.classifier_l3 import ClassifierL3, L3Config
-from proyecttype.embeddings import L2Config
-from proyecttype.paths import (
+from projecttype.classifier_cascade import ClassifierCascade
+from projecttype.classifier_l3 import ClassifierL3, L3Config
+from projecttype.embeddings import L2Config
+from projecttype.paths import (
     DEFAULT_INPUT_CSV,
     DEFAULT_L3_PROMPTS,
     DEFAULT_TAXONOMY,
     OUTPUT_DIR,
 )
-from proyecttype.pipeline_cascade import classify_cascade_dataframe
-from proyecttype.prompts import load_l3_prompt_config
-from proyecttype.scorer import ScorerConfig
+from projecttype.pipeline_cascade import classify_cascade_dataframe
+from projecttype.prompts import load_l3_prompt_config
+from projecttype.scorer import ScorerConfig
 
 
 def _l3_candidates(df: pl.DataFrame) -> pl.DataFrame:

@@ -9,7 +9,7 @@ import unittest
 
 from sni_commons.llm import ChatResponse, EchoProvider
 
-from proyecttype.llm_client import (
+from projecttype.llm_client import (
     LLMConfig,
     MockLLMClient,
     SniCommonsLLMClient,

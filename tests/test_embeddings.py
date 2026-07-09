@@ -6,7 +6,7 @@ import unittest
 
 import numpy as np
 
-from proyecttype.embeddings import cosine_top2, cosine_top2_batch
+from projecttype.embeddings import cosine_top2, cosine_top2_batch
 
 
 class TestCosineSimilarity(unittest.TestCase):

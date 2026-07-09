@@ -4,14 +4,14 @@ from __future__ import annotations
 
 import unittest
 
-from proyecttype import ClassifierL1, Taxonomia
-from proyecttype.composite import (
+from projecttype import ClassifierL1, Taxonomia
+from projecttype.composite import (
     CompositeIndex,
     components_match_text,
     parse_tipo_components,
 )
-from proyecttype.paths import DEFAULT_TAXONOMY
-from proyecttype.text_utils import normalize_tipo_name
+from projecttype.paths import DEFAULT_TAXONOMY
+from projecttype.text_utils import normalize_tipo_name
 
 
 class TestCompositeParsing(unittest.TestCase):

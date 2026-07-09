@@ -1,14 +1,14 @@
 # Estructura del proyecto
 
 ```
-ProyectType/
+ProjectType/
 ├── data/
 │   ├── raw/              # Datos de entrada (BIP, submuestra etiquetada)
 │   ├── taxonomy/         # Taxonomía de tipos de proyecto (YAML, CSV, JSON)
 │   └── output/           # Resultados del clasificador y revisiones
 ├── docs/                 # Documentación del proyecto
 ├── scripts/              # CLIs ejecutables
-├── src/proyecttype/      # Paquete Python
+├── src/projecttype/      # Paquete Python
 └── tests/                # Tests unitarios
 ```
 

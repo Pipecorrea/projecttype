@@ -8,13 +8,13 @@ from pathlib import Path
 
 import polars as pl
 
-from proyecttype.evaluation import NivelMatch, clasificar_match, load_submuestra
-from proyecttype.paths import (
+from projecttype.evaluation import NivelMatch, clasificar_match, load_submuestra
+from projecttype.paths import (
     DEFAULT_OUTPUT_CASCADE_CSV,
     DEFAULT_OUTPUT_CSV,
     DEFAULT_SUBMUESTRA,
 )
-from proyecttype.text_utils import normalize_tipo_name
+from projecttype.text_utils import normalize_tipo_name
 
 ROOT = Path(__file__).resolve().parents[1]
 

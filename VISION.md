@@ -1,4 +1,10 @@
-# ProyectType — Visión y alcance
+---
+tipo: vision
+ambito: ProjectType
+actualizado: 2026-07-06
+---
+
+# ProjectType — Visión y alcance
 
 *Documento para el equipo: qué es, qué hace hoy, hacia dónde va y qué queda fuera.*
 
@@ -10,7 +16,7 @@ diga "esto es una ciclovía", "esto es un jardín infantil", "esto es un puente
 urbano". La pregunta más natural del dueño del negocio — *"muéstrame todos los
 proyectos de jardín infantil"* — no se puede responder con los datos crudos.
 
-ProyectType existe para **crear ese atributo**: clasifica cada BIP contra una
+ProjectType existe para **crear ese atributo**: clasifica cada BIP contra una
 taxonomía cerrada de 326 tipos (16 sectores, 84 subsectores) y publica el
 resultado al store canónico, donde el resto del ecosistema lo consume como si
 siempre hubiera existido. Y lo hace de forma **costo-consciente**: una cascada
@@ -25,7 +31,7 @@ que de verdad lo necesita, con caché por BIP para no pagar dos veces.
   lista cerrada de tipos del subsector, salida JSON validada, few-shot curado +
   minado de etiquetas manuales, y caché JSONL por código BIP. Cada nivel corre
   solo sobre el residual del anterior.
-- ✅ **Ciclo store→store (PT-6).** `proyecttype enrich --from-store` lee
+- ✅ **Ciclo store→store (PT-6).** `projecttype enrich --from-store` lee
   `CONSULTAS_EBI`, clasifica y publica `enr_tipo_proyecto` — sin CSV
   intermedios. En el store hay **2.331 proyectos clasificados** (14.806 matches
   con las filas de EBI) y **SNI Intelligence ya filtra por tipo** con ellos.
@@ -76,7 +82,7 @@ corrida antes/después registrada" (PROPUESTA §4.1).
 
 ## Lo que queda fuera del alcance (y por qué)
 
-- **UI, análisis y reportes.** ProyectType es un enriquecedor **puro**:
+- **UI, análisis y reportes.** ProjectType es un enriquecedor **puro**:
   clasifica y publica. Todo lo que sea mirar, cruzar o reportar el atributo
   vive aguas abajo (SNI Intelligence). Duplicarlo aquí rompería el modelo
   hub-and-spoke.
@@ -105,7 +111,7 @@ corrida antes/después registrada" (PROPUESTA §4.1).
 planillas EBI ──bip-data──► store (CONSULTAS_EBI)
                               │ lee                    ▲ escribe
                               ▼                        │
-                         ProyectType ── enr_tipo_proyecto
+                         ProjectType ── enr_tipo_proyecto
                               │
                               ▼ consume
                       SNI Intelligence (filtra por tipo) ──► BIP CD ──► RAG

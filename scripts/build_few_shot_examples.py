@@ -7,8 +7,8 @@ import argparse
 from collections import Counter
 from pathlib import Path
 
-from proyecttype.few_shot_mining import mine_from_files, write_few_shot_yaml
-from proyecttype.paths import (
+from projecttype.few_shot_mining import mine_from_files, write_few_shot_yaml
+from projecttype.paths import (
     DEFAULT_OUTPUT_CASCADE_CSV,
     DEFAULT_SUBMUESTRA,
     DEFAULT_TAXONOMY,

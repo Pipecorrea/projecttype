@@ -1,4 +1,10 @@
-# Ecosistema SNI/BIP — contexto para `ProyectType`
+---
+tipo: ecosistema
+ambito: ProjectType
+actualizado: 2026-07-06
+---
+
+# Ecosistema SNI/BIP — contexto para `ProjectType`
 
 > **Por qué existe este archivo:** este repo es **parte de un ecosistema** (6 proyectos
 > + 1 librería compartida), no una app aislada. Si trabajas solo aquí (tú o un agente
@@ -6,10 +12,10 @@
 
 ## Tú en el ecosistema
 
-**Eres `ProyectType`** — un **enriquecedor**: clasificas el **tipo de proyecto** (cascada
+**Eres `ProjectType`** — un **enriquecedor**: clasificas el **tipo de proyecto** (cascada
 L1 keywords → L2 embeddings → L3 LLM), un atributo que NO existe en los datos del BIP.
 
-- **Tu conexión:** ciclo **store→store completo** (PT-6): `proyecttype enrich
+- **Tu conexión:** ciclo **store→store completo** (PT-6): `projecttype enrich
   --from-store` lee `CONSULTAS_EBI`, clasifica y **escribe `enr_tipo_proyecto` al
   store** (`store_input.py` + `store_publish.py`); **SNI Intelligence lo consume**
   para filtrar por tipo. (El camino CSV `scripts/enrich_to_store.py` queda para
@@ -33,7 +39,7 @@ en `~/bip_data/`, fuera de los repos — datos, no código).
                   └──────────────┬──────────────┘
                           leen   │
               ┌──────────────────┼──────────────────┐
-        SNI Intelligence     OBSRATE            ProyectType
+        SNI Intelligence     OBSRATE            ProjectType
         (cerebro/reportes)   (observaciones)    (clasifica tipo)
 
    Aparte del store: BIP CD baja la carpeta digital (documentos) y RAG
@@ -46,7 +52,7 @@ en `~/bip_data/`, fuera de los repos — datos, no código).
 |---|---|---|
 | **sni-commons** | Librería compartida: `llm` · `contracts` · `io` · `store`. | La consumen todos por path editable. |
 | **SNI Intelligence** | El "cerebro": reportes (REGI, Historial RATE) + selección de proyectos aguas abajo. | Lee EBI/RATE + `enr_*` del store. |
-| **ProyectType** | Enriquecedor: clasifica el tipo de proyecto. | Escribe `enr_tipo_proyecto` al store. |
+| **ProjectType** | Enriquecedor: clasifica el tipo de proyecto. | Escribe `enr_tipo_proyecto` al store. |
 | **OBSRATE** | Enriquecedor: ordena/deduplica observaciones RATE. | Escribe `enr_observaciones` al store. |
 | **BIP CD** | Extracción: scraper de la Carpeta Digital + parser. Baja los documentos de cada proyecto. | Planillas → store (por correo); baja carpetas para RAG. |
 | **RAG** | Silo normativo (RIS/Metodologías/NIP → Neo4j). Verifica cumplimiento normativo. | No usa el store; se conecta vía los documentos que baja BIP CD. |
@@ -64,7 +70,7 @@ en `~/bip_data/`, fuera de los repos — datos, no código).
 ## El flujo, de punta a punta
 
 1. Planillas **EBI/RATE** por correo → `bip-data load` → **store**.
-2. **ProyectType** y **OBSRATE** leen del store, enriquecen y **escriben `enr_*`** de vuelta.
+2. **ProjectType** y **OBSRATE** leen del store, enriquecen y **escriben `enr_*`** de vuelta.
 3. **SNI Intelligence** lee EBI/RATE + `enr_*`, genera **reportes** y **selecciona** los BIP relevantes.
 4. **BIP CD** baja la **carpeta digital** (documentos) de esos proyectos.
 5. **RAG** cruza esos documentos contra la **normativa** y verifica cumplimiento.

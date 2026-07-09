@@ -6,8 +6,8 @@ from __future__ import annotations
 import argparse
 from collections import Counter
 
-from proyecttype.paths import DEFAULT_INPUT_CSV, DEFAULT_OUTPUT_CSV, DEFAULT_TAXONOMY  # noqa: E402
-from proyecttype.pipeline import classify_csv  # noqa: E402
+from projecttype.paths import DEFAULT_INPUT_CSV, DEFAULT_OUTPUT_CSV, DEFAULT_TAXONOMY  # noqa: E402
+from projecttype.pipeline import classify_csv  # noqa: E402
 
 
 def main() -> int:
@@ -56,7 +56,7 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    from proyecttype.scorer import ScorerConfig
+    from projecttype.scorer import ScorerConfig
 
     config = ScorerConfig(min_margin=args.min_margin, min_score=args.min_score)
     result, csv_path, excel_path = classify_csv(

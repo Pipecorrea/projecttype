@@ -7,7 +7,7 @@ import argparse
 import json
 from pathlib import Path
 
-from proyecttype.paths import DEFAULT_L3_PROGRESS_JSONL
+from projecttype.paths import DEFAULT_L3_PROGRESS_JSONL
 
 
 def _load_last(path: Path) -> dict | None:

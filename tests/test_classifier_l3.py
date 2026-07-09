@@ -6,16 +6,16 @@ import json
 import unittest
 from unittest.mock import MagicMock
 
-from proyecttype.classifier_l3 import (
+from projecttype.classifier_l3 import (
     ClassifierL3,
     L3Config,
     parse_l3_response,
 )
-from proyecttype.llm_client import MockLLMClient, OllamaClient, _extract_json
-from proyecttype.paths import DEFAULT_TAXONOMY
-from proyecttype.prompts import build_l3_user_prompt, format_tipo_option
-from proyecttype.scorer import EstadoClasificacion
-from proyecttype.taxonomy import Taxonomia
+from projecttype.llm_client import MockLLMClient, OllamaClient, _extract_json
+from projecttype.paths import DEFAULT_TAXONOMY
+from projecttype.prompts import build_l3_user_prompt, format_tipo_option
+from projecttype.scorer import EstadoClasificacion
+from projecttype.taxonomy import Taxonomia
 
 
 class TestL3Parsing(unittest.TestCase):
@@ -89,8 +89,8 @@ class TestL3Classifier(unittest.TestCase):
         self.assertIsNotNone(resp.validation_error)
 
     def test_load_prompt_yaml(self) -> None:
-        from proyecttype.paths import DEFAULT_L3_PROMPTS
-        from proyecttype.prompts import load_l3_prompt_config
+        from projecttype.paths import DEFAULT_L3_PROMPTS
+        from projecttype.prompts import load_l3_prompt_config
 
         cfg = load_l3_prompt_config(DEFAULT_L3_PROMPTS)
         self.assertGreaterEqual(cfg.version, 2)
@@ -132,7 +132,7 @@ class TestL3Classifier(unittest.TestCase):
 
 class TestPromptFormat(unittest.TestCase):
     def test_format_tipo_truncates(self) -> None:
-        from proyecttype.taxonomy import TipoProyecto
+        from projecttype.taxonomy import TipoProyecto
 
         tipo = TipoProyecto(
             tipo_id="X.Y.Z",
@@ -149,7 +149,7 @@ class TestOllamaClient(unittest.TestCase):
     def test_ollama_complete_json(self) -> None:
         from unittest.mock import patch
 
-        from proyecttype.llm_client import LLMConfig
+        from projecttype.llm_client import LLMConfig
 
         payload = {
             "message": {

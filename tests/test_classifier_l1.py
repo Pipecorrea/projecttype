@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import unittest
 
-from proyecttype import ClassifierL1, EstadoClasificacion
-from proyecttype.paths import DEFAULT_TAXONOMY
+from projecttype import ClassifierL1, EstadoClasificacion
+from projecttype.paths import DEFAULT_TAXONOMY
 
 TAXONOMY = DEFAULT_TAXONOMY
 

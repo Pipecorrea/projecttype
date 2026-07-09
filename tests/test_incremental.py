@@ -9,10 +9,10 @@ from pathlib import Path
 import polars as pl
 from typer.testing import CliRunner
 
-from proyecttype.cli import app
-from proyecttype.incremental import filter_pending
-from proyecttype.inference_metadata import prompt_version, taxonomy_hash
-from proyecttype.store_publish import enricher_version, publish_to_store
+from projecttype.cli import app
+from projecttype.incremental import filter_pending
+from projecttype.inference_metadata import prompt_version, taxonomy_hash
+from projecttype.store_publish import enricher_version, publish_to_store
 
 
 def _seed_ebi(base: Path) -> None:
@@ -84,7 +84,7 @@ def _publish_enr(base: Path, codes: list[str], *, tax_hash: str, prompt_ver: str
 
 class TestIncremental(unittest.TestCase):
     def test_solo_pendientes_cuando_hay_vigentes(self) -> None:
-        from proyecttype.store_input import load_cascade_input_from_store
+        from projecttype.store_input import load_cascade_input_from_store
 
         tax = taxonomy_hash()
         prompt = prompt_version()
@@ -106,7 +106,7 @@ class TestIncremental(unittest.TestCase):
             self.assertEqual(pending_codes, {"400", "500"})
 
     def test_taxonomy_hash_distinto_reclasifica_todo(self) -> None:
-        from proyecttype.store_input import load_cascade_input_from_store
+        from projecttype.store_input import load_cascade_input_from_store
 
         tax = taxonomy_hash()
         prompt = prompt_version()

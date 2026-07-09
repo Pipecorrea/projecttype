@@ -1,6 +1,6 @@
-"""CLI ``proyecttype`` — el enriquecedor como comando (PT-6).
+"""CLI ``projecttype`` — el enriquecedor como comando (PT-6).
 
-``proyecttype enrich --from-store`` cierra el ciclo store→store: lee los
+``projecttype enrich --from-store`` cierra el ciclo store→store: lee los
 proyectos de CONSULTAS_EBI, clasifica con la cascada L1→L2(→L3 opcional) y
 publica ``enr_tipo_proyecto`` de vuelta al store. Sin CSV intermedios.
 
@@ -16,19 +16,19 @@ from typing import Annotated
 
 import typer
 
-from proyecttype.inference_metadata import prompt_version, taxonomy_hash
-from proyecttype.paths import DEFAULT_L3_CACHE_JSONL, DEFAULT_TAXONOMY
-from proyecttype.store_publish import enricher_version
+from projecttype.inference_metadata import prompt_version, taxonomy_hash
+from projecttype.paths import DEFAULT_L3_CACHE_JSONL, DEFAULT_TAXONOMY
+from projecttype.store_publish import enricher_version
 
 app = typer.Typer(
-    help="ProyectType — enriquecedor de tipo de proyecto del ecosistema SNI/BIP.",
+    help="ProjectType — enriquecedor de tipo de proyecto del ecosistema SNI/BIP.",
     no_args_is_help=True,
 )
 
 
 @app.callback()
 def _main() -> None:
-    """Mantiene el modo subcomando (``proyecttype enrich …``)."""
+    """Mantiene el modo subcomando (``projecttype enrich …``)."""
 
 
 @app.command()
@@ -96,11 +96,11 @@ def enrich(
     if incremental and from_selection is not None:
         raise typer.BadParameter("--incremental no aplica con --from-selection (usa el anti-join por defecto).")
 
-    from proyecttype.classifier_cascade import ClassifierCascade
-    from proyecttype.incremental import filter_pending
-    from proyecttype.pipeline_cascade import classify_cascade_dataframe
-    from proyecttype.store_input import load_cascade_input_from_store, load_selection_bips
-    from proyecttype.store_publish import publish_to_store
+    from projecttype.classifier_cascade import ClassifierCascade
+    from projecttype.incremental import filter_pending
+    from projecttype.pipeline_cascade import classify_cascade_dataframe
+    from projecttype.store_input import load_cascade_input_from_store, load_selection_bips
+    from projecttype.store_publish import publish_to_store
 
     tax_hash = taxonomy_hash()
     prompt_ver = prompt_version()

@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from proyecttype.taxonomy import TipoProyecto
+    from projecttype.taxonomy import TipoProyecto
 
 from pathlib import Path
 
@@ -188,4 +188,4 @@ class ClassifierL2:
 
 # El re-export de CascadeResult/ClassifierCascade se eliminó: creaba un ciclo
 # l2→cascade→l2 que dependía del orden de import. Importar desde
-# proyecttype.classifier_cascade (o el paquete raíz).
+# projecttype.classifier_cascade (o el paquete raíz).

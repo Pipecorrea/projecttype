@@ -6,10 +6,10 @@ import unittest
 
 import polars as pl
 
-from proyecttype.classifier_cascade import ClassifierCascade
-from proyecttype.llm_client import MockLLMClient
-from proyecttype.paths import DEFAULT_TAXONOMY
-from proyecttype.pipeline_cascade import classify_cascade_dataframe
+from projecttype.classifier_cascade import ClassifierCascade
+from projecttype.llm_client import MockLLMClient
+from projecttype.paths import DEFAULT_TAXONOMY
+from projecttype.pipeline_cascade import classify_cascade_dataframe
 
 
 def _residual_rows(n: int) -> pl.DataFrame:

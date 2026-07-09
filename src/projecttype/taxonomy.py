@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from proyecttype.composite import CompositeIndex
+    from projecttype.composite import CompositeIndex
 
 import yaml
 

@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import unittest
 
-from proyecttype.evaluation import NivelMatch, clasificar_match
-from proyecttype.text_utils import normalize_tipo_name
+from projecttype.evaluation import NivelMatch, clasificar_match
+from projecttype.text_utils import normalize_tipo_name
 
 
 class TestEvaluation(unittest.TestCase):

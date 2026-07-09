@@ -5,10 +5,10 @@ from __future__ import annotations
 
 import polars as pl
 
-from proyecttype.composite import CompositeIndex, parse_tipo_components
-from proyecttype.paths import DEFAULT_TAXONOMY, TAXONOMY_DIR
-from proyecttype.taxonomy import Taxonomia
-from proyecttype.text_utils import normalize_tipo_name
+from projecttype.composite import CompositeIndex, parse_tipo_components
+from projecttype.paths import DEFAULT_TAXONOMY, TAXONOMY_DIR
+from projecttype.taxonomy import Taxonomia
+from projecttype.text_utils import normalize_tipo_name
 
 
 def main() -> int:

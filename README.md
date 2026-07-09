@@ -1,4 +1,4 @@
-# ProyectType
+# ProjectType
 
 **Enriquecedor de tipo de proyecto del ecosistema SNI/BIP.** Clasifica cada
 proyecto de inversión pública (BIP) en un **tipo** de una taxonomía cerrada
@@ -24,8 +24,8 @@ Requiere Python ≥ 3.12, [uv](https://docs.astral.sh/uv/) y el repo hermano
 `../sni-commons` (se consume por path editable mientras no haya índice privado):
 
 ```bash
-git clone <este-repo> ProyectType        # junto a sni-commons
-cd ProyectType
+git clone <este-repo> ProjectType        # junto a sni-commons
+cd ProjectType
 uv sync --extra dev
 ```
 
@@ -85,16 +85,16 @@ claves canónicas de la taxonomía.
 
 ```bash
 # Clasificar TODO lo que hay en CONSULTAS_EBI y publicar enr_tipo_proyecto
-uv run proyecttype enrich --from-store
+uv run projecttype enrich --from-store
 
 # Con nivel LLM para el residual de L1/L2
-uv run proyecttype enrich --from-store --enable-l3
+uv run projecttype enrich --from-store --enable-l3
 
 # Piloto: clasificar 100 y ver el diff del store SIN escribir
-uv run proyecttype enrich --from-store --limit 100 --dry-run
+uv run projecttype enrich --from-store --limit 100 --dry-run
 
 # Además guardar los resultados crudos a CSV
-uv run proyecttype enrich --from-store --out data/output/resultados.csv
+uv run projecttype enrich --from-store --out data/output/resultados.csv
 ```
 
 Qué hace `enrich --from-store`:
@@ -106,7 +106,7 @@ Qué hace `enrich --from-store`:
 3. **Publica** `enr_tipo_proyecto` (`store_publish.py`) vía
    `BipDataStore.upsert_dataframe` — incremental y no destructivo, validado con
    `ENR_TIPO_PROYECTO_CONTRACT` y firmado en el ledger `_loads`
-   (`writer=proyecttype@<versión>`).
+   (`writer=projecttype@<versión>`).
 
 ⚠️ **Guard de publish parcial:** un publish con `--limit` marca el resto de la
 tabla como ausente del último snapshot (`_present_in_latest=false`) y los
@@ -158,14 +158,14 @@ futuro `eco refresh` del ecosistema. Ver `AGENT_WORKPLAN.md` y
 `/Vs/PROPUESTA_SOTA_2026-06.md` §4.1 (versionar modelo/prompt como metadato,
 golden-set común).
 
-**Fuera de alcance:** UI, análisis y reportes. ProyectType es un enriquecedor
+**Fuera de alcance:** UI, análisis y reportes. ProjectType es un enriquecedor
 puro — clasifica y publica; el análisis vive aguas abajo (SNI Intelligence).
 
 ## Estructura del repo
 
 ```
-src/proyecttype/
-  cli.py                 # CLI `proyecttype enrich --from-store` (typer)
+src/projecttype/
+  cli.py                 # CLI `projecttype enrich --from-store` (typer)
   classifier_cascade.py  # orquestador L1→L2→L3 (fila a fila)
   pipeline_cascade.py    # lote completo (Polars) + integración caché L3
   classifier_l1.py / scorer.py / composite.py / aliases.py   # nivel reglas

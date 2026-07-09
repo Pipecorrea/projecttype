@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import unittest
 
-from proyecttype.prompt_context import (
+from projecttype.prompt_context import (
     composite_relations_for_subsector,
     confusion_pairs_for_subsector,
     select_few_shot_examples,

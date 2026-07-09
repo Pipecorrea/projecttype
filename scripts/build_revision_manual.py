@@ -8,12 +8,12 @@ from collections import Counter
 
 import polars as pl  # noqa: E402
 
-from proyecttype.evaluation import (  # noqa: E402
+from projecttype.evaluation import (  # noqa: E402
     build_revision_dataframe,
     load_submuestra,
     save_revision_excel,
 )
-from proyecttype.paths import (  # noqa: E402
+from projecttype.paths import (  # noqa: E402
     DEFAULT_OUTPUT_CSV,
     DEFAULT_REVISION_XLSX,
     DEFAULT_SUBMUESTRA,

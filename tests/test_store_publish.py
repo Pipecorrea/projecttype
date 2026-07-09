@@ -6,7 +6,7 @@ from pathlib import Path
 
 import polars as pl
 
-from proyecttype.store_publish import (
+from projecttype.store_publish import (
     enricher_version,
     publish_to_store,
     to_enrichment_frame,

@@ -336,7 +336,7 @@ class SniCommonsLLMClient:
 
         cfg = config or LLMConfig()
         provider = cfg.provider
-        # 'google' es el nombre histórico de ProyectType para Gemini AI Studio.
+        # 'google' es el nombre histórico de ProjectType para Gemini AI Studio.
         sc_provider = "gemini" if provider == "google" else provider
         api_key = ""
         if sc_provider == "gemini":

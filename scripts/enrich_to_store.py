@@ -17,7 +17,7 @@ from pathlib import Path
 
 import polars as pl
 
-from proyecttype.store_publish import publish_to_store  # noqa: E402
+from projecttype.store_publish import publish_to_store  # noqa: E402
 
 
 def main() -> int:

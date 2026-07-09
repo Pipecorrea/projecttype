@@ -9,14 +9,14 @@ from pathlib import Path
 
 from sni_commons.eval import cargar_golden, escribir_resultado
 
-from proyecttype.env import load_project_env
-from proyecttype.golden_eval import (
+from projecttype.env import load_project_env
+from projecttype.golden_eval import (
     confusion_matrix_csv,
     evaluar_golden_cascada,
     gate_golden,
     load_umbrales,
 )
-from proyecttype.paths import DEFAULT_GOLDEN, DEFAULT_UMBRALES, EVAL_DIR
+from projecttype.paths import DEFAULT_GOLDEN, DEFAULT_UMBRALES, EVAL_DIR
 
 
 def main() -> int:

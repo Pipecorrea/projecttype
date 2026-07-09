@@ -9,8 +9,8 @@ from pathlib import Path
 
 import yaml
 
-from proyecttype.evaluation import load_submuestra
-from proyecttype.paths import DEFAULT_GOLDEN, DEFAULT_SUBMUESTRA
+from projecttype.evaluation import load_submuestra
+from projecttype.paths import DEFAULT_GOLDEN, DEFAULT_SUBMUESTRA
 
 
 def _pick_column(columns: list[str], candidates: tuple[str, ...]) -> str | None:

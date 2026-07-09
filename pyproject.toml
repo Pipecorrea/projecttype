@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "proyecttype"
+name = "projecttype"
 version = "0.1.0"
 description = "Clasificador en cascada (L1 keywords -> L2 embeddings -> L3 LLM) de tipo de proyecto BIP/SNI."
 requires-python = ">=3.12"
@@ -31,10 +31,10 @@ dev = ["pytest>=8", "ruff>=0.5", "mypy>=1.10"]
 sni-commons = { path = "../sni-commons", editable = true }
 
 [project.scripts]
-proyecttype = "proyecttype.cli:app"
+projecttype = "projecttype.cli:app"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/proyecttype"]
+packages = ["src/projecttype"]
 
 [tool.ruff]
 line-length = 100
