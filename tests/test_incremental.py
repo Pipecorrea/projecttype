@@ -34,7 +34,10 @@ def _seed_ebi(base: Path) -> None:
     )
 
 
-def _cascade_row(code: str, tipo: str = "A") -> dict:
+_TIPO_VALIDO = "ENERGIA.ALUMBRADO_PUBLICO.ALUMBRADO_PUBLICO"
+
+
+def _cascade_row(code: str, tipo: str = _TIPO_VALIDO) -> dict:
     return {
         "Codigo BIP": code,
         "tipo_final_id": tipo,
@@ -56,8 +59,8 @@ def _publish_enr(base: Path, codes: list[str], *, tax_hash: str, prompt_ver: str
     store_df = pl.DataFrame(
         {
             "EBI_CODIGO": codes,
-            "tipo_final_id": ["A"] * len(codes),
-            "tipo_final_nombre": ["A"] * len(codes),
+            "tipo_final_id": [_TIPO_VALIDO] * len(codes),
+            "tipo_final_nombre": [_TIPO_VALIDO] * len(codes),
             "score_final": [0.9] * len(codes),
             "nivel_final": [1] * len(codes),
             "nivel_asignacion": ["L1"] * len(codes),

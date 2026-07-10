@@ -74,10 +74,23 @@ def enrich(
         int | None,
         typer.Option("--l3-limit", help="Máximo de llamadas LLM en L3."),
     ] = None,
+    l3_concurrency: Annotated[
+        int | None,
+        typer.Option("--l3-concurrency", help="Hilos paralelos L3 (default: LLM_MAX_CONCURRENCY o 5)."),
+    ] = None,
     dry_run: Annotated[
         bool,
         typer.Option("--dry-run", help="Clasificar y mostrar el diff del store sin escribir."),
     ] = False,
+    allow_rejected: Annotated[
+        float,
+        typer.Option(
+            "--allow-rejected",
+            min=0.0,
+            max=1.0,
+            help="Fracción máxima de filas rechazadas por el gate de publicación (0.0 = estricto).",
+        ),
+    ] = 0.0,
     out_csv: Annotated[
         Path | None,
         typer.Option("--out", help="Además, guardar los resultados crudos en este CSV."),
@@ -154,6 +167,7 @@ def enrich(
         df,
         cascade,
         l3_limit=l3_limit,
+        l3_concurrency=l3_concurrency,
         l3_cache_path=DEFAULT_L3_CACHE_JSONL if enable_l3 else None,
     )
 
@@ -175,13 +189,20 @@ def enrich(
         return
 
     typer.echo("→ Publicando enr_tipo_proyecto al store…")
-    diag = publish_to_store(
-        result,
-        data_dir=data_dir,
-        dry_run=False,
-        mark_missing=mark_missing,
-        source_label=source_label,
-    )
+    from projecttype.store_gate import StoreGateRejectedError, formatear_resumen_gate
+
+    try:
+        diag = publish_to_store(
+            result,
+            data_dir=data_dir,
+            dry_run=False,
+            mark_missing=mark_missing,
+            source_label=source_label,
+            allow_rejected_pct=allow_rejected,
+        )
+    except StoreGateRejectedError as exc:
+        typer.echo(formatear_resumen_gate(exc.resultado), err=True)
+        raise typer.Exit(code=1) from exc
     typer.echo(diag.summary())
 
 

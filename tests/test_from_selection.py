@@ -128,8 +128,8 @@ class TestFromSelection(unittest.TestCase):
         fake_result = pl.DataFrame(
             {
                 "Codigo BIP": ["4"],
-                "tipo_final_id": ["B"],
-                "tipo_final_nombre": ["B"],
+                "tipo_final_id": ["ENERGIA.ALUMBRADO_PUBLICO.ALUMBRADO_PUBLICO"],
+                "tipo_final_nombre": ["ALUMBRADO PUBLICO"],
                 "score_final": [0.8],
                 "nivel_final": [1],
             }

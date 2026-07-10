@@ -29,6 +29,8 @@ from projecttype.inference_metadata import (
 # CSV de entrada, "codigo_bip" en el CSV de resultados. Se aceptan ambos.
 _BIP_COL_CANDIDATES = ("codigo_bip", "Codigo BIP", "Código BIP", "EBI_CODIGO")
 _TABLE = "enr_tipo_proyecto"
+# Solo para validación del gate; no se publican al store.
+_GATE_ONLY = ("_ebi_raw",)
 
 _INFERENCE_COLUMNS = (
     "nivel_asignacion",
@@ -156,6 +158,7 @@ def to_enrichment_frame(resultados: pl.DataFrame) -> pl.DataFrame:
     out = with_meta.select(select_cols).rename(rename)
     out = out.with_columns(
         pl.lit(enricher_version()).alias("enricher_version"),
+        pl.col("EBI_CODIGO").cast(pl.Utf8).str.strip_chars().alias("_ebi_raw"),
         pl.col("EBI_CODIGO")
         .cast(pl.Utf8)
         .str.strip_chars()
@@ -179,6 +182,7 @@ def publish_to_store(
     dry_run: bool = False,
     mark_missing: bool = True,
     source_label: str | None = None,
+    allow_rejected_pct: float = 0.0,
 ) -> Any:
     """Publica el tipo de proyecto al store (tabla ``enr_tipo_proyecto``).
 
@@ -189,6 +193,7 @@ def publish_to_store(
         dry_run: si True, calcula el diagnóstico sin escribir.
         mark_missing: si False, publish parcial (no toca claves ausentes del lote).
         source_label: origen en el ledger ``_loads``; default ``enricher_version()``.
+        allow_rejected_pct: fracción máxima de filas rechazadas por el gate (0.0 = estricto).
 
     Returns:
         ``LoadDiagnostics`` del store (nuevas/cambiadas/sin-cambio/desaparecidas).
@@ -196,12 +201,18 @@ def publish_to_store(
     from sni_commons.contracts import ENR_TIPO_PROYECTO_CONTRACT
     from sni_commons.store import BipDataStore
 
+    from projecttype.store_gate import aplicar_gate_o_abortar
+
     base = data_dir or os.environ.get("BIP_DATA_DIR")
     if not base:
         raise RuntimeError(
             "publish_to_store requiere data_dir o la variable BIP_DATA_DIR."
         )
     frame = to_enrichment_frame(resultados)
+    frame = aplicar_gate_o_abortar(frame, allow_rejected_pct=allow_rejected_pct)
+    drop_cols = [c for c in _GATE_ONLY if c in frame.columns]
+    if drop_cols:
+        frame = frame.drop(drop_cols)
     store = BipDataStore(Path(base))
     source = source_label or enricher_version()
     return store.upsert_dataframe(

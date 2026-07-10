@@ -12,6 +12,10 @@ from projecttype.store_publish import (
     to_enrichment_frame,
 )
 
+_TIPO_A = "ENERGIA.ALUMBRADO_PUBLICO.ALUMBRADO_PUBLICO"
+_TIPO_B = "TRANSPORTE.TRANSPORTE_URBANO_Y_VIALIDAD_PEATONAL.CICLOVIAS_URBANAS"
+_TIPO_C = "EDUCACION.EDUCACION_PREBASICA.JARDIN_INFANTIL"
+
 
 def _cascade_result(rows: list[dict]) -> pl.DataFrame:
     """DataFrame con el shape del output de la cascada."""
@@ -61,9 +65,9 @@ class TestStorePublish(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             df = _cascade_result(
                 [
-                    {"Codigo BIP": "30000001-0", "tipo_final_id": "TRANSPORTE.CICLOVIA",
+                    {"Codigo BIP": "30000001", "tipo_final_id": _TIPO_B,
                      "tipo_final_nombre": "Ciclovía", "score_final": 0.9, "nivel_final": 2},
-                    {"Codigo BIP": "30000002-0", "tipo_final_id": "EDUCACION.JARDIN",
+                    {"Codigo BIP": "30000002", "tipo_final_id": _TIPO_C,
                      "tipo_final_nombre": "Jardín", "score_final": 0.8, "nivel_final": 1},
                 ]
             )
@@ -73,22 +77,25 @@ class TestStorePublish(unittest.TestCase):
             # Consultar "ciclovías" desde el store (lo que haría SNI).
             store = BipDataStore(Path(d))
             rows = store.read_rows("enr_tipo_proyecto")
-            ciclo = [r for r in rows if r["tipo_final_id"] == "TRANSPORTE.CICLOVIA"]
+            ciclo = [r for r in rows if r["tipo_final_id"] == _TIPO_B]
             self.assertEqual(len(ciclo), 1)
             self.assertEqual(ciclo[0]["EBI_CODIGO"], "30000001")  # normalizado
             self.assertEqual(ciclo[0]["enricher_version"], enricher_version())
 
     def test_publish_incremental_reclassify(self) -> None:
         with tempfile.TemporaryDirectory() as d:
-            base = [{"Codigo BIP": "1", "tipo_final_id": "A", "tipo_final_nombre": "a",
+            base = [{"Codigo BIP": "30000001", "tipo_final_id": _TIPO_A, "tipo_final_nombre": "a",
                      "score_final": 0.5, "nivel_final": 1}]
             publish_to_store(_cascade_result(base), data_dir=d)
             # Re-clasificar: el 1 cambia de tipo, entra el 2.
             updated = [
-                {"Codigo BIP": "1", "tipo_final_id": "B", "tipo_final_nombre": "b",
-                 "score_final": 0.7, "nivel_final": 3},
-                {"Codigo BIP": "2", "tipo_final_id": "C", "tipo_final_nombre": "c",
-                 "score_final": 0.6, "nivel_final": 2},
+                {"Codigo BIP": "30000001", "tipo_final_id": _TIPO_B, "tipo_final_nombre": "b",
+                 "score_final": 0.7, "nivel_final": 3, "_modelo_l3": "mock-llm",
+                 "l3_confianza": 0.9, "l3_razonamiento": "test", "l3_estado": "asignado",
+                 "estado_final": "asignado"},
+                {"Codigo BIP": "30000002", "tipo_final_id": _TIPO_C, "tipo_final_nombre": "c",
+                 "score_final": 0.6, "nivel_final": 2, "estado_final": "asignado",
+                 "l2_similitud": 0.6, "l2_estado": "asignado"},
             ]
             diag = publish_to_store(_cascade_result(updated), data_dir=d)
             self.assertEqual((diag.new, diag.changed), (1, 1))
@@ -98,7 +105,7 @@ class TestStorePublish(unittest.TestCase):
 
         with tempfile.TemporaryDirectory() as d:
             df = _cascade_result(
-                [{"Codigo BIP": "1", "tipo_final_id": "A", "tipo_final_nombre": "a",
+                [{"Codigo BIP": "30000001", "tipo_final_id": _TIPO_A, "tipo_final_nombre": "a",
                   "score_final": 0.5, "nivel_final": 1}]
             )
             diag = publish_to_store(df, data_dir=d, dry_run=True)
