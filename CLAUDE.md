@@ -59,8 +59,8 @@ CSV (eval):  data/raw/base_datos_extracto.csv → classify_cascade.py → result
 - `data/prompts/reglas_discriminantes.yaml` — guía experta por subsector confuso
   (hoy TRANSPORTE URBANO), inyectada como contexto de MÁXIMA prioridad en L3.
 
-Eval contra la submuestra manual: `evaluation.py` sobre `data/raw/Submuestra_tp.xlsx`
-(golden = col `tipo_proyecto`; descriptores = input).
+Eval contra etiquetado manual: `evaluation.py` / `load_expost_manual()` sobre
+`data/raw/informe_expost.duckdb` (golden derivado en `data/golden/`).
 
 ## No romper
 
@@ -68,9 +68,6 @@ Eval contra la submuestra manual: `evaluation.py` sobre `data/raw/Submuestra_tp.
   filas (lo protege `test_bip_code_normalized_for_join`).
 - ⚠️ **Publish parcial:** publicar con `--limit` marca el resto
   `_present_in_latest=false`; el CLI advierte y pide confirmación. Pilotos → `--dry-run`.
-- **El LLM L3 va por `sni_commons.llm`** (`SniCommonsLLMClient`, default; PT-4); los
-  clientes legacy (Gemini/OpenAI/Ollama) son fallback con `use_sni_commons=False`.
-  Free tier Gemini ≈ 15 RPM — el cliente intercala 5 s (`GEMINI_REQUEST_INTERVAL`).
-  La neutralidad de proveedor es estratégica (proveedor ministerial indefinido).
+- El LLM L3 va por `sni_commons.llm` (`SniCommonsLLMClient`; PT-4/PT-16).
 - `store_publish.py` proyecta al `ENR_TIPO_PROYECTO_CONTRACT` y hace upsert **no
   destructivo** con `writer=` (ledger v1.1) — no escribir al store por otra vía.

@@ -1,7 +1,7 @@
 ---
 tipo: workplan
 ambito: ProjectType
-actualizado: 2026-07-09
+actualizado: 2026-07-10
 ---
 
 # AGENT_WORKPLAN — ProjectType
@@ -14,12 +14,13 @@ actualizado: 2026-07-09
 > **Estado:** **enriquecedor** funcionando, ciclo **store→store completo** (PT-6):
 > `projecttype enrich --from-store` lee CONSULTAS_EBI, clasifica y publica
 > `enr_tipo_proyecto`. Cliente LLM unificado en sni-commons (PT-4). py3.12.
-> **72 tests** (**pytest**, PT-8/9/10/14), mypy **--strict**, ruff limpio — CI bloqueante.
-> Diagnóstico SOTA: `DIAGNOSTICO_Y_PLAN_SOTA_2026-07.md` (tickets PT-15…PT-22).
-> Cascada L1 (keywords) → L2 (embeddings) → L3 (LLM).
+> **105 tests** (**pytest**, PT-8/9/10/14/15/16/17/18/23/24), mypy **--strict**, ruff
+> limpio, golden real n=2.357 en gate CI — commits `7f776b1`/`5f7f2e3`/`d9ccc3f`
+> (2026-07-10). Diagnóstico SOTA: `DIAGNOSTICO_Y_PLAN_SOTA_2026-07.md` (tickets
+> PT-15…PT-22). Cascada L1 (keywords) → L2 (embeddings) → L3 (LLM).
 
 ## Verde antes de commitear
-`uv run pytest` (72) · `uv run ruff check src scripts tests` · `uv run mypy src`
+`uv run pytest` (105) · `uv run ruff check src scripts tests` · `uv run mypy src`
 (--strict) · `uv run python scripts/eval_golden.py --ci` — **lo mismo que corre CI (bloqueante)**.
 
 ---
@@ -41,6 +42,14 @@ actualizado: 2026-07-09
 ---
 
 # PENDIENTES (orden sugerido)
+
+> ✅ **Deuda de commits saldada (2026-07-10):** PT-15/16/17/18/23/24 (~90 archivos,
+> golden n=2.357, `store_gate.py`, `llm/provider.py`, caché Vertex) estaban solo
+> en el working tree desde el commit PT-14 (`3200751`); ahora en 3 commits
+> coherentes: `7f776b1` (PT-15/16/24 — cascada L3, transporte LLM, saneo),
+> `5f7f2e3` (PT-17/23 — golden real + holdout + caché Vertex), `d9ccc3f`
+> (PT-18 — gate de publicación). Verde CI-completo verificado antes y después de
+> comitear (pytest 105 · ruff 0 · mypy --strict 0 · `eval_golden --ci` aprobado).
 
 # ⭐ PLAN 2026-07 — lo que ordena la evaluación estratégica (creado 2026-07-02)
 
@@ -77,7 +86,7 @@ actualizado: 2026-07-09
 
 ```
 Paralelo: PT-15 + SC-17 + PT-12 + PT-17 + 👤 push
-PT-15 → PT-16 → PT-18 → 👤 re-publish → PT-19 → PT-20 → PT-21
+PT-15 → PT-16 → PT-18 → PT-23 👤 eval holdout → PT-19 → PT-20 → PT-21 → 👤 publish
 PT-13 (escala 👤) — GATED por PT-15+PT-17+PT-18; recomendado tras PT-20
 PT-22 (editor v2) — GATED por PT-17+PT-20
 ```
@@ -213,14 +222,20 @@ Done: pytest ≥76; `taxonomy_hash` idéntico.
 Fuente: `informe_expost.duckdb` (n=2.357). Conversor + aliases + gate estrato `expost`.
 Done: `eval_golden.py --ci` verde con golden completo.
 
-#### [PT-18] Gate publicación + re-publish (absorbe PT-9/PT-11) — **M + 👤, pendiente**
+#### [PT-18] Gate publicación + re-publish (absorbe PT-9/PT-11) — **✅ código HECHO 2026-07-09; 👤 re-publish GATED por PT-23**
 
-Réplica `store_gate.py` OBSRATE; `--allow-rejected`; 👤 re-publish ~500 L3.
-Done: SQL PT-9/PT-11 = 0.
+Réplica `store_gate.py` OBSRATE; `--allow-rejected`; integrado en `publish_to_store` + CLI.
+Tests: `tests/test_store_gate.py` (4); pytest total 83. Re-publish bloqueado hasta validar prompts (PT-23).
+
+#### [PT-23] Holdout + eval L3 real — **✅ HECHO 2026-07-09**
+
+Split dev/holdout 80/20 estratificado (`golden_split.py`); golden v2.1.0 con tags `dev`/`holdout`.
+`eval_golden.py --estrato dev|holdout --real` reporta métricas cascada y L3; `--l3-limit` para piloto.
+Gate CI sigue solo L1+L2 estrato `expost`. Publish al store **después** de holdout aceptable.
 
 #### [PT-19] Backend HITL — **L, pendiente**
 
-`review/` + `api/` FastAPI; `projecttype serve` puerto 8788. Dep: re-publish PT-18.
+`review/` + `api/` FastAPI; `projecttype serve` puerto 8788. Dep: holdout PT-23 👤.
 
 #### [PT-20] SPA v1 — **L, pendiente**
 
@@ -234,6 +249,51 @@ Dep: SC-17 + PT-18 + PT-19.
 #### [PT-22] v2 editor catálogo/prompts — **L, DIFERIDA**
 
 Patrón config-router OBSRATE + eval obligatorio. Gated: PT-17 + PT-20.
+
+#### [PT-25] Transporte LLM: paridad de robustez con OBSRATE — **M, creado 2026-07-10**
+
+**Origen.** Diagnóstico 2026-07-10: los "problemas con Google Cloud" que OBSRATE no
+tiene venían de tres brechas del transporte L3. La primera ya está cerrada en
+commons; quedan dos en este repo.
+
+1. **✅ (SC-19, commons)** Los 429 con `retryDelay` del servidor ya se respetan:
+   `RetryProvider` espera lo que pide Google (tope 90 s) en vez del backoff ciego
+   0.5→4 s que agotaba los 4 retries en ~7 s dentro de la misma ventana de throttle
+   y tiraba la fila a "Error LLM" residual. PT lo hereda sin tocar código
+   (`llm/provider.py` construye con `max_retries=4`). `vertex.py` de commons ahora
+   también extrae el `retryDelay` (antes solo AI Studio).
+2. **Pendiente — L3 vía `structured_output`.** Hoy `SniCommonsLLMClient.complete_json`
+   usa `chat` + `_extract_json` (regex de fences + `json.loads`): un JSON truncado o
+   con markdown cae como `JSONParseError` **no reintentable**, y un mismatch de schema
+   cae silencioso a residual (`parse_l3_response` → confianza 0). OBSRATE usa
+   `structured_output` (response_schema nativo en Vertex/Gemini, validación Pydantic
+   en el backend; mismatch = `LLMResponseError` reintentable). Migrar al patrón
+   `structured_sync` de `OBSRATE/src/obsrate/llm/provider.py` con `L3ResponseModel`.
+3. **Pendiente — `projecttype verify-llm`.** Smoke del proveedor configurado (patrón
+   `make verify-llm` OBSRATE). Hoy `check_provider_available` solo se llama en
+   `scripts/classify_cascade.py`; el camino de producción (`enrich --from-store
+   --enable-l3`) descubre credenciales/ADC vencidas a mitad de corrida.
+
+**Done-cuando:** `_extract_json` fuera del camino L3 real (queda solo para mocks si
+hace falta); test: respuesta no-JSON del stub → reintento, no residual silencioso;
+`projecttype verify-llm` exit 0 con proveedor OK y exit 1 con mensaje accionable sin
+credenciales; suite + `eval_golden --ci` verdes; smoke real 👤 (~5 filas `--enable-l3
+--limit 5 --dry-run`).
+
+#### [PT-24] Multi-tipo L3 (fallback extremo) — **✅ HECHO 2026-07-10**
+
+**Objetivo.** Proyectos integrales (PMIB, saneamiento, educación compuesta) con ≥2 obras
+evidenciadas: L3 devuelve tipo principal + hasta 2 secundarios; métrica multi-hit en eval.
+
+**Implementado:**
+- Schema L3: `tipos_secundarios[]`, `multi_tipo` (`l3_schema.py`, `l3.yaml`)
+- Clasificador: validación contra lista cerrada, propagación a cascada/caché v3
+- Métricas: `multi_hit_l3_puro`, `exactos_multi_hit_l3_puro` en `eval_golden.py`
+- Auditoría manual 13 casos: `docs/eval/auditoria_l3pure13_2026-07-10.md`
+
+**Done-cuando:** pytest verde; re-eval `--l3-pure 100` con Vertex (👤) reporta multi-hit;
+holdout congelado hasta validar en dev. Store: principal en `tipo_proyecto`; secundarios
+solo en metadatos L3 (columna store → SC-17 futuro).
 
 ---
 

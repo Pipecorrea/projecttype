@@ -41,7 +41,7 @@ Variables de entorno (ver `.env.example`):
 ## Verde antes de commitear (lo mismo que corre CI, bloqueante)
 
 ```bash
-uv run pytest                          # 72 tests
+uv run pytest                          # 79 tests
 uv run ruff check src scripts tests
 uv run mypy src                        # --strict (configurado en pyproject)
 ```
@@ -173,9 +173,9 @@ src/projecttype/
   store_input.py         # PT-6: CONSULTAS_EBI → input de la cascada
   store_publish.py       # PT-5: resultados → enr_tipo_proyecto (normaliza EBI_CODIGO)
   taxonomy.py            # carga del YAML de taxonomía
-  evaluation.py          # comparación vs submuestra manual (Submuestra_tp.xlsx)
+  evaluation.py          # comparación vs etiquetado manual (informe_expost.duckdb)
 data/taxonomy/           # taxonomía YAML + caché de embeddings
 data/prompts/            # prompt L3 + few-shot (curado y minado)
 scripts/                 # camino CSV, calibración y evaluación
-tests/                   # 72 tests (pytest)
+tests/                   # 79 tests (pytest)
 ```
