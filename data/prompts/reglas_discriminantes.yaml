@@ -68,3 +68,76 @@ subsectores:
              Vialidad Intermedia.
           Prioridad: jerarquía vial (Local/Pasaje vs Colectora/Servicio) > elementos constructivos
           (solo aceras vs aceras+soleras).
+
+  - sector: RECURSOS HIDRICOS
+    subsector: EVACUACION DISPOSICION FINAL AGUAS SERVIDAS
+    procedimiento: |
+      PASO 1: lista las COMPONENTES presentes en el texto (evidencia explícita):
+        casetas/soluciones sanitarias · alcantarillado (red/colectores) · agua potable
+        · energía/empalmes eléctricos · planta de tratamiento.
+      PASO 2: elige el tipo cuya lista de componentes coincide EXACTAMENTE con lo evidenciado.
+      No elijas "el más parecido" ni agregues componentes ausentes. Si hay planta de tratamiento
+      a escala de localidad/red (no solo casetas), prefiere tipos RED/PLANTA sobre CASETAS.
+    reglas:
+      - pares:
+          - CASETAS SANITARIAS/ALCANTARILLADO/AGUA POTABLE
+          - CASETAS SANITARIAS/ALCANTARILLADO/PLANTA DE TRATAMIENTO
+        regla: |
+          PLANTA DE TRATAMIENTO solo si el texto menciona planta de tratamiento / PTAS /
+          lodos activados / tratamiento de aguas servidas como obra del proyecto.
+          Si hay casetas + agua potable (estanque, red, arranques) y NO planta →
+          CASETAS …/AGUA POTABLE. Mejorar agua potable NO implica planta de tratamiento.
+      - pares:
+          - CASETAS SANITARIAS/ALCANTARILLADO/AGUA POTABLE
+          - CASETAS SANITARIAS /ALCANTARILLADO/AGUA POTABLE/ENERGIA
+        regla: |
+          ENERGIA solo si hay empalmes eléctricos / electrificación / energía eléctrica
+          como componente del proyecto (no solo mención incidental). Si no hay energía →
+          CASETAS …/AGUA POTABLE (sin ENERGIA).
+      - pares:
+          - CASETAS SANITARIAS/ALCANTARILLADO/AGUA POTABLE
+          - CASETAS SANITARIAS /ALCANTARILLADO/AGUA POTABLE/ENERGIA
+          - RED DE ALCANTARILLADO Y PLANTA TRATAMIENTO AGUAS SERVIDAS
+          - RED DE ALCANTARILLADO Y AGUA POTABLE
+          - RED DE ALCANTARILLADO
+          - PLANTA TRATAMIENTO AGUAS SERVIDAS
+        regla: |
+          Distingue ESCALA y objeto principal:
+          1. CASETAS… = soluciones sanitarias domiciliarias/prediales (casetas, SS.HH.,
+             arranques, relleno de pozos negros) aunque incluyan tramos menores de red.
+          2. RED… / PLANTA… = infraestructura de red o planta a escala de localidad
+             (colectores, PTAS comunal, red de alcantarillado) como obra principal.
+          Si el nombre/descripción centra "casetas" o "soluciones sanitarias" → familia CASETAS.
+          Si centra "planta de tratamiento" o "red de alcantarillado" sin casetas → familia RED/PLANTA.
+
+  - sector: TRANSPORTE
+    subsector: TRANSPORTE INTERURBANO
+    procedimiento: |
+      PASO 1: determina si el eje tiene designación de RUTA oficial (código tipo K-175,
+      N-51, Ruta 5, rol de camino con letra-número de ruta) o es un camino local/vecinal.
+      PASO 2: aplica la regla del par. La designación oficial prevalece sobre el verbo
+      "pavimentar" o "mejorar camino".
+    reglas:
+      - pares: [RUTA, CAMINO BASICO INTERMEDIO]
+        regla: |
+          1. RUTA si el texto nombra una ruta con código/rol oficial (p. ej. "ruta K-175",
+             "ruta N-51", "Ruta 5", "rol X-NN") o la identifica como ruta interurbana
+             de la red vial.
+          2. CAMINO BASICO INTERMEDIO si es camino local/vecinal/rural SIN designación
+             de ruta oficial (camino de acceso, camino vecinal, camino básico sin código).
+          Heurística: presencia de patrón "ruta <código>" o "rol <código>" → RUTA.
+          "camino" genérico sin código de ruta → CAMINO BASICO INTERMEDIO.
+
+  - sector: EDUCACION
+    subsector: EDUCACION BASICA Y MEDIA
+    procedimiento: |
+      Distingue escuela básica simple vs tipos compuestos con prebásica (kinder/prekindér).
+      Exige evidencia explícita de la componente prebásica para asignar el compuesto.
+    reglas:
+      - pares:
+          - ESCUELA BASICA
+          - ESCUELA BASICA MAS KINDER Y/O PREKINDER
+        regla: |
+          ESCUELA BASICA MAS KINDER Y/O PREKINDER solo si el texto evidencia kinder,
+          prekindér, educación parvularia o salas prebásicas como parte del proyecto.
+          Si solo menciona escuela básica / enseñanza básica → ESCUELA BASICA (simple).

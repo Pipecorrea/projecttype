@@ -79,6 +79,9 @@ class ResultadoClasificacion:
     alternativas: list[str] = field(default_factory=list)
     sector_resuelto: str = ""
     subsector_resuelto: str = ""
+    tipos_secundarios_ids: list[str] = field(default_factory=list)
+    tipos_secundarios_nombres: list[str] = field(default_factory=list)
+    multi_tipo: bool = False
 
 
 def score_tipo(proyecto: ProyectoTexto, tipo: TipoProyecto, config: ScorerConfig) -> TipoScore:

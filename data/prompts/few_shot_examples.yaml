@@ -125,3 +125,93 @@ examples:
       razonamiento: >
         Evidencia ambas componentes (colector + laguna). Aplica tipo compuesto aunque L1/L2
         pudieran sugerir solo uno de los subtipos.
+
+  - id: hidricos_casetas_agua_potable
+    sector: RECURSOS HIDRICOS
+    subsector: EVACUACION DISPOSICION FINAL AGUAS SERVIDAS
+    tags: [casetas, agua_potable, desambiguacion]
+    proyecto: >
+      Construcción Casetas Sanitarias Sector Pueblo Seco. Construcción de 95 casetas
+      sanitarias con baño y cocina; mejoramiento del sistema de agua potable (estanque
+      V=100m3) y extensiones de red a calles sin servicio. No contempla planta de tratamiento.
+    respuesta:
+      analisis: Soluciones sanitarias domiciliarias con componente de agua potable, sin planta.
+      evidencia:
+        - "95 casetas sanitarias: con baño y cocina"
+        - "mejoramiento del sistema de agua potable"
+        - "extensiones de red"
+      candidatos_descartados:
+        - tipo_id: RECURSOS_HIDRICOS.EVACUACION_DISPOSICION_FINAL_AGUAS_SERVIDAS.CASETAS_SANITARIASALCANTARILLADOPLANTA_DE_TRATAMIENTO
+          motivo: No hay planta de tratamiento; solo casetas y agua potable.
+        - tipo_id: RECURSOS_HIDRICOS.EVACUACION_DISPOSICION_FINAL_AGUAS_SERVIDAS.RED_DE_ALCANTARILLADO_Y_PLANTA_TRATAMIENTO_AGUAS_SERVIDAS
+          motivo: Obra centrada en casetas domiciliarias, no red/planta a escala de localidad.
+      tipo_id: RECURSOS_HIDRICOS.EVACUACION_DISPOSICION_FINAL_AGUAS_SERVIDAS.CASETAS_SANITARIASALCANTARILLADOAGUA_POTABLE
+      confianza: 0.9
+      razonamiento: >
+        Componentes evidentes = casetas + agua potable. Sin planta ni energía → tipo
+        CASETAS …/AGUA POTABLE.
+
+  - id: hidricos_casetas_con_energia
+    sector: RECURSOS HIDRICOS
+    subsector: EVACUACION DISPOSICION FINAL AGUAS SERVIDAS
+    tags: [casetas, energia, desambiguacion]
+    proyecto: >
+      Construcción Soluciones Sanitarias Palquibudi. 50 soluciones sanitarias completas,
+      137 SS.HH. intermedias, 10 arranques de agua potable y 6 empalmes eléctricos;
+      relleno de 48 pozos negros.
+    respuesta:
+      analisis: Soluciones sanitarias con agua potable y empalmes eléctricos.
+      evidencia:
+        - "soluciones sanitarias completas"
+        - "arranques de agua potable"
+        - "empalmes electricos"
+      candidatos_descartados:
+        - tipo_id: RECURSOS_HIDRICOS.EVACUACION_DISPOSICION_FINAL_AGUAS_SERVIDAS.CASETAS_SANITARIASALCANTARILLADOAGUA_POTABLE
+          motivo: Hay empalmes eléctricos explícitos → corresponde variante con ENERGIA.
+        - tipo_id: RECURSOS_HIDRICOS.EVACUACION_DISPOSICION_FINAL_AGUAS_SERVIDAS.RED_DE_ALCANTARILLADO_Y_PLANTA_TRATAMIENTO_AGUAS_SERVIDAS
+          motivo: No es red/planta comunal; son soluciones sanitarias prediales.
+      tipo_id: RECURSOS_HIDRICOS.EVACUACION_DISPOSICION_FINAL_AGUAS_SERVIDAS.CASETAS_SANITARIAS_ALCANTARILLADOAGUA_POTABLEENERGIA
+      confianza: 0.9
+      razonamiento: >
+        Casetas + agua potable + energía (empalmes) → CASETAS …/AGUA POTABLE/ENERGIA.
+
+  - id: transporte_ruta_con_codigo
+    sector: TRANSPORTE
+    subsector: TRANSPORTE INTERURBANO
+    tags: [ruta, camino, desambiguacion]
+    proyecto: >
+      Mejoramiento Camino Tres Esquinas-las Trancas, Rol K-175. Pavimentación de la
+      ruta K-175 en 18 km, trazado en planta y alzado, ancho mínimo 7 m y bermas 1,5 m.
+    respuesta:
+      analisis: Pavimentación de una ruta interurbana con código oficial K-175.
+      evidencia:
+        - "Rol K-175"
+        - "pavimentacion de la ruta k-175"
+        - "18 km"
+      candidatos_descartados:
+        - tipo_id: TRANSPORTE.TRANSPORTE_INTERURBANO.CAMINO_BASICO_INTERMEDIO
+          motivo: Tiene designación oficial de ruta (K-175); no es camino vecinal sin código.
+      tipo_id: TRANSPORTE.TRANSPORTE_INTERURBANO.RUTA
+      confianza: 0.92
+      razonamiento: >
+        Código/rol de ruta oficial (K-175) → RUTA, aunque el nombre diga "Camino".
+
+  - id: educacion_basica_sin_kinder
+    sector: EDUCACION
+    subsector: EDUCACION BASICA Y MEDIA
+    tags: [escuela, compuesto, desambiguacion]
+    proyecto: >
+      Reposición Escuela Básica G-123. Construcción de pabellones de aulas, casino y
+      multicancha para enseñanza básica. No contempla salas de párvulos ni kinder.
+    respuesta:
+      analisis: Infraestructura de escuela básica sin componente prebásica.
+      evidencia:
+        - "Escuela Básica"
+        - "enseñanza básica"
+        - "No contempla salas de párvulos ni kinder"
+      candidatos_descartados:
+        - tipo_id: EDUCACION.EDUCACION_BASICA_Y_MEDIA.ESCUELA_BASICA_MAS_KINDER_YO_PREKINDER
+          motivo: No hay evidencia de kinder/prekindér; solo escuela básica.
+      tipo_id: EDUCACION.EDUCACION_BASICA_Y_MEDIA.ESCUELA_BASICA
+      confianza: 0.9
+      razonamiento: Sin evidencia de prebásica → ESCUELA BASICA simple, no el compuesto.

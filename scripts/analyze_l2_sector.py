@@ -8,11 +8,11 @@ from pathlib import Path
 
 import polars as pl
 
-from projecttype.evaluation import NivelMatch, clasificar_match, load_submuestra
+from projecttype.evaluation import NivelMatch, clasificar_match, load_expost_manual
 from projecttype.paths import (
+    DEFAULT_EXPOST_DB,
     DEFAULT_OUTPUT_CASCADE_CSV,
     DEFAULT_OUTPUT_CSV,
-    DEFAULT_SUBMUESTRA,
 )
 from projecttype.text_utils import normalize_tipo_name
 
@@ -199,7 +199,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Análisis L2 por sector.")
     parser.add_argument("--l1", default=str(DEFAULT_OUTPUT_CSV))
     parser.add_argument("--cascade", default=str(DEFAULT_OUTPUT_CASCADE_CSV))
-    parser.add_argument("--submuestra", default=str(DEFAULT_SUBMUESTRA))
+    parser.add_argument("--manual", default=str(DEFAULT_EXPOST_DB))
     parser.add_argument(
         "--output-sector",
         default=str(ROOT / "data/output/l2_analisis_sector.csv"),
@@ -213,7 +213,7 @@ def main() -> int:
     df = build_analysis_df(
         pl.read_csv(args.l1),
         pl.read_csv(args.cascade),
-        load_submuestra(args.submuestra),
+        load_expost_manual(args.manual),
     )
     sector = resumen_por_sector(df)
     subsector = resumen_por_subsector(df)

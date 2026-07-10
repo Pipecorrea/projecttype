@@ -12,6 +12,7 @@ from projecttype.classifier_cascade import ClassifierCascade
 from projecttype.inference_metadata import (
     EVIDENCIA_MAX_CHARS,
     prompt_version,
+    taxonomy_hash,
     truncate_evidencia,
 )
 from projecttype.paths import DEFAULT_TAXONOMY, PROMPTS_DIR
@@ -24,7 +25,7 @@ def _five_level_rows() -> pl.DataFrame:
     return pl.DataFrame(
         [
             {
-                "Codigo BIP": "PT9-L1",
+                "Codigo BIP": "30000011",
                 "SECTOR": "CULTURA Y PATRIMONIO",
                 "SUBSECTOR": "CULTURA",
                 "NOMBRE": "REPOSICION BIBLIOTECA MUNICIPAL",
@@ -35,7 +36,7 @@ def _five_level_rows() -> pl.DataFrame:
                 "descriptor_3": "",
             },
             {
-                "Codigo BIP": "PT9-L2",
+                "Codigo BIP": "30000012",
                 "SECTOR": "TRANSPORTE",
                 "SUBSECTOR": "TRANSPORTE URBANO, VIALIDAD PEATONAL",
                 "NOMBRE": "intervencion urbana mixta",
@@ -46,7 +47,7 @@ def _five_level_rows() -> pl.DataFrame:
                 "descriptor_3": "",
             },
             {
-                "Codigo BIP": "PT9-L3",
+                "Codigo BIP": "30000013",
                 "SECTOR": "ENERGIA",
                 "SUBSECTOR": "ALUMBRADO PUBLICO",
                 "NOMBRE": "proyecto vago 0",
@@ -57,7 +58,7 @@ def _five_level_rows() -> pl.DataFrame:
                 "descriptor_3": "",
             },
             {
-                "Codigo BIP": "PT9-RES",
+                "Codigo BIP": "30000014",
                 "SECTOR": "ENERGIA",
                 "SUBSECTOR": "ALUMBRADO PUBLICO",
                 "NOMBRE": "proyecto vago 1",
@@ -68,7 +69,7 @@ def _five_level_rows() -> pl.DataFrame:
                 "descriptor_3": "",
             },
             {
-                "Codigo BIP": "PT9-RES2",
+                "Codigo BIP": "30000015",
                 "SECTOR": "RECURSOS HIDRICOS",
                 "SUBSECTOR": "AGUA POTABLE",
                 "NOMBRE": "SISTEMA DE RIEGO COMUNIDAD AGRICOLA",
@@ -83,6 +84,9 @@ def _five_level_rows() -> pl.DataFrame:
 
 
 class TestInferenceMetadata(unittest.TestCase):
+    def test_taxonomy_hash_estable(self) -> None:
+        self.assertEqual(taxonomy_hash(), "75c50c1e979e")
+
     def test_prompt_version_changes_on_yaml_edit(self) -> None:
         before = prompt_version()
         l3_path = PROMPTS_DIR / "l3.yaml"
@@ -108,7 +112,6 @@ class TestInferenceMetadata(unittest.TestCase):
         result = classify_cascade_dataframe(
             _five_level_rows(),
             cascade,
-            l3_model="mock-llm",
         )
         frame = to_enrichment_frame(result)
         required = {
@@ -134,6 +137,11 @@ class TestInferenceMetadata(unittest.TestCase):
             self.assertEqual(l1_rows["modelo"][0], "n/a")
             self.assertIsNotNone(l1_rows["confianza"][0])
 
+        l3_rows = frame.filter(pl.col("nivel_asignacion") == "L3")
+        if l3_rows.height:
+            self.assertEqual(l3_rows["modelo"][0], "mock-llm")
+            self.assertNotEqual(l3_rows["modelo"][0], "n/a")
+
     def test_publish_roundtrip_with_metadata(self) -> None:
         cascade = ClassifierCascade.from_yaml(
             DEFAULT_TAXONOMY,
@@ -143,7 +151,6 @@ class TestInferenceMetadata(unittest.TestCase):
         result = classify_cascade_dataframe(
             _five_level_rows().head(2),
             cascade,
-            l3_model="mock-llm",
         )
         with tempfile.TemporaryDirectory() as tmp:
             diag = publish_to_store(result, data_dir=tmp)

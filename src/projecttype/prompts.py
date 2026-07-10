@@ -117,11 +117,14 @@ def _resolve_alternativas(
     return result[:4]
 
 
-def build_l3_user_prompt(
+_L3_INSTRUCCION = (
+    "Clasifica el proyecto siguiente. Usa el protocolo de razonamiento del system prompt. "
+    "Responde SOLO con el JSON de salida."
+)
+
+
+def build_l3_sugerencias(
     *,
-    sector: str,
-    subsector: str,
-    proyecto_text: str,
     tipos: list[TipoProyecto],
     l1_tipo_id: str | None = None,
     l1_tipo_nombre: str | None = None,
@@ -134,43 +137,8 @@ def build_l3_user_prompt(
     l2_estado: str | None = None,
     l2_similitud: float | None = None,
     l2_margen: float | None = None,
-    codigo_bip: str | None = None,
-    max_def_chars: int = 400,
-    prompt_config: L3PromptConfig | None = None,
-    include_dynamic_context: bool = True,
-) -> str:
-    cfg = prompt_config or load_l3_prompt_config()
-    sibling_names = frozenset(normalize_tipo_name(t.nombre) for t in tipos)
+) -> dict[str, Any]:
     tipos_by_id = {t.tipo_id: t for t in tipos}
-    opciones = [
-        format_tipo_option(t, sibling_names=sibling_names, max_def_chars=max_def_chars)
-        for t in tipos
-    ]
-
-    payload: dict[str, Any] = {
-        "instruccion": (
-            "Clasifica el proyecto siguiente. Usa el protocolo de razonamiento del system prompt. "
-            "Responde SOLO con el JSON de salida."
-        ),
-        "sector": sector,
-        "subsector": subsector,
-        "proyecto": proyecto_text,
-        "tipos_validos": opciones,
-    }
-    if codigo_bip:
-        payload["codigo_bip"] = codigo_bip
-
-    if include_dynamic_context:
-        contexto = build_dynamic_context(
-            sector,
-            subsector,
-            max_few_shot=cfg.max_few_shot_examples,
-            max_confusion_pairs=cfg.max_confusion_pairs,
-            max_composite_relations=cfg.max_composite_relations,
-        )
-        if contexto:
-            payload["contexto_adicional"] = contexto
-
     sugerencias: dict[str, Any] = {}
     if l1_tipo_id or l1_tipo_nombre:
         sugerencias["l1"] = {
@@ -193,9 +161,137 @@ def build_l3_user_prompt(
             sugerencias["l2"]["similitud"] = round(l2_similitud, 3)
         if l2_margen is not None:
             sugerencias["l2"]["margen"] = round(l2_margen, 3)
+    return sugerencias
+
+
+def build_l3_static_payload(
+    *,
+    sector: str,
+    subsector: str,
+    tipos: list[TipoProyecto],
+    max_def_chars: int = 400,
+    prompt_config: L3PromptConfig | None = None,
+    include_dynamic_context: bool = True,
+) -> dict[str, Any]:
+    """Bloque estático por subsector (cacheable en Vertex Context Caching)."""
+    cfg = prompt_config or load_l3_prompt_config()
+    sibling_names = frozenset(normalize_tipo_name(t.nombre) for t in tipos)
+    opciones = [
+        format_tipo_option(t, sibling_names=sibling_names, max_def_chars=max_def_chars)
+        for t in tipos
+    ]
+    payload: dict[str, Any] = {
+        "instruccion": _L3_INSTRUCCION,
+        "sector": sector,
+        "subsector": subsector,
+        "tipos_validos": opciones,
+    }
+    if include_dynamic_context:
+        contexto = build_dynamic_context(
+            sector,
+            subsector,
+            max_few_shot=cfg.max_few_shot_examples,
+            max_confusion_pairs=cfg.max_confusion_pairs,
+            max_composite_relations=cfg.max_composite_relations,
+            max_proyecto_chars=cfg.few_shot_max_proyecto_chars,
+        )
+        if contexto:
+            payload["contexto_adicional"] = contexto
+    return payload
+
+
+def build_l3_dynamic_payload(
+    *,
+    proyecto_text: str,
+    sugerencias: dict[str, Any] | None = None,
+    codigo_bip: str | None = None,
+) -> dict[str, Any]:
+    """Parte por-proyecto (no cacheable): texto + sugerencias L1/L2."""
+    payload: dict[str, Any] = {"proyecto": proyecto_text}
+    if codigo_bip:
+        payload["codigo_bip"] = codigo_bip
     if sugerencias:
         payload["sugerencias_previas"] = sugerencias
+    return payload
 
+
+def build_l3_user_prompt(
+    *,
+    sector: str,
+    subsector: str,
+    proyecto_text: str,
+    tipos: list[TipoProyecto],
+    l1_tipo_id: str | None = None,
+    l1_tipo_nombre: str | None = None,
+    l1_estado: str | None = None,
+    l1_score: float | None = None,
+    l1_margen: float | None = None,
+    l1_alternativas: str | None = None,
+    l2_tipo_id: str | None = None,
+    l2_tipo_nombre: str | None = None,
+    l2_estado: str | None = None,
+    l2_similitud: float | None = None,
+    l2_margen: float | None = None,
+    codigo_bip: str | None = None,
+    max_def_chars: int = 400,
+    prompt_config: L3PromptConfig | None = None,
+    include_dynamic_context: bool = True,
+    static_only: bool = False,
+    dynamic_only: bool = False,
+) -> str:
+    """User prompt L3. Por defecto une bloque estático + dinámico (compat).
+
+    Con ``static_only`` / ``dynamic_only`` se emite solo la parte pedida
+    (para Vertex Context Caching por subsector).
+    """
+    if static_only and dynamic_only:
+        raise ValueError("static_only y dynamic_only son mutuamente excluyentes")
+
+    sugerencias = build_l3_sugerencias(
+        tipos=tipos,
+        l1_tipo_id=l1_tipo_id,
+        l1_tipo_nombre=l1_tipo_nombre,
+        l1_estado=l1_estado,
+        l1_score=l1_score,
+        l1_margen=l1_margen,
+        l1_alternativas=l1_alternativas,
+        l2_tipo_id=l2_tipo_id,
+        l2_tipo_nombre=l2_tipo_nombre,
+        l2_estado=l2_estado,
+        l2_similitud=l2_similitud,
+        l2_margen=l2_margen,
+    )
+
+    if dynamic_only:
+        return json.dumps(
+            build_l3_dynamic_payload(
+                proyecto_text=proyecto_text,
+                sugerencias=sugerencias or None,
+                codigo_bip=codigo_bip,
+            ),
+            ensure_ascii=False,
+            indent=2,
+        )
+
+    static = build_l3_static_payload(
+        sector=sector,
+        subsector=subsector,
+        tipos=tipos,
+        max_def_chars=max_def_chars,
+        prompt_config=prompt_config,
+        include_dynamic_context=include_dynamic_context,
+    )
+    if static_only:
+        return json.dumps(static, ensure_ascii=False, indent=2)
+
+    payload = {
+        **static,
+        **build_l3_dynamic_payload(
+            proyecto_text=proyecto_text,
+            sugerencias=sugerencias or None,
+            codigo_bip=codigo_bip,
+        ),
+    }
     return json.dumps(payload, ensure_ascii=False, indent=2)
 
 
@@ -206,6 +302,7 @@ def build_l3_messages(
     proyecto_text: str,
     tipos: list[TipoProyecto],
     prompt_config: L3PromptConfig | None = None,
+    dynamic_only: bool = False,
     **kwargs: Any,
 ) -> dict[str, str]:
     cfg = prompt_config or load_l3_prompt_config()
@@ -217,6 +314,7 @@ def build_l3_messages(
             proyecto_text=proyecto_text,
             tipos=tipos,
             prompt_config=cfg,
+            dynamic_only=dynamic_only,
             **kwargs,
         ),
     }

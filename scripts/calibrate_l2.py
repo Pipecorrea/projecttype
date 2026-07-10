@@ -8,8 +8,8 @@ from itertools import product
 
 import polars as pl
 
-from projecttype.evaluation import NivelMatch, clasificar_match, load_submuestra
-from projecttype.paths import DEFAULT_OUTPUT_CASCADE_CSV, DEFAULT_SUBMUESTRA
+from projecttype.evaluation import NivelMatch, clasificar_match, load_expost_manual
+from projecttype.paths import DEFAULT_EXPOST_DB, DEFAULT_OUTPUT_CASCADE_CSV
 
 
 def _simulate(
@@ -83,11 +83,11 @@ def _simulate(
 def main() -> int:
     parser = argparse.ArgumentParser(description="Grid search umbrales L2.")
     parser.add_argument("--cascade", default=str(DEFAULT_OUTPUT_CASCADE_CSV))
-    parser.add_argument("--submuestra", default=str(DEFAULT_SUBMUESTRA))
+    parser.add_argument("--manual", default=str(DEFAULT_EXPOST_DB))
     parser.add_argument("--top", type=int, default=15)
     args = parser.parse_args()
 
-    man = load_submuestra(args.submuestra).with_columns(
+    man = load_expost_manual(args.manual).with_columns(
         pl.col("codigo_bip").cast(pl.Utf8).str.strip_chars()
     ).filter(pl.col("tipo_proyecto").is_not_null())
 

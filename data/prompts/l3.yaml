@@ -15,8 +15,10 @@ system_prompt: |
   1. **analisis**: ¿Cuál es la actividad u obra principal del proyecto? (1-2 oraciones)
   2. **evidencia**: Cita o parafrasea 2-4 fragmentos del texto que sustentan tu lectura
   3. **candidatos_descartados**: Lista tipos descartados con motivo breve (especialmente los similares)
-  4. **tipo_id** y **confianza**: Decisión final
-  5. **razonamiento**: Síntesis final (máx. 80 palabras)
+  4. **tipo_id** y **confianza**: Decisión final (tipo principal)
+  5. **tipos_secundarios** (opcional): hasta 2 tipos adicionales con evidencia explícita
+  6. **multi_tipo**: true solo si hay ≥2 obras/componentes con evidencia fuerte en el texto
+  7. **razonamiento**: Síntesis final (máx. 80 palabras)
 
   ## Reglas de decisión
 
@@ -30,6 +32,18 @@ system_prompt: |
     aplica primero su `procedimiento` (p. ej. establecer la jerarquía antes que los
     elementos constructivos) y luego la `regla` del par en conflicto. La guía proviene
     de un experto de dominio y prevalece sobre tu intuición y sobre las sugerencias L1/L2.
+
+  ## Multi-tipo (PT-24 — solo casos extremos)
+
+  Usa tipos_secundarios SOLO cuando el texto evidencia ≥2 obras o servicios distintos,
+  cada una con sustento textual explícito (no inferencias débiles ni accesorios menores).
+
+  - tipo_id = obra o servicio **principal** (jerarquía de dominio o mayor magnitud).
+  - tipos_secundarios: máximo 2, todos en tipos_validos, distintos del principal.
+  - Cada secundario lleva confianza 0.5-0.9 y motivo breve citando evidencia.
+  - multi_tipo = true cuando devuelves ≥1 secundario.
+  - Si compiten 2+ tipos sin jerarquía clara: confianza del principal < 0.75 (ambiguo).
+  - NO uses multi-tipo por defecto: un solo tipo o null es la salida habitual.
 
 reasoning_steps:
   - id: identificar_obra
@@ -82,15 +96,28 @@ edge_cases:
     instruccion: >
       Si el texto contiene excluye_si de un candidato, descártalo aunque otras keywords coincidan.
 
+  - id: multi_tipo
+    titulo: Proyectos multi-componente (PMIB, saneamiento integral, educación compuesta)
+    instruccion: >
+      Si el texto describe ≥2 obras con evidencia fuerte (p. ej. casetas + red/PTAS,
+      puente + vía estructurante, liceo + internado), asigna tipo_id al principal y
+      tipos_secundarios a los demás. Máximo 2 secundarios. Baja confianza del principal
+      si ninguna obra domina claramente. No multi-tipo por accesorios o contexto genérico.
+
 response_schema:
   analisis: string — actividad principal del proyecto
   evidencia: array of strings — fragmentos del texto
   candidatos_descartados: array of {tipo_id, motivo}
-  tipo_id: string | null
-  confianza: float 0-1
+  tipo_id: string | null — tipo principal
+  tipos_secundarios: array of {tipo_id, confianza, motivo} — máx. 2, opcional
+  multi_tipo: boolean — true si hay ≥1 secundario con evidencia explícita
+  confianza: float 0-1 — confianza del tipo principal
   razonamiento: string — síntesis final
 
 settings:
-  max_few_shot_examples: 2
+  max_few_shot_examples: 3
   max_confusion_pairs: 5
   max_composite_relations: 4
+  few_shot_max_proyecto_chars: 450
+  vertex_cache_ttl_seconds: 3600
+  vertex_cache_min_rows: 2

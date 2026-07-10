@@ -92,6 +92,7 @@ def select_few_shot_examples(
     bank: list[FewShotExample] | None = None,
     max_examples: int = 2,
     few_shot_path: Path | None = None,
+    max_proyecto_chars: int = 450,
 ) -> list[dict[str, Any]]:
     examples = bank or load_few_shot_bank(str(few_shot_path) if few_shot_path else None)
     scored = [
@@ -101,40 +102,38 @@ def select_few_shot_examples(
     scored.sort(key=lambda x: (-x[0], x[1].id))
     selected: list[dict[str, Any]] = []
     seen_ids: set[str] = set()
+
+    def _append(ex: FewShotExample) -> None:
+        proyecto = ex.proyecto
+        if max_proyecto_chars > 0 and len(proyecto) > max_proyecto_chars:
+            proyecto = proyecto[: max_proyecto_chars - 3].rstrip() + "..."
+        selected.append(
+            {
+                "id": ex.id,
+                "proyecto": proyecto,
+                "respuesta_esperada": ex.respuesta,
+            }
+        )
+        seen_ids.add(ex.id)
+
     for score, ex in scored:
         if score <= 0 and selected:
             break
         if ex.id in seen_ids:
             continue
         if score <= 0 and not selected:
-            # al menos un ejemplo global si no hay match
             pass
         elif score <= 0:
             continue
-        seen_ids.add(ex.id)
-        selected.append(
-            {
-                "id": ex.id,
-                "proyecto": ex.proyecto,
-                "respuesta_esperada": ex.respuesta,
-            }
-        )
+        _append(ex)
         if len(selected) >= max_examples:
             break
-    # Garantizar al menos 1 ejemplo global si hay pocos matches
     if len(selected) < max_examples:
         for ex in examples:
             if ex.id in seen_ids:
                 continue
             if not ex.sector and not ex.subsector:
-                selected.append(
-                    {
-                        "id": ex.id,
-                        "proyecto": ex.proyecto,
-                        "respuesta_esperada": ex.respuesta,
-                    }
-                )
-                seen_ids.add(ex.id)
+                _append(ex)
                 if len(selected) >= max_examples:
                     break
     return selected
@@ -248,6 +247,7 @@ def build_dynamic_context(
     max_few_shot: int = 2,
     max_confusion_pairs: int = 5,
     max_composite_relations: int = 4,
+    max_proyecto_chars: int = 450,
     few_shot_path: Path | None = None,
 ) -> dict[str, Any]:
     context: dict[str, Any] = {}
@@ -267,6 +267,7 @@ def build_dynamic_context(
         subsector,
         max_examples=max_few_shot,
         few_shot_path=few_shot_path,
+        max_proyecto_chars=max_proyecto_chars,
     )
     if examples:
         context["ejemplos_referencia"] = examples

@@ -44,7 +44,7 @@ class TestPipelineCascadeL3Resilience(unittest.TestCase):
         self.cascade.l3.client = MockLLMClient(fail_on_calls=frozenset({2}))
 
         df = _residual_rows(4)
-        result = classify_cascade_dataframe(df, self.cascade, l3_model="mock")
+        result = classify_cascade_dataframe(df, self.cascade, l3_concurrency=1)
 
         by_codigo = {row["Codigo BIP"]: row for row in result.to_dicts()}
 

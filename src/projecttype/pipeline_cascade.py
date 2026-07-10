@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+import threading
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -11,7 +14,10 @@ from sni_commons.llm import LLMError
 from .classifier_cascade import ClassifierCascade
 from .classifier_l3 import L3Config
 from .embeddings import L2Config
+from .inference_metadata import prompt_version
 from .l3_cache import L3ResultCache, entry_to_result
+from .llm.provider import default_l3_concurrency
+from .llm_client import LLMConfig
 from .pipeline import classify_dataframe, save_results
 from .progress import BatchProgress, ProgressCallback
 from .scorer import EstadoClasificacion, ResultadoClasificacion, ScorerConfig
@@ -51,6 +57,8 @@ def _l3_to_dict(
             "l3_confianza": None,
             "l3_razonamiento": None,
             "l3_nivel": None,
+            "l3_tipos_secundarios_nombres": None,
+            "l3_multi_tipo": False,
         }
     return {
         "l3_estado": result.estado.value,
@@ -59,6 +67,10 @@ def _l3_to_dict(
         "l3_confianza": result.score,
         "l3_razonamiento": razonamiento or None,
         "l3_nivel": result.nivel,
+        "l3_tipos_secundarios_nombres": (
+            "|".join(result.tipos_secundarios_nombres) if result.tipos_secundarios_nombres else None
+        ),
+        "l3_multi_tipo": result.multi_tipo,
     }
 
 
@@ -98,6 +110,144 @@ def _is_residual(result: ResultadoClasificacion) -> bool:
     return result.estado in ClassifierCascade.RESIDUAL
 
 
+def _resolve_l3_model(cascade: ClassifierCascade) -> str:
+    """Id del modelo L3 activo (mock o ``LLMConfig.resolved_model()``)."""
+    l3 = cascade.l3
+    if l3 is None:
+        return ""
+    if l3.config.mock:
+        return "mock-llm"
+    cfg = l3.config.llm or LLMConfig()
+    return cfg.resolved_model()
+
+
+@dataclass(frozen=True, slots=True)
+class _L3RowOutcome:
+    idx: int
+    codigo: str
+    l3_dict: dict[str, Any]
+    l3_res: ResultadoClasificacion
+    razon: str
+    l3_override: ResultadoClasificacion | None
+    failure_label: str | None
+    write_cache: bool
+
+
+def _classify_one_l3_row(
+    cascade: ClassifierCascade,
+    *,
+    row: dict[str, Any],
+    l2: dict[str, Any],
+    cached_content: str | None = None,
+) -> _L3RowOutcome:
+    idx = row["_row_idx"]
+    sector_res = row.get("sector_resuelto") or ""
+    subsector_res = row.get("subsector_resuelto") or ""
+    codigo = str(row.get("Codigo BIP") or "")
+    try:
+        l3_res, razon = cascade.l3.classify_row(  # type: ignore[union-attr]
+            sector=row.get("SECTOR"),
+            subsector=row.get("SUBSECTOR"),
+            nombre=row.get("NOMBRE"),
+            descripcion=row.get("descripción"),
+            justificacion=row.get("justificacion_proyecto"),
+            descriptor_1=row.get("descriptor_1"),
+            descriptor_2=row.get("descriptor_2"),
+            descriptor_3=row.get("descriptor_3"),
+            l1_tipo_id=row.get("l1_tipo_id"),
+            l1_tipo_nombre=row.get("l1_tipo_nombre"),
+            l1_estado=row.get("l1_estado"),
+            l1_score=row.get("l1_score"),
+            l1_margen=row.get("l1_margen"),
+            l1_alternativas=row.get("l1_alternativas"),
+            l2_tipo_id=l2["l2_tipo_id"],
+            l2_tipo_nombre=l2["l2_tipo_nombre"],
+            l2_estado=l2["l2_estado"],
+            l2_similitud=l2["l2_similitud"],
+            l2_margen=l2["l2_margen"],
+            codigo_bip=codigo or None,
+            cached_content=cached_content,
+        )
+        failure = None
+        write_cache = not (razon or "").startswith("Error LLM")
+    except LLMError as exc:
+        l3_res = ResultadoClasificacion(
+            estado=EstadoClasificacion.SIN_MATCH,
+            sector_resuelto=sector_res,
+            subsector_resuelto=subsector_res,
+            nivel=3,
+        )
+        razon = f"Error LLM (lote protegido): {exc}"
+        failure = codigo or f"_row_idx={idx}"
+        write_cache = False
+    override = l3_res if l3_res.estado == EstadoClasificacion.ASIGNADO else None
+    return _L3RowOutcome(
+        idx=idx,
+        codigo=codigo,
+        l3_dict=_l3_to_dict(l3_res, razon),
+        l3_res=l3_res,
+        razon=razon,
+        l3_override=override,
+        failure_label=failure,
+        write_cache=write_cache,
+    )
+
+
+def _run_l3_rows_parallel(
+    cascade: ClassifierCascade,
+    rows: list[dict[str, Any]],
+    l2_rows: list[dict[str, Any]],
+    *,
+    l3_cache: L3ResultCache | None,
+    l3_concurrency: int,
+    progress: ProgressCallback | None,
+    l3_done_start: int,
+    l3_total: int,
+    cached_content: str | None = None,
+) -> tuple[list[_L3RowOutcome], list[str]]:
+    """Clasifica filas L3 en paralelo (I/O HTTP; patrón OBSRATE ThreadPoolExecutor)."""
+    if not rows:
+        return [], []
+
+    workers = max(1, l3_concurrency)
+    outcomes: list[_L3RowOutcome | None] = [None] * len(rows)
+    failures: list[str] = []
+    cache_lock = threading.Lock()
+    l3_done = l3_done_start
+
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        future_map = {
+            pool.submit(
+                _classify_one_l3_row,
+                cascade,
+                row=row,
+                l2=l2_rows[row["_row_idx"]],
+                cached_content=cached_content,
+            ): pos
+            for pos, row in enumerate(rows)
+        }
+        for fut in as_completed(future_map):
+            pos = future_map[fut]
+            outcome = fut.result()
+            outcomes[pos] = outcome
+            if outcome.failure_label:
+                failures.append(outcome.failure_label)
+            if l3_cache and outcome.codigo and outcome.write_cache:
+                with cache_lock:
+                    l3_cache.put(outcome.codigo, outcome.l3_res, outcome.razon)
+                    l3_cache.api_calls += 1
+                    if l3_cache.api_calls % 5 == 0:
+                        l3_cache.save()
+            l3_done += 1
+            if progress:
+                progress(l3_done, l3_total, outcome.codigo or None)
+
+    if l3_cache is not None and l3_cache.api_calls:
+        l3_cache.save()
+
+    return [o for o in outcomes if o is not None], failures
+
+
 def classify_cascade_dataframe(
     df: pl.DataFrame,
     cascade: ClassifierCascade,
@@ -109,12 +259,13 @@ def classify_cascade_dataframe(
     justificacion_col: str = "justificacion_proyecto",
     descriptor_cols: tuple[str, ...] = ("descriptor_1", "descriptor_2", "descriptor_3"),
     l3_limit: int | None = None,
+    l3_force_limit: int | None = None,
+    l3_concurrency: int | None = None,
     l3_progress_interval: int = 1,
     l3_progress: ProgressCallback | None = None,
     l3_progress_file: Path | None = None,
     l3_cache_path: Path | None = None,
     l3_use_cache: bool = True,
-    l3_model: str = "",
 ) -> pl.DataFrame:
     with_l1 = classify_dataframe(
         df,
@@ -132,6 +283,7 @@ def classify_cascade_dataframe(
     l3_rows: list[dict[str, Any]] = [_l3_to_dict(None) for _ in range(n)]
     l2_overrides: dict[int, ResultadoClasificacion] = {}
     l3_overrides: dict[int, ResultadoClasificacion] = {}
+    l3_model = ""
 
     l1_residual_idx = (
         with_l1.filter(pl.col("l1_estado").is_in(["ambiguo", "sin_match"]))
@@ -157,21 +309,30 @@ def classify_cascade_dataframe(
                     l2_overrides[idx] = l2_res
 
     if cascade.l3:
+        l3_model = _resolve_l3_model(cascade)
+        l3_prompt_ver = prompt_version()
         l3_candidate_idx: list[int] = []
         interim_rows = with_l1.to_dicts()
         # Índice idx -> fila: evita un filtro O(n) sobre el DataFrame por cada
         # candidato L3 (antes era cuadrático en el nº de residuales).
         rows_by_idx = {r["_row_idx"]: r for r in interim_rows}
-        for row in interim_rows:
-            idx = row["_row_idx"]
-            interim = _interim_final(row, l2_overrides)
-            if _is_residual(interim):
-                l3_candidate_idx.append(idx)
+        if l3_force_limit is not None:
+            l3_candidate_idx = sorted(rows_by_idx)[:l3_force_limit]
+        else:
+            for row in interim_rows:
+                idx = row["_row_idx"]
+                interim = _interim_final(row, l2_overrides)
+                if _is_residual(interim):
+                    l3_candidate_idx.append(idx)
 
         if l3_candidate_idx:
             l3_cache: L3ResultCache | None = None
             if l3_use_cache and l3_cache_path is not None:
-                l3_cache = L3ResultCache(l3_cache_path, model=l3_model or "gemini-2.5-flash")
+                l3_cache = L3ResultCache(
+                    l3_cache_path,
+                    model=l3_model,
+                    prompt_version=l3_prompt_ver,
+                )
 
             uncached_idx: list[int] = []
             for idx in l3_candidate_idx:
@@ -190,7 +351,7 @@ def classify_cascade_dataframe(
                 else:
                     uncached_idx.append(idx)
 
-            if l3_limit is not None:
+            if l3_limit is not None and l3_force_limit is None:
                 uncached_idx = uncached_idx[:l3_limit]
 
             l3_done = sum(
@@ -211,63 +372,90 @@ def classify_cascade_dataframe(
 
             l3_failures: list[str] = []
             if uncached_idx:
+                workers = l3_concurrency
+                if workers is None:
+                    workers = 1 if cascade.l3.config.mock else default_l3_concurrency()
                 l3_df = (
                     with_l1.filter(pl.col("_row_idx").is_in(uncached_idx))
-                    .sort("_row_idx")
+                    .sort(["sector_resuelto", "subsector_resuelto", "_row_idx"])
                 )
-                for row in l3_df.to_dicts():
-                    idx = row["_row_idx"]
-                    sector_res = row.get("sector_resuelto") or ""
-                    subsector_res = row.get("subsector_resuelto") or ""
-                    l2 = l2_rows[idx]
-                    codigo = str(row.get("Codigo BIP") or "")
+                pending_rows = l3_df.to_dicts()
+                if pending_rows and workers > 1:
+                    print(f"L3: {len(pending_rows)} llamadas (concurrency={workers})")
+
+                from .l3_vertex_cache import create_subsector_cache, unwrap_vertex_provider
+
+                vertex = None
+                use_vertex_cache = not cascade.l3.config.mock
+                min_rows_for_cache = cascade.l3._prompt_config.vertex_cache_min_rows
+                if use_vertex_cache:
+                    client = cascade.l3.client
+                    provider = getattr(client, "provider", None) or getattr(client, "_provider", None)
+                    vertex = unwrap_vertex_provider(provider) if provider is not None else None
+                    if vertex is None:
+                        use_vertex_cache = False
+
+                # Una caché Vertex por subsector: crear → clasificar grupo → borrar → siguiente.
+                groups: dict[tuple[str, str], list[dict[str, Any]]] = {}
+                for row in pending_rows:
+                    key = (
+                        str(row.get("sector_resuelto") or ""),
+                        str(row.get("subsector_resuelto") or ""),
+                    )
+                    groups.setdefault(key, []).append(row)
+
+                done_so_far = l3_done
+                for (sec, sub), group_rows in groups.items():
+                    cached_name: str | None = None
+                    sub_cache = None
+                    if (
+                        use_vertex_cache
+                        and vertex is not None
+                        and len(group_rows) >= min_rows_for_cache
+                    ):
+                        try:
+                            sub_cache = create_subsector_cache(
+                                vertex,
+                                sector=sec,
+                                subsector=sub,
+                                taxonomia=cascade.l3.taxonomia,
+                                prompt_config=cascade.l3._prompt_config,
+                                max_def_chars=cascade.l3.config.max_tipo_def_chars,
+                                model=l3_model or None,
+                            )
+                            cached_name = sub_cache.name
+                            print(
+                                f"L3 Vertex cache: {sec} / {sub} "
+                                f"({len(group_rows)} filas) → {cached_name}"
+                            )
+                        except Exception as exc:  # noqa: BLE001
+                            print(
+                                f"L3 Vertex cache omitida ({sec}/{sub}): {exc}"
+                            )
+                            sub_cache = None
+                            cached_name = None
                     try:
-                        l3_res, razon = cascade.l3.classify_row(
-                            sector=row.get("SECTOR"),
-                            subsector=row.get("SUBSECTOR"),
-                            nombre=row.get("NOMBRE"),
-                            descripcion=row.get("descripción"),
-                            justificacion=row.get("justificacion_proyecto"),
-                            descriptor_1=row.get("descriptor_1"),
-                            descriptor_2=row.get("descriptor_2"),
-                            descriptor_3=row.get("descriptor_3"),
-                            l1_tipo_id=row.get("l1_tipo_id"),
-                            l1_tipo_nombre=row.get("l1_tipo_nombre"),
-                            l1_estado=row.get("l1_estado"),
-                            l1_score=row.get("l1_score"),
-                            l1_margen=row.get("l1_margen"),
-                            l1_alternativas=row.get("l1_alternativas"),
-                            l2_tipo_id=l2["l2_tipo_id"],
-                            l2_tipo_nombre=l2["l2_tipo_nombre"],
-                            l2_estado=l2["l2_estado"],
-                            l2_similitud=l2["l2_similitud"],
-                            l2_margen=l2["l2_margen"],
-                            codigo_bip=codigo or None,
+                        outcomes, fails = _run_l3_rows_parallel(
+                            cascade,
+                            group_rows,
+                            l2_rows,
+                            l3_cache=l3_cache,
+                            l3_concurrency=workers,
+                            progress=progress,
+                            l3_done_start=done_so_far,
+                            l3_total=l3_total,
+                            cached_content=cached_name,
                         )
-                    except LLMError as exc:
-                        # Un fallo transitorio del LLM (p.ej. Gemini 503/429) en un
-                        # proyecto NO debe abortar el lote completo: se registra como
-                        # residual sin clasificar, se sigue con el resto y se reporta
-                        # al final. El caché JSONL permite reanudar estos códigos.
-                        l3_failures.append(codigo or f"_row_idx={idx}")
-                        l3_res = ResultadoClasificacion(
-                            estado=EstadoClasificacion.SIN_MATCH,
-                            sector_resuelto=sector_res,
-                            subsector_resuelto=subsector_res,
-                            nivel=3,
-                        )
-                        razon = f"Error LLM (lote protegido): {exc}"
-                    l3_rows[idx] = _l3_to_dict(l3_res, razon)
-                    if l3_res.estado == EstadoClasificacion.ASIGNADO:
-                        l3_overrides[idx] = l3_res
-                    if l3_cache and codigo and not (razon or "").startswith("Error LLM"):
-                        l3_cache.put(codigo, l3_res, razon)
-                        l3_cache.api_calls += 1
-                        if l3_cache.api_calls % 5 == 0:
-                            l3_cache.save()
-                    l3_done += 1
-                    if progress:
-                        progress(l3_done, l3_total, codigo or None)
+                    finally:
+                        if sub_cache is not None:
+                            sub_cache.close()
+                    done_so_far += len(group_rows)
+                    l3_failures.extend(fails)
+                    for outcome in outcomes:
+                        l3_rows[outcome.idx] = outcome.l3_dict
+                        if outcome.l3_override is not None:
+                            l3_overrides[outcome.idx] = outcome.l3_override
+                l3_done = done_so_far
 
             if l3_failures:
                 muestra = ", ".join(l3_failures[:10])
@@ -278,9 +466,7 @@ def classify_cascade_dataframe(
                     f"transitorio (lote no abortado): {muestra}"
                 )
 
-            if l3_cache is not None:
-                l3_cache.save()
-                if l3_cache.hits or l3_cache.api_calls:
+            if l3_cache is not None and (l3_cache.hits or l3_cache.api_calls):
                     print(
                         f"L3 caché: {l3_cache.hits} desde disco, "
                         f"{l3_cache.api_calls} llamadas API nuevas "
@@ -339,7 +525,7 @@ def classify_cascade_dataframe(
     ).unnest("_final")
 
     result = pl.concat([merged.drop("_row_idx"), finals], how="horizontal")
-    if l3_model:
+    if cascade.l3 is not None:
         result = result.with_columns(pl.lit(l3_model).alias("_modelo_l3"))
     return result
 
@@ -358,6 +544,7 @@ def classify_cascade_csv(
     enable_l3: bool = False,
     l3_mock: bool = False,
     l3_limit: int | None = None,
+    l3_concurrency: int | None = None,
     l3_progress_interval: int = 1,
     l3_progress_file: Path | None = None,
     l3_cache_path: Path | None = None,
@@ -373,19 +560,16 @@ def classify_cascade_csv(
         enable_l3=enable_l3,
         l3_mock=l3_mock,
     )
-    l3_model = ""
-    if l3_config and l3_config.llm:
-        l3_model = l3_config.llm.resolved_model()
     df = pl.read_csv(input_path, separator=separator, infer_schema_length=1000, ignore_errors=True)
     result = classify_cascade_dataframe(
         df,
         cascade,
         l3_limit=l3_limit,
+        l3_concurrency=l3_concurrency,
         l3_progress_interval=l3_progress_interval,
         l3_progress_file=l3_progress_file,
         l3_cache_path=l3_cache_path if enable_l3 else None,
         l3_use_cache=l3_use_cache,
-        l3_model=l3_model,
     )
     csv_path, excel_path = save_results(
         result, output_path, output_excel=output_excel, write_excel=write_excel

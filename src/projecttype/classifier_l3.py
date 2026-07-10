@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
@@ -33,20 +33,39 @@ class L3Config:
 
 
 @dataclass
+class L3TipoSecundario:
+    tipo_id: str
+    confianza: float
+    motivo: str = ""
+
+
+@dataclass
 class L3Response:
     tipo_id: str | None
     confianza: float
     razonamiento: str
+    tipos_secundarios: list[L3TipoSecundario] = field(default_factory=list)
+    multi_tipo: bool = False
     validation_error: str | None = None
 
 
 def parse_l3_response(raw: dict[str, Any]) -> L3Response:
     try:
         model = L3ResponseModel.from_llm_dict(raw)
+        secundarios = [
+            L3TipoSecundario(
+                tipo_id=item.tipo_id,
+                confianza=item.confianza,
+                motivo=item.motivo,
+            )
+            for item in model.tipos_secundarios
+        ]
         return L3Response(
             tipo_id=model.tipo_id,
             confianza=model.confianza,
             razonamiento=model.to_reasoning_text(),
+            tipos_secundarios=secundarios,
+            multi_tipo=model.multi_tipo or bool(secundarios),
         )
     except ValidationError as exc:
         return L3Response(
@@ -55,6 +74,37 @@ def parse_l3_response(raw: dict[str, Any]) -> L3Response:
             razonamiento=str(raw.get("razonamiento") or raw.get("reasoning") or ""),
             validation_error=str(exc),
         )
+
+
+def _validar_secundarios(
+    response: L3Response,
+    tipos_by_id: dict[str, TipoProyecto],
+    principal_id: str | None,
+) -> list[tuple[TipoProyecto, L3TipoSecundario]]:
+    valid: list[tuple[TipoProyecto, L3TipoSecundario]] = []
+    for sec in response.tipos_secundarios:
+        if not sec.tipo_id or sec.tipo_id == principal_id:
+            continue
+        tipo = tipos_by_id.get(sec.tipo_id)
+        if tipo is None:
+            continue
+        valid.append((tipo, sec))
+        if len(valid) >= 2:
+            break
+    return valid
+
+
+def _aplicar_secundarios(
+    base: ResultadoClasificacion,
+    valid_secs: list[tuple[TipoProyecto, L3TipoSecundario]],
+    *,
+    multi_tipo: bool,
+) -> None:
+    if not valid_secs:
+        return
+    base.tipos_secundarios_ids = [tipo.tipo_id for tipo, _ in valid_secs]
+    base.tipos_secundarios_nombres = [tipo.nombre for tipo, _ in valid_secs]
+    base.multi_tipo = multi_tipo or bool(valid_secs)
 
 
 def _result_from_l3(
@@ -74,6 +124,9 @@ def _result_from_l3(
     razonamiento = response.razonamiento
     if response.validation_error:
         razonamiento = f"{razonamiento} [validación: {response.validation_error}]".strip()
+
+    valid_secs = _validar_secundarios(response, tipos_by_id, response.tipo_id)
+    _aplicar_secundarios(base, valid_secs, multi_tipo=response.multi_tipo)
 
     if not response.tipo_id or response.confianza < config.min_confidence:
         if response.tipo_id and response.confianza >= config.min_confidence * 0.6:
@@ -153,6 +206,7 @@ class ClassifierL3:
         l2_similitud: float | None = None,
         l2_margen: float | None = None,
         codigo_bip: str | None = None,
+        cached_content: str | None = None,
     ) -> dict[str, str]:
         sector_res, subsector_res = resolve_sector_subsector(sector, subsector)
         tipos = self.taxonomia.tipos_para(sector, subsector)
@@ -189,6 +243,7 @@ class ClassifierL3:
             l2_margen=l2_margen,
             codigo_bip=codigo_bip,
             max_def_chars=self.config.max_tipo_def_chars,
+            dynamic_only=cached_content is not None,
         )
 
     def classify_row(
@@ -215,6 +270,7 @@ class ClassifierL3:
         l2_similitud: float | None = None,
         l2_margen: float | None = None,
         codigo_bip: str | None = None,
+        cached_content: str | None = None,
     ) -> tuple[ResultadoClasificacion, str]:
         sector_res, subsector_res = resolve_sector_subsector(sector, subsector)
         tipos = self.taxonomia.tipos_para(sector, subsector)
@@ -253,10 +309,15 @@ class ClassifierL3:
             l2_similitud=l2_similitud,
             l2_margen=l2_margen,
             codigo_bip=codigo_bip,
+            cached_content=cached_content,
         )
 
         try:
-            raw = self.client.complete_json(system=messages["system"], user=messages["user"])
+            raw = self.client.complete_json(
+                system=messages["system"],
+                user=messages["user"],
+                cached_content=cached_content,
+            )
         except (JSONParseError, RuntimeError, TimeoutError, OSError) as exc:
             err = ResultadoClasificacion(
                 estado=EstadoClasificacion.SIN_MATCH,

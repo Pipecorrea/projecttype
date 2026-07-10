@@ -74,3 +74,12 @@ def contains_keyword(text_norm: str, keyword_norm: str) -> bool:
 def join_fields(*fields: str | None, sep: str = " ") -> str:
     parts = [str(f).strip() for f in fields if f and str(f).strip()]
     return sep.join(parts)
+
+
+def pick_column(columns: list[str], candidates: tuple[str, ...]) -> str | None:
+    """Primera columna presente entre candidatos (nombres exactos tras strip)."""
+    normalized = {c.strip(): c for c in columns}
+    for candidate in candidates:
+        if candidate in normalized:
+            return normalized[candidate]
+    return None

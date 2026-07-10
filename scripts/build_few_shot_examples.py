@@ -9,8 +9,8 @@ from pathlib import Path
 
 from projecttype.few_shot_mining import mine_from_files, write_few_shot_yaml
 from projecttype.paths import (
+    DEFAULT_EXPOST_DB,
     DEFAULT_OUTPUT_CASCADE_CSV,
-    DEFAULT_SUBMUESTRA,
     DEFAULT_TAXONOMY,
     PROJECT_ROOT,
 )
@@ -28,7 +28,7 @@ def main() -> int:
         default=str(DEFAULT_OUTPUT_CASCADE_CSV),
         help="CSV resultados L1+L2",
     )
-    parser.add_argument("--submuestra", default=str(DEFAULT_SUBMUESTRA))
+    parser.add_argument("--manual", default=str(DEFAULT_EXPOST_DB))
     parser.add_argument("--taxonomy", default=str(DEFAULT_TAXONOMY))
     parser.add_argument(
         "--output",
@@ -41,7 +41,7 @@ def main() -> int:
 
     examples = mine_from_files(
         resultados_path=Path(args.resultados),
-        submuestra_path=Path(args.submuestra),
+        manual_path=Path(args.manual),
         taxonomy_path=Path(args.taxonomy),
         max_per_subsector=args.max_per_subsector,
         max_total=args.max_total,

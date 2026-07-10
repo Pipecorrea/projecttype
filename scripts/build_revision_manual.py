@@ -8,15 +8,15 @@ from collections import Counter
 
 import polars as pl  # noqa: E402
 
-from projecttype.evaluation import (  # noqa: E402
+from projecttype.evaluation import (
     build_revision_dataframe,
-    load_submuestra,
+    load_expost_manual,
     save_revision_excel,
 )
-from projecttype.paths import (  # noqa: E402
+from projecttype.paths import (
+    DEFAULT_EXPOST_DB,
     DEFAULT_OUTPUT_CSV,
     DEFAULT_REVISION_XLSX,
-    DEFAULT_SUBMUESTRA,
 )
 
 
@@ -31,10 +31,10 @@ def main() -> int:
         help="CSV con resultados L1",
     )
     parser.add_argument(
-        "--submuestra",
-        "-s",
-        default=str(DEFAULT_SUBMUESTRA),
-        help="Excel con etiquetado manual",
+        "--manual",
+        "-m",
+        default=str(DEFAULT_EXPOST_DB),
+        help="DuckDB con etiquetado manual (ex_post)",
     )
     parser.add_argument(
         "--output",
@@ -50,7 +50,7 @@ def main() -> int:
     args = parser.parse_args()
 
     resultados = pl.read_csv(args.resultados, infer_schema_length=1000, ignore_errors=True)
-    manual = load_submuestra(args.submuestra)
+    manual = load_expost_manual(args.manual)
     revision = build_revision_dataframe(
         resultados,
         manual,

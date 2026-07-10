@@ -61,16 +61,10 @@ class TestSniCommonsClient(unittest.TestCase):
         self.assertEqual(out["tipo_id"], "Z.3")
 
     def test_create_llm_client_routes_to_adapter(self) -> None:
-        # provider google/openai/ollama -> adaptador sni-commons (no instancia red).
-        for provider in ("google", "openai", "ollama"):
-            cfg = LLMConfig(provider=provider, model="m")
+        for provider in ("gemini", "google", "openai", "ollama"):
+            cfg = LLMConfig(provider=provider, model="m")  # type: ignore[arg-type]
             client = create_llm_client(cfg)
             self.assertIsInstance(client, SniCommonsLLMClient)
-
-    def test_create_llm_client_legacy_fallback(self) -> None:
-        cfg = LLMConfig(provider="ollama", model="m")
-        client = create_llm_client(cfg, use_sni_commons=False)
-        self.assertNotIsInstance(client, SniCommonsLLMClient)
 
     def test_mock_unaffected(self) -> None:
         self.assertIsInstance(create_llm_client(mock=True), MockLLMClient)

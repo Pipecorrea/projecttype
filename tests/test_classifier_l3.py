@@ -9,9 +9,12 @@ from unittest.mock import MagicMock
 from projecttype.classifier_l3 import (
     ClassifierL3,
     L3Config,
+    L3Response,
+    L3TipoSecundario,
+    _result_from_l3,
     parse_l3_response,
 )
-from projecttype.llm_client import MockLLMClient, OllamaClient, _extract_json
+from projecttype.llm_client import MockLLMClient, _extract_json
 from projecttype.paths import DEFAULT_TAXONOMY
 from projecttype.prompts import build_l3_user_prompt, format_tipo_option
 from projecttype.scorer import EstadoClasificacion
@@ -113,6 +116,54 @@ class TestL3Classifier(unittest.TestCase):
         self.assertIn("Análisis:", resp.razonamiento)
         self.assertIn("Evidencia:", resp.razonamiento)
 
+    def test_multi_tipo_response_parsing(self) -> None:
+        raw = {
+            "analisis": "PMIB integral",
+            "evidencia": ["70 soluciones sanitarias", "red de agua potable 2.643 m"],
+            "tipo_id": "A.B.1",
+            "tipos_secundarios": [
+                {"tipo_id": "A.B.2", "confianza": 0.7, "motivo": "red AP explícita"},
+            ],
+            "multi_tipo": True,
+            "confianza": 0.82,
+            "razonamiento": "Casetas principal, red secundaria",
+        }
+        resp = parse_l3_response(raw)
+        self.assertTrue(resp.multi_tipo)
+        self.assertEqual(len(resp.tipos_secundarios), 1)
+        self.assertEqual(resp.tipos_secundarios[0].tipo_id, "A.B.2")
+        self.assertIn("Secundarios:", resp.razonamiento)
+
+    def test_result_from_l3_applies_secundarios(self) -> None:
+        tipos = self.tax.tipos_para(
+            "RECURSOS HIDRICOS",
+            "EVACUACION DISPOSICION FINAL AGUAS SERVIDAS",
+        )
+        if len(tipos) < 2:
+            self.skipTest("subsector saneamiento no disponible")
+        tipos_by_id = {t.tipo_id: t for t in tipos}
+        principal, secundario = tipos[0], tipos[1]
+        response = L3Response(
+            tipo_id=principal.tipo_id,
+            confianza=0.85,
+            razonamiento="test",
+            tipos_secundarios=[
+                L3TipoSecundario(tipo_id=secundario.tipo_id, confianza=0.7, motivo="evidencia"),
+            ],
+            multi_tipo=True,
+        )
+        result, _ = _result_from_l3(
+            response,
+            tipos_by_id,
+            L3Config(min_confidence=0.75),
+            "RECURSOS HIDRICOS",
+            "EVACUACION DISPOSICION FINAL AGUAS SERVIDAS",
+        )
+        self.assertEqual(result.estado, EstadoClasificacion.ASIGNADO)
+        self.assertEqual(result.tipo_id, principal.tipo_id)
+        self.assertTrue(result.multi_tipo)
+        self.assertEqual(result.tipos_secundarios_nombres, [secundario.nombre])
+
     def test_user_prompt_includes_dynamic_context(self) -> None:
         tipos = self.tax.tipos_para("TRANSPORTE", "TRANSPORTE URBANO,VIALIDAD PEATONAL")
         if not tipos:
@@ -144,40 +195,6 @@ class TestPromptFormat(unittest.TestCase):
         opt = format_tipo_option(tipo, max_def_chars=100)
         self.assertLessEqual(len(opt["definicion"]), 100)
 
-
-class TestOllamaClient(unittest.TestCase):
-    def test_ollama_complete_json(self) -> None:
-        from unittest.mock import patch
-
-        from projecttype.llm_client import LLMConfig
-
-        payload = {
-            "message": {
-                "content": json.dumps(
-                    {
-                        "tipo_id": "A.B.C",
-                        "confianza": 0.9,
-                        "razonamiento": "test ollama",
-                    }
-                )
-            }
-        }
-
-        class FakeResponse:
-            def __enter__(self):
-                return self
-
-            def __exit__(self, *args):
-                return False
-
-            def read(self):
-                return json.dumps(payload).encode("utf-8")
-
-        client = OllamaClient(LLMConfig(provider="ollama", model="llama3.2"))
-        with patch("urllib.request.urlopen", return_value=FakeResponse()):
-            data = client.complete_json(system="sys", user="user")
-        self.assertEqual(data["tipo_id"], "A.B.C")
-        self.assertAlmostEqual(data["confianza"], 0.9)
 
 
 if __name__ == "__main__":

@@ -1,26 +1,31 @@
-"""Clientes LLM para Nivel 3 (OpenAI, Google Gemini, Ollama local, mock)."""
+"""Clientes LLM para Nivel 3 (sni_commons.llm + mock de pruebas)."""
 
 from __future__ import annotations
 
 import json
 import os
 import re
-import time
 import urllib.error
 import urllib.request
 from dataclasses import dataclass
 from typing import Any, Literal, Protocol
 
-LLMProvider = Literal["openai", "ollama", "google"]
+LLMProvider = Literal["gemini", "gemini-studio", "google", "vertex", "anthropic", "openai", "ollama"]
 
 
 class LLMClient(Protocol):
-    def complete_json(self, *, system: str, user: str) -> dict[str, Any]: ...
+    def complete_json(
+        self,
+        *,
+        system: str,
+        user: str,
+        cached_content: str | None = None,
+    ) -> dict[str, Any]: ...
 
 
 @dataclass(frozen=True)
 class LLMConfig:
-    provider: LLMProvider = "ollama"
+    provider: LLMProvider = "gemini"
     model: str = ""
     api_key_env: str = "OPENAI_API_KEY"
     base_url_env: str = "OPENAI_BASE_URL"
@@ -37,10 +42,13 @@ class LLMConfig:
     max_retries: int = 4
 
     def effective_request_interval(self) -> float:
-        """Pausa entre llamadas (Gemini free tier ~15 RPM → default 5 s)."""
+        """Pausa entre llamadas; solo AI Studio free tier usa throttle por defecto."""
         if self.request_interval_seconds > 0:
             return self.request_interval_seconds
-        if self.provider == "google":
+        from projecttype.llm.provider import PROVIDER_ALIASES
+
+        kind = PROVIDER_ALIASES.get(self.provider, self.provider)
+        if kind == "gemini":
             env = os.environ.get("GEMINI_REQUEST_INTERVAL")
             if env:
                 return float(env)
@@ -50,10 +58,12 @@ class LLMConfig:
     def resolved_model(self) -> str:
         if self.model:
             return self.model
+        from projecttype.llm.provider import default_llm_model
+
+        if self.provider in ("gemini", "gemini-studio", "google", "vertex"):
+            return default_llm_model()
         if self.provider == "ollama":
             return os.environ.get(self.ollama_model_env) or "llama3.2"
-        if self.provider == "google":
-            return os.environ.get(self.google_model_env) or "gemini-2.5-flash"
         return "gpt-4o-mini"
 
     def resolved_google_api_key(self) -> str:
@@ -121,275 +131,76 @@ def check_gemini_available(*, api_key: str | None = None) -> None:
         )
 
 
-class GeminiClient:
-    """Cliente Google AI Studio / Gemini API (REST, cuota gratuita con API key)."""
-
-    def __init__(self, config: LLMConfig | None = None) -> None:
-        self.config = config or LLMConfig(provider="google")
-        self.api_key = self.config.resolved_google_api_key()
-        if not self.api_key:
-            raise RuntimeError(
-                f"Variable de entorno {self.config.google_api_key_env} "
-                f"(o {self.config.google_api_key_fallback_env}) no definida."
-            )
-        self.model = self.config.resolved_model()
-        self._last_request_at = 0.0
-
-    def _throttle(self) -> None:
-        interval = self.config.effective_request_interval()
-        if interval <= 0:
-            return
-        elapsed = time.monotonic() - self._last_request_at
-        if elapsed < interval:
-            time.sleep(interval - elapsed)
-
-    def _request(self, *, system: str, user: str, max_output_tokens: int) -> str:
-        url = (
-            "https://generativelanguage.googleapis.com/v1beta/models/"
-            f"{self.model}:generateContent"
-        )
-        body = {
-            "systemInstruction": {"parts": [{"text": system}]},
-            "contents": [{"role": "user", "parts": [{"text": user}]}],
-            "generationConfig": {
-                "temperature": self.config.temperature,
-                "maxOutputTokens": max_output_tokens,
-                "responseMimeType": "application/json",
-            },
-        }
-        data = json.dumps(body).encode("utf-8")
-        headers = {
-            "Content-Type": "application/json",
-            "x-goog-api-key": self.api_key,
-        }
-        last_error: RuntimeError | None = None
-        for attempt in range(self.config.max_retries):
-            self._throttle()
-            request = urllib.request.Request(
-                url,
-                data=data,
-                headers=headers,
-                method="POST",
-            )
-            try:
-                with urllib.request.urlopen(request, timeout=self.config.timeout_seconds) as response:
-                    payload = json.loads(response.read().decode("utf-8"))
-                self._last_request_at = time.monotonic()
-                break
-            except urllib.error.HTTPError as exc:
-                detail = exc.read().decode("utf-8", errors="replace")
-                last_error = RuntimeError(f"Gemini HTTP {exc.code}: {detail}")
-                if exc.code == 429 and attempt < self.config.max_retries - 1:
-                    time.sleep(min(60.0, 5.0 * (2**attempt)))
-                    continue
-                raise last_error from exc
-            except urllib.error.URLError as exc:
-                raise RuntimeError("No se pudo conectar a la API de Gemini.") from exc
-        else:
-            assert last_error is not None
-            raise last_error
-
-        candidates = payload.get("candidates") or []
-        if not candidates:
-            block = (payload.get("promptFeedback") or {}).get("blockReason")
-            raise RuntimeError(f"Gemini sin candidatos en la respuesta. blockReason={block}")
-        parts = (candidates[0].get("content") or {}).get("parts") or []
-        if not parts:
-            raise RuntimeError("Gemini devolvió contenido vacío.")
-        return str(parts[0].get("text") or "{}")
-
-    def complete_json(self, *, system: str, user: str) -> dict[str, Any]:
-        max_tokens = self.config.max_tokens
-        last_error: JSONParseError | None = None
-        for attempt in range(3):
-            content = self._request(
-                system=system,
-                user=user,
-                max_output_tokens=min(max_tokens * (attempt + 1), 8192),
-            )
-            try:
-                return _extract_json(content)
-            except JSONParseError as exc:
-                last_error = exc
-        assert last_error is not None
-        raise last_error
-
-
-class OpenAIClient:
-    """Cliente OpenAI / compatible (Azure, proxy OpenAI)."""
-
-    def __init__(self, config: LLMConfig | None = None) -> None:
-        self.config = config or LLMConfig(provider="openai")
-        api_key = os.environ.get(self.config.api_key_env)
-        if not api_key:
-            raise RuntimeError(
-                f"Variable de entorno {self.config.api_key_env} no definida."
-            )
-        from openai import OpenAI
-
-        kwargs: dict[str, Any] = {"api_key": api_key}
-        base_url = os.environ.get(self.config.base_url_env)
-        if base_url:
-            kwargs["base_url"] = base_url
-        self._client = OpenAI(**kwargs)
-
-    def complete_json(self, *, system: str, user: str) -> dict[str, Any]:
-        response = self._client.chat.completions.create(
-            model=self.config.resolved_model(),
-            temperature=self.config.temperature,
-            max_tokens=self.config.max_tokens,
-            timeout=self.config.timeout_seconds,
-            messages=[
-                {"role": "system", "content": system},
-                {"role": "user", "content": user},
-            ],
-            response_format={"type": "json_object"},
-        )
-        content = response.choices[0].message.content or "{}"
-        return _extract_json(content)
-
-
-class OllamaClient:
-    """Cliente nativo Ollama (`POST /api/chat` con `format: json`)."""
-
-    def __init__(self, config: LLMConfig | None = None) -> None:
-        self.config = config or LLMConfig(provider="ollama")
-        self.base_url = self.config.resolved_ollama_base_url().rstrip("/")
-        self.model = self.config.resolved_model()
-
-    def complete_json(self, *, system: str, user: str) -> dict[str, Any]:
-        body: dict[str, Any] = {
-            "model": self.model,
-            "stream": False,
-            "format": "json",
-            "messages": [
-                {"role": "system", "content": system},
-                {"role": "user", "content": user},
-            ],
-            "options": {
-                "temperature": self.config.temperature,
-                "num_predict": self.config.max_tokens,
-            },
-        }
-        data = json.dumps(body).encode("utf-8")
-        request = urllib.request.Request(
-            f"{self.base_url}/api/chat",
-            data=data,
-            headers={"Content-Type": "application/json"},
-            method="POST",
-        )
-        try:
-            with urllib.request.urlopen(request, timeout=self.config.timeout_seconds) as response:
-                payload = json.loads(response.read().decode("utf-8"))
-        except urllib.error.HTTPError as exc:
-            detail = exc.read().decode("utf-8", errors="replace")
-            raise RuntimeError(f"Ollama HTTP {exc.code}: {detail}") from exc
-        except urllib.error.URLError as exc:
-            raise RuntimeError(
-                f"No se pudo conectar a Ollama en {self.base_url}. ¿Está corriendo?"
-            ) from exc
-
-        content = (payload.get("message") or {}).get("content") or "{}"
-        last_error: JSONParseError | None = None
-        for attempt in range(3):
-            try:
-                return _extract_json(content)
-            except JSONParseError as exc:
-                last_error = exc
-                if attempt >= 2:
-                    break
-                body["options"]["num_predict"] = min(
-                    self.config.max_tokens * (attempt + 2),
-                    4096,
-                )
-                data = json.dumps(body).encode("utf-8")
-                request = urllib.request.Request(
-                    f"{self.base_url}/api/chat",
-                    data=data,
-                    headers={"Content-Type": "application/json"},
-                    method="POST",
-                )
-                with urllib.request.urlopen(request, timeout=self.config.timeout_seconds) as response:
-                    payload = json.loads(response.read().decode("utf-8"))
-                content = (payload.get("message") or {}).get("content") or "{}"
-        assert last_error is not None
-        raise last_error
-
-
 class SniCommonsLLMClient:
-    """Adaptador del cliente unificado `sni_commons.llm` al Protocol L3.
-
-    Implementa `complete_json(system, user) -> dict` delegando en
-    `sni_commons.llm` (ADR-1). El prompt L3 ya pide JSON explícitamente, así que
-    se usa `chat()` (texto) + `_extract_json`, en vez de `structured_output`
-    (que exigiría un esquema estricto e incompatible con el chain-of-thought de
-    campos opcionales del L3).
-
-    `provider` acepta los presets de sni-commons: gemini, openai, groq,
-    openrouter, deepseek, together, ollama, echo. Reemplaza Gemini/OpenAI/Ollama
-    propios sin perder cobertura (Vertex queda pendiente de un backend dedicado).
-    """
+    """Adaptador del cliente unificado `sni_commons.llm` al Protocol L3."""
 
     def __init__(self, config: LLMConfig | None = None) -> None:
-        from sni_commons.llm import LLMConfig as _ScLLMConfig
-        from sni_commons.llm import make_provider
+        from projecttype.llm.provider import build_provider
 
         cfg = config or LLMConfig()
-        provider = cfg.provider
-        # 'google' es el nombre histórico de ProjectType para Gemini AI Studio.
-        sc_provider = "gemini" if provider == "google" else provider
-        api_key = ""
-        if sc_provider == "gemini":
-            api_key = cfg.resolved_google_api_key()
-        elif sc_provider not in {"ollama", "echo"}:
-            api_key = os.environ.get(cfg.api_key_env, "")
-        self._provider = make_provider(
-            _ScLLMConfig(
-                provider=sc_provider,
-                model=cfg.resolved_model(),
-                api_key=api_key or None,
-                timeout_seconds=cfg.timeout_seconds,
-                max_retries=cfg.max_retries,
-                request_interval_seconds=cfg.effective_request_interval(),
-            )
+        self._provider = build_provider(
+            cfg.provider,
+            model=cfg.resolved_model(),
+            request_interval_seconds=cfg.effective_request_interval(),
         )
 
-    def complete_json(self, *, system: str, user: str) -> dict[str, Any]:
+    @property
+    def provider(self) -> Any:
+        return self._provider
+
+    def complete_json(
+        self,
+        *,
+        system: str,
+        user: str,
+        cached_content: str | None = None,
+    ) -> dict[str, Any]:
         import asyncio
 
         from sni_commons.llm import Message
 
-        messages = [
-            Message(role="system", content=system),
-            Message(role="user", content=user),
-        ]
-        resp = asyncio.run(self._provider.chat(messages))
+        if cached_content:
+            messages = [Message(role="user", content=user)]
+            cache_kw: dict[str, Any] = {"cached_content": cached_content}
+        else:
+            messages = [
+                Message(role="system", content=system),
+                Message(role="user", content=user),
+            ]
+            cache_kw = {}
+        resp = asyncio.run(self._provider.chat(messages, **cache_kw))
         return _extract_json(resp.text)
 
 
 class MockLLMClient:
-    """Cliente de prueba: elige el primer tipo_id válido mencionado en el prompt.
-
-    `fail_on_calls` permite simular un fallo transitorio del LLM (p.ej. Gemini
-    503/429): en esas llamadas (1-indexadas) levanta `LLMResponseError`, igual
-    que el cliente real, para verificar que el lote no se aborta.
-    """
+    """Cliente de prueba: elige el primer tipo_id válido mencionado en el prompt."""
 
     def __init__(self, fail_on_calls: frozenset[int] | None = None) -> None:
         self.fail_on_calls = fail_on_calls or frozenset()
         self.calls = 0
+        self.last_cached_content: str | None = None
 
-    def complete_json(self, *, system: str, user: str) -> dict[str, Any]:
+    def complete_json(
+        self,
+        *,
+        system: str,
+        user: str,
+        cached_content: str | None = None,
+    ) -> dict[str, Any]:
         del system
+        self.last_cached_content = cached_content
         self.calls += 1
         if self.calls in self.fail_on_calls:
             from sni_commons.llm import LLMResponseError
 
             raise LLMResponseError(f"Mock 503 UNAVAILABLE en llamada {self.calls}")
         data = json.loads(user)
+        # Con cache, el user solo trae proyecto; tipos vienen del system/cache mock.
         tipos = data.get("tipos_validos") or []
         sugerencias = data.get("sugerencias_previas") or {}
         l1 = sugerencias.get("l1_candidato") or ""
+        if not l1 and isinstance(sugerencias.get("l1"), dict):
+            l1 = str(sugerencias["l1"].get("candidato") or "")
         for tipo in tipos:
             tid = tipo.get("tipo_id", "")
             nombre = tipo.get("nombre", "")
@@ -411,33 +222,22 @@ class MockLLMClient:
                 "confianza": 0.5,
                 "razonamiento": "Mock: confianza insuficiente.",
             }
+        # dynamic_only sin tipos en el user: devolver null (tests de cache)
+        if cached_content and "proyecto" in data and "tipos_validos" not in data:
+            return {
+                "tipo_id": None,
+                "confianza": 0.0,
+                "razonamiento": "Mock: respuesta con cached_content (sin tipos en user).",
+            }
         return {"tipo_id": None, "confianza": 0.0, "razonamiento": "Mock: sin tipos."}
-
-
-# Providers que el cliente unificado sni-commons cubre de forma nativa.
-_SNI_COMMONS_PROVIDERS = frozenset({"google", "openai", "ollama"})
 
 
 def create_llm_client(
     config: LLMConfig | None = None,
     *,
     mock: bool = False,
-    use_sni_commons: bool = True,
 ) -> LLMClient:
-    """Crea el cliente L3.
-
-    Por defecto usa el cliente unificado `sni_commons.llm` (ADR-1) para los
-    providers que soporta (google→gemini, openai, ollama). Los clientes legacy
-    (`GeminiClient`/`OpenAIClient`/`OllamaClient`) se conservan como fallback
-    activable con ``use_sni_commons=False``.
-    """
+    """Crea el cliente L3 vía ``sni_commons.llm`` (ADR-1) o mock de pruebas."""
     if mock:
         return MockLLMClient()
-    cfg = config or LLMConfig()
-    if use_sni_commons and cfg.provider in _SNI_COMMONS_PROVIDERS:
-        return SniCommonsLLMClient(cfg)
-    if cfg.provider == "ollama":
-        return OllamaClient(cfg)
-    if cfg.provider == "google":
-        return GeminiClient(cfg)
-    return OpenAIClient(cfg)
+    return SniCommonsLLMClient(config or LLMConfig(provider="gemini"))

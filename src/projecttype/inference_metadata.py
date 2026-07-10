@@ -81,7 +81,12 @@ def _evidencia_l2(row: dict[str, Any]) -> str:
 
 
 def _evidencia_l3(row: dict[str, Any]) -> str:
-    return truncate_evidencia(str(row.get("l3_razonamiento") or ""))
+    base = truncate_evidencia(str(row.get("l3_razonamiento") or ""))
+    secs = row.get("l3_tipos_secundarios_nombres")
+    if secs:
+        suffix = f"; secundarios={secs}"
+        return truncate_evidencia(f"{base}{suffix}" if base else f"secundarios={secs}")
+    return base
 
 
 def _evidencia_residual(row: dict[str, Any]) -> str:
