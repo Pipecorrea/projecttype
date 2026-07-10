@@ -207,15 +207,18 @@ nada; test de config para el error claro; `grep` de rutas hardcodeadas a
 
 # PLAN SOTA 2026-07 (PT-15…PT-22) — specs completas en `DIAGNOSTICO_Y_PLAN_SOTA_2026-07.md`
 
-#### [PT-15] Fuga `modelo` + caché prompt-aware — **S-M, P0, pendiente**
+#### [PT-15] Fuga `modelo` + caché prompt-aware — **✅ HECHO 2026-07-10 (`7f776b1`)**
 
-Resolver `l3_model` en pipeline (patrón `classify_cascade_csv`); `L3CacheEntry` +
-`prompt_version`; bump caché v1→v2. Done: modelo real en L3; grep `"gemini-2.5-flash"` → 0.
+`l3_model` resuelto dentro de `classify_cascade_dataframe`; `L3CacheEntry` gana
+`prompt_version` (triple match); caché v1→v2; `grep "gemini-2.5-flash" src/` → 0
+(queda solo `llm/provider.py:DEFAULT_L3_MODEL` como default explícito, no fallback ciego).
 
-#### [PT-16] Saneo / simplificación — **M, pendiente**
+#### [PT-16] Saneo / simplificación — **✅ HECHO 2026-07-10 (`7f776b1`)**
 
-~900 LOC muertas; consolidar `_pick_column`; commitear `docs/eval/`; `test_classifier_l2.py`.
-Done: pytest ≥76; `taxonomy_hash` idéntico.
+Borrados `GeminiClient`/`OpenAIClient`/`enrich_taxonomy_legacy.py`/`requirements.txt`/
+taxonomía csv-json duplicada/`docs/estructura_proyecto.md`; `_pick_column`
+consolidado en `text_utils.pick_column`; `docs/eval/` commiteado (PT-17);
+`test_classifier_l2.py` nuevo. pytest 105 (objetivo era ≥76).
 
 #### [PT-17] Golden real (absorbe PT-10) — **M, insumo 👤 entregado**
 
