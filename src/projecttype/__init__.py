@@ -10,19 +10,19 @@ from .evaluation import (
     NivelMatch,
     build_revision_dataframe,
     clasificar_match,
-    load_submuestra,
+    load_expost_manual,
     resumen_nivel_match,
     save_revision_excel,
 )
 from .llm_client import LLMConfig, create_llm_client, list_ollama_models
 from .paths import (
     DEFAULT_EMBEDDINGS_CACHE,
+    DEFAULT_EXPOST_DB,
     DEFAULT_INPUT_CSV,
     DEFAULT_OUTPUT_CASCADE_CSV,
     DEFAULT_OUTPUT_CASCADE_L3_CSV,
     DEFAULT_OUTPUT_CSV,
     DEFAULT_REVISION_XLSX,
-    DEFAULT_SUBMUESTRA,
     DEFAULT_TAXONOMY,
     OUTPUT_DIR,
     PROJECT_ROOT,
@@ -61,7 +61,7 @@ __all__ = [
     "OUTPUT_DIR",
     "DEFAULT_TAXONOMY",
     "DEFAULT_INPUT_CSV",
-    "DEFAULT_SUBMUESTRA",
+    "DEFAULT_EXPOST_DB",
     "DEFAULT_OUTPUT_CSV",
     "DEFAULT_OUTPUT_CASCADE_CSV",
     "DEFAULT_OUTPUT_CASCADE_L3_CSV",
@@ -73,11 +73,11 @@ __all__ = [
     "classify_cascade_csv",
     "classify_cascade_dataframe",
     "classify_dataframe",
-    "load_submuestra",
+    "load_expost_manual",
     "parse_tipo_components",
     "resumen_nivel_match",
     "save_results",
     "save_revision_excel",
 ]
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"

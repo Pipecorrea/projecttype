@@ -15,9 +15,9 @@ import polars as pl
 from projecttype.classifier_l3 import L3Config
 from projecttype.embeddings import L2Config
 from projecttype.env import load_project_env
+from projecttype.llm.provider import check_provider_available, describe_provider
 from projecttype.llm_client import (
     LLMConfig,
-    check_gemini_available,
     check_ollama_available,
     list_ollama_models,
 )
@@ -52,9 +52,9 @@ def main() -> int:
     parser.add_argument("--l3-mock", action="store_true", help="L3 sin API (cliente mock)")
     parser.add_argument(
         "--l3-provider",
-        choices=("ollama", "openai", "google"),
+        choices=("gemini", "gemini-studio", "google", "vertex", "anthropic", "openai", "ollama"),
         default=_DEFAULT_LLM.provider,
-        help="Backend LLM para L3 (default: ollama; google = Gemini AI Studio)",
+        help="Backend LLM para L3 (default: gemini → Vertex AI, como OBSRATE)",
     )
     parser.add_argument(
         "--l3-model",
@@ -72,6 +72,12 @@ def main() -> int:
         type=int,
         default=None,
         help="Máximo de proyectos L3 nuevos por corrida (omite los ya en caché)",
+    )
+    parser.add_argument(
+        "--l3-concurrency",
+        type=int,
+        default=None,
+        help="Hilos paralelos L3 (default: LLM_MAX_CONCURRENCY o 5)",
     )
     parser.add_argument(
         "--l3-progress-interval",
@@ -142,32 +148,7 @@ def main() -> int:
     )
 
     if args.enable_l3 and not args.l3_mock:
-        if args.l3_provider == "openai":
-            import os
-
-            if not os.environ.get("OPENAI_API_KEY"):
-                print(
-                    "Error: --l3-provider openai requiere OPENAI_API_KEY o usar --l3-mock.",
-                    file=sys.stderr,
-                )
-                return 1
-            print(f"L3 OpenAI: modelo: {llm_config.resolved_model()}")
-        elif args.l3_provider == "google":
-            try:
-                check_gemini_available()
-            except RuntimeError as exc:
-                print(f"Error: {exc}", file=sys.stderr)
-                print(
-                    "  Define GEMINI_API_KEY en .env (copia .env.example) o exporta la variable.",
-                    file=sys.stderr,
-                )
-                return 1
-            print(f"L3 Gemini (AI Studio): modelo: {llm_config.resolved_model()}")
-            interval = llm_config.effective_request_interval()
-            if interval > 0:
-                rpm = 60 / interval
-                print(f"  Rate limit: {interval:g}s entre llamadas (~{rpm:.0f} req/min, cuota free)")
-        else:
+        if args.l3_provider == "ollama":
             try:
                 check_ollama_available(
                     base_url=args.ollama_url,
@@ -177,6 +158,17 @@ def main() -> int:
                 print(f"Error: {exc}", file=sys.stderr)
                 return 1
             print(f"L3 Ollama: {args.ollama_url} | modelo: {llm_config.resolved_model()}")
+        else:
+            try:
+                check_provider_available(args.l3_provider)
+            except RuntimeError as exc:
+                print(f"Error: {exc}", file=sys.stderr)
+                return 1
+            print(f"L3 backend: {describe_provider(args.l3_provider)}")
+            interval = llm_config.effective_request_interval()
+            if interval > 0:
+                rpm = 60 / interval
+                print(f"  Throttle: {interval:g}s entre llamadas (~{rpm:.0f} req/min)")
 
     l3_progress_file = Path(args.l3_progress_file) if args.enable_l3 else None
     if l3_progress_file is not None:
@@ -197,6 +189,7 @@ def main() -> int:
         enable_l3=args.enable_l3,
         l3_mock=args.l3_mock,
         l3_limit=args.l3_limit,
+        l3_concurrency=args.l3_concurrency,
         l3_progress_interval=args.l3_progress_interval,
         l3_progress_file=l3_progress_file,
         l3_cache_path=Path(args.l3_cache_file) if args.enable_l3 else None,

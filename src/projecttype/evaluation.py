@@ -8,8 +8,8 @@ from typing import Any
 
 import polars as pl
 
-from .paths import SUBMUESTRA_HEADER_ROW, SUBMUESTRA_SHEET
-from .text_utils import normalize_tipo_name
+from .paths import DEFAULT_EXPOST_DB
+from .text_utils import normalize_tipo_name, pick_column
 
 
 class NivelMatch(str, Enum):
@@ -59,21 +59,84 @@ def clasificar_match(
     return NivelMatch.DISCREPANCIA
 
 
-def _pick_column(columns: list[str], candidates: tuple[str, ...]) -> str | None:
-    normalized = {c.strip(): c for c in columns}
-    for candidate in candidates:
-        if candidate in normalized:
-            return normalized[candidate]
-    return None
+def _tipo_coincide(manual: str, candidato: str) -> bool:
+    if not manual or not candidato:
+        return False
+    if manual == candidato:
+        return True
+    return manual in candidato or candidato in manual
+
+
+def manual_en_tipos_l3(
+    tipo_principal: str | None,
+    tipos_secundarios: list[str] | None,
+    tipo_manual: str | None,
+) -> bool:
+    """True si el manual coincide con el principal o algún secundario (PT-24 multi-hit)."""
+    manual = _norm_tipo(tipo_manual)
+    if not manual:
+        return False
+    principal = _norm_tipo(tipo_principal)
+    if _tipo_coincide(manual, principal):
+        return True
+    for sec in tipos_secundarios or []:
+        if _tipo_coincide(manual, _norm_tipo(sec)):
+            return True
+    return False
+
+
+def parse_l3_secundarios_row(row: dict[str, Any]) -> list[str]:
+    raw = row.get("l3_tipos_secundarios_nombres")
+    if not raw:
+        return []
+    return [part.strip() for part in str(raw).split("|") if part.strip()]
+
+def load_expost_manual(path: str | Path | None = None) -> pl.DataFrame:
+    """Carga etiquetado manual desde ``informe_expost.duckdb`` (tabla ``ex_post``)."""
+    import duckdb
+
+    db_path = Path(path or DEFAULT_EXPOST_DB)
+    if not db_path.is_file():
+        raise FileNotFoundError(
+            f"DuckDB de etiquetado no encontrado: {db_path}. "
+            "Colocar informe_expost.duckdb en data/raw/ (gitignored)."
+        )
+    con = duckdb.connect(str(db_path), read_only=True)
+    try:
+        rel = con.execute(
+            """
+            SELECT
+                split_part(trim(codigo_bip), '-', 1) AS codigo_bip,
+                nombre,
+                sector,
+                subsector,
+                tipo_proyecto,
+                justificación_proyecto AS justificacion_proyecto,
+                "descripción" AS descripcion,
+                descriptor_1,
+                descriptor_2,
+                descriptor_3
+            FROM ex_post
+            WHERE tipo_proyecto IS NOT NULL AND trim(tipo_proyecto) != ''
+            """
+        )
+        columns = [d[0] for d in rel.description]
+        rows = rel.fetchall()
+    finally:
+        con.close()
+    if not rows:
+        return pl.DataFrame(schema={col: pl.Utf8 for col in columns})
+    return pl.DataFrame([dict(zip(columns, row, strict=False)) for row in rows])
 
 
 def load_submuestra(path: str | Path) -> pl.DataFrame:
-    df = pl.read_excel(
-        path,
-        sheet_name=SUBMUESTRA_SHEET,
-        read_options={"header_row": SUBMUESTRA_HEADER_ROW},
+    """Compatibilidad: delega al duckdb si el path es ``.duckdb``, si no error claro."""
+    p = Path(path)
+    if p.suffix.lower() == ".duckdb":
+        return load_expost_manual(p)
+    raise FileNotFoundError(
+        f"Submuestra Excel deprecada ({p}). Usar {DEFAULT_EXPOST_DB} o load_expost_manual()."
     )
-    return df.rename({col: col.strip() for col in df.columns})
 
 
 def build_revision_dataframe(
@@ -89,8 +152,8 @@ def build_revision_dataframe(
     man = manual.with_columns(pl.col("codigo_bip").cast(pl.Utf8).str.strip_chars())
 
     man_columns = list(man.columns)
-    justificacion_col = _pick_column(man_columns, ("justificación_proyecto", "justificacion_proyecto"))
-    descripcion_col = _pick_column(man_columns, ("descripción", "descripcion"))
+    justificacion_col = pick_column(man_columns, ("justificación_proyecto", "justificacion_proyecto"))
+    descripcion_col = pick_column(man_columns, ("descripción", "descripcion"))
 
     man_select: list[pl.Expr | str] = [
         "codigo_bip",

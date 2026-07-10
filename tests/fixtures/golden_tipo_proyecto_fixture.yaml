@@ -1,8 +1,9 @@
 nombre: golden-tipo-proyecto
 version: "1.0.0-fixture"
 metrica_principal: precision_l1_l2
-# Fixture curado mientras Submuestra_tp.xlsx no está en el repo (gitignored en data/raw/).
-# Regenerar con: uv run python scripts/convert_submuestra_to_golden.py
+# Fixture curado (n=12) para tests unitarios rápidos — NO es el golden de CI.
+# Golden de producción: data/golden/golden_tipo_proyecto.jsonl (n=2357, estrato expost).
+# Regenerar expost con: uv run python scripts/convert_expost_to_golden.py
 casos:
   - caso_id: l1-biblioteca
     input:

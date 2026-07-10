@@ -10,7 +10,7 @@ from projecttype.few_shot_mining import (
     mine_from_files,
     resolve_manual_tipo,
 )
-from projecttype.paths import DEFAULT_OUTPUT_CASCADE_CSV, DEFAULT_SUBMUESTRA, DEFAULT_TAXONOMY
+from projecttype.paths import DEFAULT_EXPOST_DB, DEFAULT_OUTPUT_CASCADE_CSV, DEFAULT_TAXONOMY
 from projecttype.taxonomy import Taxonomia
 
 
@@ -37,11 +37,11 @@ class TestFewShotMining(unittest.TestCase):
     def test_mine_from_files(self) -> None:
         if not DEFAULT_OUTPUT_CASCADE_CSV.exists():
             self.skipTest("sin resultados cascada")
-        if not DEFAULT_SUBMUESTRA.exists():
-            self.skipTest("sin Submuestra_tp.xlsx (ver PT-10 / golden fixture)")
+        if not DEFAULT_EXPOST_DB.exists():
+            self.skipTest("sin informe_expost.duckdb en data/raw/")
         examples = mine_from_files(
             resultados_path=DEFAULT_OUTPUT_CASCADE_CSV,
-            submuestra_path=DEFAULT_SUBMUESTRA,
+            manual_path=DEFAULT_EXPOST_DB,
             taxonomy_path=DEFAULT_TAXONOMY,
             max_per_subsector=1,
             max_total=5,

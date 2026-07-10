@@ -1,0 +1,14 @@
+{
+  "golden_version": "1.0.0-fixture",
+  "modelo": "mock-llm",
+  "prompt_version": "52a1c94be16e",
+  "timestamp": "2026-07-02T23:25:56.541869Z",
+  "metricas": {
+    "precision_l1_l2": 0.8888888888888888,
+    "cobertura_l1_l2": 0.75,
+    "exactos_l1_l2": 8.0,
+    "asignados_l1_l2": 9.0,
+    "total": 12.0
+  },
+  "por_caso": []
+}

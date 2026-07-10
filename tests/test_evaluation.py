@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import unittest
 
-from projecttype.evaluation import NivelMatch, clasificar_match
+from projecttype.evaluation import NivelMatch, clasificar_match, manual_en_tipos_l3
 from projecttype.text_utils import normalize_tipo_name
 
 
@@ -17,6 +17,33 @@ class TestEvaluation(unittest.TestCase):
         self.assertEqual(
             normalize_tipo_name("GIMNASIO ESTANDARD"),
             normalize_tipo_name("GIMNASIO ESTANDAR"),
+        )
+
+    def test_manual_en_tipos_l3_principal(self) -> None:
+        self.assertTrue(
+            manual_en_tipos_l3(
+                "CASETAS SANITARIAS /ALCANTARILLADO/AGUA POTABLE/ENERGIA",
+                [],
+                "CASETAS SANITARIAS /ALCANTARILLADO/AGUA POTABLE/ENERGIA",
+            )
+        )
+
+    def test_manual_en_tipos_l3_secundario(self) -> None:
+        self.assertTrue(
+            manual_en_tipos_l3(
+                "RED DE AGUA POTABLE Y PLANTA DE TRATAMIENTO",
+                ["CASETAS SANITARIAS /ALCANTARILLADO/AGUA POTABLE/ENERGIA"],
+                "CASETAS SANITARIAS /ALCANTARILLADO/AGUA POTABLE/ENERGIA",
+            )
+        )
+
+    def test_manual_en_tipos_l3_miss(self) -> None:
+        self.assertFalse(
+            manual_en_tipos_l3(
+                "RED DE AGUA POTABLE Y PLANTA DE TRATAMIENTO",
+                [],
+                "PUENTE URBANO",
+            )
         )
 
 

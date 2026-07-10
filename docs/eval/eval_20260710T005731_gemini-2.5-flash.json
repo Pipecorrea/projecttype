@@ -1,0 +1,33 @@
+{
+  "golden_version": "2.1.0-expost-holdout",
+  "modelo": "gemini-2.5-flash",
+  "prompt_version": "57873707a456",
+  "timestamp": "2026-07-10T00:57:31.843940Z",
+  "metricas": {
+    "precision_l1_l2": 0.7918983320095314,
+    "cobertura_l1_l2": 0.6679045092838196,
+    "exactos_l1_l2": 997.0,
+    "asignados_l1_l2": 1259.0,
+    "total": 1885.0,
+    "precision_cascada": 0.7995356037151703,
+    "cobertura_cascada": 0.6854111405835543,
+    "exactos_cascada": 1033.0,
+    "asignados_cascada": 1292.0,
+    "total_cascada": 1885.0,
+    "precision_l3": 0.9148936170212766,
+    "cobertura_l3_residual": 0.1501597444089457,
+    "exactos_l3": 86.0,
+    "asignados_l3": 94.0,
+    "residual_l1_l2": 626.0,
+    "total_l3": 1885.0,
+    "precision_l3_puro": 0.9148936170212766,
+    "cobertura_l3_puro": 0.94,
+    "exactos_l3_puro": 86.0,
+    "asignados_l3_puro": 94.0,
+    "ejecutados_l3_puro": 100.0,
+    "total_l3_puro": 100.0,
+    "casos_estrato": 1885.0,
+    "casos_evaluados": 1885.0
+  },
+  "por_caso": []
+}

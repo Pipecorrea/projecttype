@@ -9,10 +9,10 @@ from typing import Any
 import polars as pl
 import yaml
 
-from .evaluation import NivelMatch, clasificar_match, load_submuestra
-from .paths import DEFAULT_SUBMUESTRA, DEFAULT_TAXONOMY
+from .evaluation import NivelMatch, clasificar_match, load_expost_manual
+from .paths import DEFAULT_EXPOST_DB, DEFAULT_TAXONOMY
 from .taxonomy import Taxonomia, TipoProyecto
-from .text_utils import join_fields, normalize_key, normalize_text, normalize_tipo_name
+from .text_utils import join_fields, normalize_key, normalize_text, normalize_tipo_name, pick_column
 from .tipo_embedder import build_project_text
 
 
@@ -47,14 +47,6 @@ def resolve_manual_tipo(
         tn = normalize_tipo_name(tipo.nombre).upper()
         if manual_norm in tn or tn in manual_norm:
             return tipo
-    return None
-
-
-def _pick_column(columns: list[str], candidates: tuple[str, ...]) -> str | None:
-    normalized = {c.strip(): c for c in columns}
-    for candidate in candidates:
-        if candidate in normalized:
-            return normalized[candidate]
     return None
 
 
@@ -185,8 +177,8 @@ def mine_few_shot_examples(
     ).filter(pl.col("tipo_proyecto").is_not_null())
 
     man_columns = list(man.columns)
-    justificacion_col = _pick_column(man_columns, ("justificación_proyecto", "justificacion_proyecto"))
-    descripcion_col = _pick_column(man_columns, ("descripción", "descripcion"))
+    justificacion_col = pick_column(man_columns, ("justificación_proyecto", "justificacion_proyecto"))
+    descripcion_col = pick_column(man_columns, ("descripción", "descripcion"))
 
     man_select: list[str | pl.Expr] = [
         "codigo_bip",
@@ -201,7 +193,12 @@ def mine_few_shot_examples(
         man_select.append(pl.col(descripcion_col).alias("_descripcion"))
 
     res = resultados.with_columns(
-        pl.col("Codigo BIP").cast(pl.Utf8).str.strip_chars().alias("codigo_bip")
+        pl.col("Codigo BIP")
+        .cast(pl.Utf8)
+        .str.strip_chars()
+        .str.split("-")
+        .list.first()
+        .alias("codigo_bip")
     )
     l1_cols = [
         c
@@ -403,13 +400,13 @@ def merge_few_shot_banks(
 def mine_from_files(
     *,
     resultados_path: Path,
-    submuestra_path: Path = DEFAULT_SUBMUESTRA,
+    manual_path: Path = DEFAULT_EXPOST_DB,
     taxonomy_path: Path = DEFAULT_TAXONOMY,
     max_per_subsector: int = 2,
     max_total: int = 50,
 ) -> list[MinedExample]:
     tax = Taxonomia.from_yaml(taxonomy_path)
-    manual = load_submuestra(submuestra_path)
+    manual = load_expost_manual(manual_path)
     resultados = pl.read_csv(resultados_path)
     return mine_few_shot_examples(
         resultados,

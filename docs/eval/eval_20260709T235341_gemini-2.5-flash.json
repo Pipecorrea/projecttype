@@ -1,0 +1,27 @@
+{
+  "golden_version": "2.1.0-expost-holdout",
+  "modelo": "gemini-2.5-flash",
+  "prompt_version": "52a1c94be16e",
+  "timestamp": "2026-07-09T23:53:41.313731Z",
+  "metricas": {
+    "precision_l1_l2": 0.7918983320095314,
+    "cobertura_l1_l2": 0.6679045092838196,
+    "exactos_l1_l2": 997.0,
+    "asignados_l1_l2": 1259.0,
+    "total": 1885.0,
+    "precision_cascada": 0.7889485801995395,
+    "cobertura_cascada": 0.6912466843501326,
+    "exactos_cascada": 1028.0,
+    "asignados_cascada": 1303.0,
+    "total_cascada": 1885.0,
+    "precision_l3": 0.7045454545454546,
+    "cobertura_l3_residual": 0.07028753993610223,
+    "exactos_l3": 31.0,
+    "asignados_l3": 44.0,
+    "residual_l1_l2": 626.0,
+    "total_l3": 1885.0,
+    "casos_estrato": 1885.0,
+    "casos_evaluados": 1885.0
+  },
+  "por_caso": []
+}

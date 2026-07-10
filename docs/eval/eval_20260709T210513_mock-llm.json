@@ -1,0 +1,16 @@
+{
+  "golden_version": "2.1.0-expost-holdout",
+  "modelo": "mock-llm",
+  "prompt_version": "52a1c94be16e",
+  "timestamp": "2026-07-09T21:05:13.448540Z",
+  "metricas": {
+    "precision_l1_l2": 0.8057324840764332,
+    "cobertura_l1_l2": 0.6652542372881356,
+    "exactos_l1_l2": 253.0,
+    "asignados_l1_l2": 314.0,
+    "total": 472.0,
+    "casos_estrato": 472.0,
+    "casos_evaluados": 472.0
+  },
+  "por_caso": []
+}

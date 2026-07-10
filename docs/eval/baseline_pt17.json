@@ -1,0 +1,19 @@
+{
+  "fecha": "2026-07-09",
+  "ticket": "PT-17",
+  "golden_version": "2.0.0-expost",
+  "casos_expost": 2357,
+  "subsectores_cubiertos": "47/84",
+  "metricas_l1_l2": {
+    "precision_l1_l2": 0.7947,
+    "cobertura_l1_l2": 0.6674,
+    "exactos_l1_l2": 1250,
+    "asignados_l1_l2": 1573,
+    "total": 2357
+  },
+  "umbrales_gate": {
+    "precision_l1_l2": 0.794,
+    "cobertura_l1_l2": 0.667
+  },
+  "notas": "Medido con uv run python scripts/eval_golden.py --ci. L3 MockLLM; gate solo estrato expost."
+}

@@ -1,0 +1,473 @@
+caso_id,codigo_bip,split,tipo_manual,tipo_predicho_l1_l2,tipo_predicho_cascada,nivel_asignacion,l1_estado,l2_estado,l3_estado,nivel_final
+expost-20084070,20084070,holdout,Posta Rural,POSTA RURAL,POSTA RURAL,L1,asignado,,,1
+expost-20097387,20097387,holdout,Casetas Sanitarias/alcantarillado,CASETAS SANITARIAS/ALCANTARILLADO/PLANTA DE TRATAMIENTO,CASETAS SANITARIAS/ALCANTARILLADO/PLANTA DE TRATAMIENTO,L1,asignado,,,1
+expost-20105343,20105343,holdout,Vias Urbanas Estructurantes,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,residual,ambiguo,ambiguo,,1
+expost-20107399,20107399,holdout,Vias Vialidad Urbana Intermedia,SEMAFORIZACION,SEMAFORIZACION,residual,ambiguo,ambiguo,,1
+expost-20135070,20135070,holdout,Parque,PARQUE,PARQUE,L1,asignado,,,1
+expost-20135865,20135865,holdout,Edificacion Publica,,,residual,sin_match,sin_match,,1
+expost-20136707,20136707,holdout,Casetas Sanitarias/alcantarillado,CASETAS SANITARIAS/ALCANTARILLADO/PLANTA DE TRATAMIENTO,CASETAS SANITARIAS/ALCANTARILLADO/PLANTA DE TRATAMIENTO,L1,asignado,,,1
+expost-20144181,20144181,holdout,Escuela Basica,INTERNADO,INTERNADO,L2,ambiguo,asignado,,2
+expost-20155176,20155176,holdout,Edificacion Publica,EDIFICACION PUBLICA,EDIFICACION PUBLICA,L1,asignado,,,1
+expost-20159757,20159757,holdout,Jardin Infantil,JARDIN INFANTIL Y SALA CUNA,JARDIN INFANTIL Y SALA CUNA,L1,asignado,,,1
+expost-20178122,20178122,holdout,Vias Urbanas Estructurantes,GESTION DE TRANSITO,GESTION DE TRANSITO,residual,ambiguo,ambiguo,,1
+expost-20188431,20188431,holdout,Vias Vialidad Urbana Intermedia,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,residual,ambiguo,sin_match,,1
+expost-20192798,20192798,holdout,Centro de Salud Familiar (cesfam),CENTRO DE SALUD FAMILIAR (CESFAM),CENTRO DE SALUD FAMILIAR (CESFAM),L1,asignado,,,1
+expost-20193409,20193409,holdout,Vias Vialidad Urbana Intermedia,ACERAS VIALIDAD PEATONAL,ACERAS VIALIDAD PEATONAL,residual,ambiguo,ambiguo,,1
+expost-20194078,20194078,holdout,Fiscalia (ministerio Publico),REGISTRO CIVIL E IDENTIFICACION,REGISTRO CIVIL E IDENTIFICACION,residual,ambiguo,ambiguo,,1
+expost-20195432,20195432,holdout,Fiscalia (ministerio Publico),FISCALIA (MINISTERIO PUBLICO),FISCALIA (MINISTERIO PUBLICO),L2,ambiguo,asignado,,2
+expost-20196122,20196122,holdout,Red de Alcantarillado y Planta Tratamiento Aguas Servidas,RED DE ALCANTARILLADO Y PLANTA TRATAMIENTO AGUAS SERVIDAS,RED DE ALCANTARILLADO Y PLANTA TRATAMIENTO AGUAS SERVIDAS,L1,asignado,,,1
+expost-30002886,30002886,holdout,Centro Comunitario,CENTRO COMUNITARIO,CENTRO COMUNITARIO,L1,asignado,,,1
+expost-30004155,30004155,holdout,Instalaciones Turisticas en Areas Silvestres Protegidas,SEÑALÉTICA Y PORTALES DE ACCESO,SEÑALÉTICA Y PORTALES DE ACCESO,residual,ambiguo,ambiguo,,1
+expost-30005642,30005642,holdout,Registro Civil E Identificacion,REGISTRO CIVIL E IDENTIFICACION,REGISTRO CIVIL E IDENTIFICACION,L1,asignado,,,1
+expost-30006885,30006885,holdout,Escuela Basica,ESCUELA BASICA MAS KINDER Y/O PREKINDER,ESCUELA BASICA MAS KINDER Y/O PREKINDER,L1,asignado,,,1
+expost-30007611,30007611,holdout,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,SISTEMA AGUA POTABLE RURAL,L1,asignado,,,1
+expost-30033630,30033630,holdout,Ruta,RUTA,RUTA,L1,asignado,,,1
+expost-30034144,30034144,holdout,Alumbrado Publico,ALUMBRADO PUBLICO,ALUMBRADO PUBLICO,L1,asignado,,,1
+expost-30035869,30035869,holdout,Jardin Infantil y Sala Cuna,JARDIN INFANTIL Y SALA CUNA,JARDIN INFANTIL Y SALA CUNA,L1,asignado,,,1
+expost-30036377,30036377,holdout,GIMNASIO ESTANDARD,ESTADIO MUNICIPAL,ESTADIO MUNICIPAL,residual,ambiguo,ambiguo,,1
+expost-30038102,30038102,holdout,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,SISTEMA AGUA POTABLE RURAL,L1,asignado,,,1
+expost-30038635,30038635,holdout,Fiscalia (ministerio Publico),REGISTRO CIVIL E IDENTIFICACION,REGISTRO CIVIL E IDENTIFICACION,residual,ambiguo,ambiguo,,1
+expost-30040024,30040024,holdout,Escuela Basica,ESCUELA BASICA MAS KINDER Y/O PREKINDER,ESCUELA BASICA MAS KINDER Y/O PREKINDER,residual,ambiguo,ambiguo,,1
+expost-30040047,30040047,holdout,Escuela Basica,INTERNADO,INTERNADO,L2,ambiguo,asignado,,2
+expost-30040142,30040142,holdout,Liceo Técnico Profesional,LICEO TECNICO PROFESIONAL,LICEO TECNICO PROFESIONAL,L1,asignado,,,1
+expost-30042612,30042612,holdout,CASETAS SANITARIAS /ALCANTARILLADO/AGUA POTABLE/ENERGIA,CASETAS SANITARIAS/ALCANTARILLADO/AGUA POTABLE,CASETAS SANITARIAS/ALCANTARILLADO/AGUA POTABLE,L1,asignado,,,1
+expost-30043754,30043754,holdout,Explanada y Rampa,EXPLANADA Y RAMPA,EXPLANADA Y RAMPA,L1,asignado,,,1
+expost-30043931,30043931,holdout,GIMNASIO ESTANDARD,GIMNASIO ESTANDARD,GIMNASIO ESTANDARD,residual,ambiguo,ambiguo,,1
+expost-30043957,30043957,holdout,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,SISTEMA AGUA POTABLE RURAL,L1,asignado,,,1
+expost-30043972,30043972,holdout,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,SISTEMA AGUA POTABLE RURAL,residual,ambiguo,ambiguo,,1
+expost-30044039,30044039,holdout,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,SISTEMA AGUA POTABLE RURAL,L1,asignado,,,1
+expost-30045392,30045392,holdout,Centro de Salud Familiar (cesfam),CENTRO DE SALUD FAMILIAR (CESFAM),CENTRO DE SALUD FAMILIAR (CESFAM),residual,ambiguo,ambiguo,,1
+expost-30046087,30046087,holdout,Plaza Civica,PLAZA CIVICA,PLAZA CIVICA,L1,asignado,,,1
+expost-30046830,30046830,holdout,Reten Carabineros,RETEN CARABINEROS,RETEN CARABINEROS,L1,asignado,,,1
+expost-30051000,30051000,holdout,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,SISTEMA AGUA POTABLE RURAL,L1,asignado,,,1
+expost-30051562,30051562,holdout,Subcomisaria Carabineros,SUBCOMISARIA CARABINEROS,SUBCOMISARIA CARABINEROS,L1,asignado,,,1
+expost-30057973,30057973,holdout,Cuartel Bomberos,CUARTEL BOMBEROS,CUARTEL BOMBEROS,L1,asignado,,,1
+expost-30060675,30060675,holdout,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,SISTEMA AGUA POTABLE RURAL,L1,asignado,,,1
+expost-30061702,30061702,holdout,Vias Urbanas Estructurantes,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,residual,ambiguo,ambiguo,,1
+expost-30061721,30061721,holdout,Vias Vialidad Urbana Intermedia,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,residual,ambiguo,ambiguo,,1
+expost-30062497,30062497,holdout,Borde Costero,BORDE COSTERO,BORDE COSTERO,L1,asignado,,,1
+expost-30062762,30062762,holdout,Vias Vialidad Urbana Intermedia,ACERAS VIALIDAD PEATONAL,ACERAS VIALIDAD PEATONAL,residual,ambiguo,ambiguo,,1
+expost-30063869,30063869,holdout,Estadio Municipal,ESTADIO ATLETICO,ESTADIO ATLETICO,residual,ambiguo,ambiguo,,1
+expost-30063903,30063903,holdout,Otros Asistencia de Menores,CENTRO DE INTERNACION REGIMEN SEMICERRADO (CSC),CENTRO DE INTERNACION REGIMEN SEMICERRADO (CSC),residual,ambiguo,ambiguo,,1
+expost-30064153,30064153,holdout,Vias Urbanas Estructurantes,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,residual,ambiguo,ambiguo,,1
+expost-30064400,30064400,holdout,Extensión Linea Media Tensión y Baja Tensión,EXTENSION LINEA MEDIA TENSION Y BAJA TENSION,EXTENSION LINEA MEDIA TENSION Y BAJA TENSION,L1,asignado,,,1
+expost-30064502,30064502,holdout,Colector Aguas Lluvias,COLECTOR AGUAS LLUVIAS,COLECTOR AGUAS LLUVIAS,L1,asignado,,,1
+expost-30064831,30064831,holdout,Rampa Portuaria,RAMPA PORTUARIA,RAMPA PORTUARIA,L1,asignado,,,1
+expost-30064923,30064923,holdout,Jardin Infantil y Sala Cuna,JARDIN INFANTIL Y SALA CUNA,JARDIN INFANTIL Y SALA CUNA,L1,asignado,,,1
+expost-30065189,30065189,holdout,Centro Cultural,CENTRO CULTURAL,CENTRO CULTURAL,L1,asignado,,,1
+expost-30065205,30065205,holdout,Cancha de Futbol Carpeta Sintetica (estandar),CANCHA DE FUTBOL CARPETA PASTO (ESTANDAR),CANCHA DE FUTBOL CARPETA PASTO (ESTANDAR),residual,ambiguo,ambiguo,,1
+expost-30065538,30065538,holdout,Colegio Basica/media Cientifico Humanista,COLEGIO BASICA/MEDIA CIENTIFICO HUMANISTA,COLEGIO BASICA/MEDIA CIENTIFICO HUMANISTA,residual,ambiguo,ambiguo,,1
+expost-30066466,30066466,holdout,Ruta,RUTA,RUTA,L1,asignado,,,1
+expost-30066670,30066670,holdout,Ruta,CAMINO BASICO INTERMEDIO,CAMINO BASICO INTERMEDIO,L1,asignado,,,1
+expost-30066968,30066968,holdout,Fiscalia (ministerio Publico),REGISTRO CIVIL E IDENTIFICACION,REGISTRO CIVIL E IDENTIFICACION,residual,ambiguo,ambiguo,,1
+expost-30067564,30067564,holdout,Centro de Salud Familiar (cesfam),CENTRO DE SALUD FAMILIAR (CESFAM),CENTRO DE SALUD FAMILIAR (CESFAM),L1,asignado,,,1
+expost-30068016,30068016,holdout,Jardin Infantil y Sala Cuna,SALA CUNA,SALA CUNA,L1,asignado,,,1
+expost-30068289,30068289,holdout,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,SISTEMA AGUA POTABLE RURAL,L1,asignado,,,1
+expost-30068442,30068442,holdout,Señaletica,SEÑALETICA,SEÑALETICA,residual,ambiguo,ambiguo,,1
+expost-30068609,30068609,holdout,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,SISTEMA AGUA POTABLE RURAL,L1,asignado,,,1
+expost-30068708,30068708,holdout,Vias Urbanas Estructurantes,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,residual,ambiguo,sin_match,,1
+expost-30068794,30068794,holdout,Otros Deporte Recreativo,PISCINA TEMPERADA,PISCINA TEMPERADA,L1,asignado,,,1
+expost-30069043,30069043,holdout,Equipos/equipamiento Alta Complejidad,EQUIPOS/EQUIPAMIENTO ALTA COMPLEJIDAD,EQUIPOS/EQUIPAMIENTO ALTA COMPLEJIDAD,residual,ambiguo,ambiguo,,1
+expost-30069485,30069485,holdout,Centro de Salud Familiar (cesfam),CENTRO DE SALUD FAMILIAR (CESFAM),CENTRO DE SALUD FAMILIAR (CESFAM),residual,ambiguo,ambiguo,,1
+expost-30069808,30069808,holdout,Casetas Sanitarias/alcantarillado,RED DE ALCANTARILLADO Y PLANTA TRATAMIENTO AGUAS SERVIDAS,RED DE ALCANTARILLADO Y PLANTA TRATAMIENTO AGUAS SERVIDAS,residual,ambiguo,ambiguo,,1
+expost-30069842,30069842,holdout,Edificacion Publica,EDIFICACION PUBLICA,EDIFICACION PUBLICA,L2,sin_match,asignado,,2
+expost-30070285,30070285,holdout,Ruta,RUTA,RUTA,L1,asignado,,,1
+expost-30070826,30070826,holdout,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,SISTEMA AGUA POTABLE RURAL,L1,asignado,,,1
+expost-30071391,30071391,holdout,Vias Urbanas Estructurantes,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,residual,ambiguo,ambiguo,,1
+expost-30071487,30071487,holdout,Escuela Basica Mas Kinder Y/o Prekinder,ESCUELA BASICA MAS KINDER Y/O PREKINDER,ESCUELA BASICA MAS KINDER Y/O PREKINDER,L1,asignado,,,1
+expost-30071556,30071556,holdout,Escuela Basica,ESCUELA BASICA,ESCUELA BASICA,L1,asignado,,,1
+expost-30071792,30071792,holdout,Cuartel Bomberos,CUARTEL BOMBEROS,CUARTEL BOMBEROS,L1,asignado,,,1
+expost-30071916,30071916,holdout,Parque,PARQUE,PARQUE,L1,asignado,,,1
+expost-30072017,30072017,holdout,Vias Vialidad Urbana Intermedia,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,L1,asignado,,,1
+expost-30072064,30072064,holdout,Otros Espacios Publicos,FONDO CONCURSABLE DE ESPACIOS PUBLICOS,FONDO CONCURSABLE DE ESPACIOS PUBLICOS,residual,ambiguo,ambiguo,,1
+expost-30072375,30072375,holdout,Prefectura Carabineros,PREFECTURA CARABINEROS,PREFECTURA CARABINEROS,L1,asignado,,,1
+expost-30072378,30072378,holdout,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,SISTEMA AGUA POTABLE RURAL,L1,asignado,,,1
+expost-30072411,30072411,holdout,Cuartel Pdi,CUARTEL PDI,CUARTEL PDI,L1,asignado,,,1
+expost-30072489,30072489,holdout,Centro Cultural,CENTRO CULTURAL,CENTRO CULTURAL,L1,asignado,,,1
+expost-30072513,30072513,holdout,Fondo Concursable de Espacios Publicos,PLAZA,PLAZA,L1,asignado,,,1
+expost-30072543,30072543,holdout,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,SISTEMA AGUA POTABLE RURAL,L1,asignado,,,1
+expost-30073111,30073111,holdout,Parque,PARQUE,PARQUE,L1,asignado,,,1
+expost-30073164,30073164,holdout,Escuela Basica Diferencial,ESCUELA BASICA DIFERENCIAL,ESCUELA BASICA DIFERENCIAL,L1,asignado,,,1
+expost-30073367,30073367,holdout,Registro Civil E Identificacion,REGISTRO CIVIL E IDENTIFICACION,REGISTRO CIVIL E IDENTIFICACION,L1,asignado,,,1
+expost-30073396,30073396,holdout,Vialidad Local,GESTION DE TRANSITO,GESTION DE TRANSITO,residual,ambiguo,ambiguo,,1
+expost-30074291,30074291,holdout,Puente,PUENTE,PUENTE,L1,asignado,,,1
+expost-30075101,30075101,holdout,Piscina Semiolimpica Temperada,PISCINA SEMIOLIMPICA TEMPERADA,PISCINA SEMIOLIMPICA TEMPERADA,L1,asignado,,,1
+expost-30076190,30076190,holdout,Estadio de Futbol Profesional,ESTADIO DE FUTBOL PROFESIONAL,ESTADIO DE FUTBOL PROFESIONAL,L1,asignado,,,1
+expost-30076328,30076328,holdout,Internado,INTERNADO,INTERNADO,L1,asignado,,,1
+expost-30076584,30076584,holdout,Puente Urbano,PUENTE URBANO,PUENTE URBANO,L1,asignado,,,1
+expost-30076987,30076987,holdout,Casa de Adulto Mayor,CENTROS DE ASISTENCIA,CENTROS DE ASISTENCIA,L1,asignado,,,1
+expost-30077012,30077012,holdout,Otros Baja Complejidad,HOSPITAL DE BAJA COMPLEJIDAD,HOSPITAL DE BAJA COMPLEJIDAD,residual,ambiguo,ambiguo,,1
+expost-30077822,30077822,holdout,Vias Urbanas Estructurantes,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,residual,ambiguo,ambiguo,,1
+expost-30078005,30078005,holdout,Centro Comunitario,CENTRO COMUNITARIO,CENTRO COMUNITARIO,L1,asignado,,,1
+expost-30078149,30078149,holdout,Cuartel Bomberos,CUARTEL BOMBEROS,CUARTEL BOMBEROS,L1,asignado,,,1
+expost-30078284,30078284,holdout,Centro de Salud Familiar (cesfam),CENTRO DE SALUD FAMILIAR (CESFAM),CENTRO DE SALUD FAMILIAR (CESFAM),L1,asignado,,,1
+expost-30078361,30078361,holdout,Aceras Vialidad Peatonal,ACERAS VIALIDAD PEATONAL,ACERAS VIALIDAD PEATONAL,residual,ambiguo,sin_match,,1
+expost-30078546,30078546,holdout,Vias Vialidad Urbana Intermedia,GESTION DE TRANSITO,GESTION DE TRANSITO,L1,asignado,,,1
+expost-30078854,30078854,holdout,Centro Comunitario,CENTRO COMUNITARIO,CENTRO COMUNITARIO,L1,asignado,,,1
+expost-30079187,30079187,holdout,Base Brigada Forestal,BASE BRIGADA FORESTAL,BASE BRIGADA FORESTAL,L1,asignado,,,1
+expost-30080156,30080156,holdout,Puente Urbano,PUENTE URBANO,PUENTE URBANO,L1,asignado,,,1
+expost-30080180,30080180,holdout,Vias Urbanas Estructurantes,SEMAFORIZACION,SEMAFORIZACION,residual,ambiguo,ambiguo,,1
+expost-30081142,30081142,holdout,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,SISTEMA AGUA POTABLE RURAL,L1,asignado,,,1
+expost-30081262,30081262,holdout,Paseo Peatonal,PASEO PEATONAL,PASEO PEATONAL,residual,ambiguo,ambiguo,,1
+expost-30081375,30081375,holdout,Red Contra Incendio Subsistema Cerrado,RED CONTRA INCENDIO SUBSISTEMA CERRADO,RED CONTRA INCENDIO SUBSISTEMA CERRADO,L1,asignado,,,1
+expost-30081471,30081471,holdout,Ruta,RUTA,RUTA,L1,asignado,,,1
+expost-30081629,30081629,holdout,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,SISTEMA AGUA POTABLE RURAL,L1,asignado,,,1
+expost-30081683,30081683,holdout,Centro de Salud Familiar (cesfam),CENTRO DE SALUD FAMILIAR (CESFAM),CENTRO DE SALUD FAMILIAR (CESFAM),L1,asignado,,,1
+expost-30082583,30082583,holdout,Paseo Peatonal,PASEO PEATONAL,PASEO PEATONAL,L1,asignado,,,1
+expost-30082941,30082941,holdout,Vias Vialidad Urbana Intermedia,GESTION DE TRANSITO,GESTION DE TRANSITO,residual,ambiguo,ambiguo,,1
+expost-30083677,30083677,holdout,Terminal de Buses,TERMINAL DE BUSES,TERMINAL DE BUSES,L1,asignado,,,1
+expost-30083908,30083908,holdout,Otros Patrimonio,,,residual,sin_match,ambiguo,,1
+expost-30083909,30083909,holdout,Reten Carabineros,RETEN CARABINEROS,RETEN CARABINEROS,L1,asignado,,,1
+expost-30083927,30083927,holdout,Comisaria Carabineros,COMISARIA CARABINEROS,COMISARIA CARABINEROS,L1,asignado,,,1
+expost-30084213,30084213,holdout,Red de Alcantarillado,RED DE ALCANTARILLADO,RED DE ALCANTARILLADO,L1,asignado,,,1
+expost-30084227,30084227,holdout,Vias Vialidad Urbana Intermedia,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,residual,ambiguo,sin_match,,1
+expost-30084242,30084242,holdout,Centro Cultural,CENTRO CULTURAL,CENTRO CULTURAL,L1,asignado,,,1
+expost-30084272,30084272,holdout,Casa de la Cultura,MUSEO,MUSEO,L1,asignado,,,1
+expost-30084277,30084277,holdout,Red de Alcantarillado,RED DE ALCANTARILLADO,RED DE ALCANTARILLADO,L1,asignado,,,1
+expost-30085168,30085168,holdout,Cuartel Pdi,CUARTEL PDI,CUARTEL PDI,L1,asignado,,,1
+expost-30085354,30085354,holdout,Vias Vialidad Urbana Intermedia,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,residual,ambiguo,ambiguo,,1
+expost-30085441,30085441,holdout,Vias Vialidad Urbana Intermedia,VIAS VIALIDAD URBANA INTERMEDIA,VIAS VIALIDAD URBANA INTERMEDIA,residual,ambiguo,sin_match,,1
+expost-30085664,30085664,holdout,Posta Rural,POSTA RURAL,POSTA RURAL,L1,asignado,,,1
+expost-30085750,30085750,holdout,Edificacion Publica,,,residual,sin_match,sin_match,,1
+expost-30086050,30086050,holdout,Escuela Basica,ESCUELA BASICA MAS KINDER Y/O PREKINDER,ESCUELA BASICA MAS KINDER Y/O PREKINDER,residual,ambiguo,ambiguo,,1
+expost-30086229,30086229,holdout,Viviendas Tuteladas,VIVIENDAS TUTELADAS,VIVIENDAS TUTELADAS,L2,ambiguo,asignado,,2
+expost-30086265,30086265,holdout,Estadio Atletico,PISTA SINTETICA DE ATLETISMO 400 M.(EQUIPADA),PISTA SINTETICA DE ATLETISMO 400 M.(EQUIPADA),residual,ambiguo,ambiguo,,1
+expost-30086566,30086566,holdout,Centro de Salud Familiar (cesfam),CENTRO COMUNITARIO DE SALUD FAMILIAR (CECOSF),CENTRO COMUNITARIO DE SALUD FAMILIAR (CECOSF),residual,ambiguo,ambiguo,,1
+expost-30086786,30086786,holdout,Estadio Municipal,ESTADIO MUNICIPAL,ESTADIO MUNICIPAL,L1,asignado,,,1
+expost-30086789,30086789,holdout,Cuartel Bomberos,CUARTEL BOMBEROS,CUARTEL BOMBEROS,L1,asignado,,,1
+expost-30086892,30086892,holdout,Vias Vialidad Urbana Intermedia,GESTION DE TRANSITO,GESTION DE TRANSITO,L1,asignado,,,1
+expost-30086941,30086941,holdout,Red de Alcantarillado,RED DE ALCANTARILLADO Y AGUA POTABLE,RED DE ALCANTARILLADO Y AGUA POTABLE,residual,ambiguo,ambiguo,,1
+expost-30087122,30087122,holdout,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,SISTEMA AGUA POTABLE RURAL,L1,asignado,,,1
+expost-30087299,30087299,holdout,Cementerio,CEMENTERIO,CEMENTERIO,L1,asignado,,,1
+expost-30087303,30087303,holdout,Posta Rural,POSTA RURAL,POSTA RURAL,L1,asignado,,,1
+expost-30087400,30087400,holdout,Comisaria Carabineros,COMISARIA CARABINEROS,COMISARIA CARABINEROS,residual,ambiguo,ambiguo,,1
+expost-30087406,30087406,holdout,Reten Carabineros,RETEN CARABINEROS,RETEN CARABINEROS,L1,asignado,,,1
+expost-30087631,30087631,holdout,Escuela Basica,COLEGIO PREBASICA/BASICA/MEDIA CIENTIFICO HUMANISTA,COLEGIO PREBASICA/BASICA/MEDIA CIENTIFICO HUMANISTA,residual,ambiguo,ambiguo,,1
+expost-30087709,30087709,holdout,Puente,PUENTE,PUENTE,residual,ambiguo,ambiguo,,1
+expost-30091807,30091807,holdout,Alumbrado Publico,ALUMBRADO PUBLICO,ALUMBRADO PUBLICO,L1,asignado,,,1
+expost-30092037,30092037,holdout,Casetas Sanitarias/alcantarillado/agua Potable,RED DE ALCANTARILLADO Y AGUA POTABLE,RED DE ALCANTARILLADO Y AGUA POTABLE,L1,asignado,,,1
+expost-30093506,30093506,holdout,Vias Urbanas Estructurantes,ACERAS VIALIDAD PEATONAL,ACERAS VIALIDAD PEATONAL,L1,asignado,,,1
+expost-30093612,30093612,holdout,Red de Alcantarillado,RED DE ALCANTARILLADO,RED DE ALCANTARILLADO,L1,asignado,,,1
+expost-30093792,30093792,holdout,Extensión Linea Media Tensión y Baja Tensión,EXTENSION LINEA MEDIA TENSION Y BAJA TENSION,EXTENSION LINEA MEDIA TENSION Y BAJA TENSION,residual,ambiguo,ambiguo,,1
+expost-30093830,30093830,holdout,Vias Vialidad Urbana Intermedia,GESTION DE TRANSITO,GESTION DE TRANSITO,L1,asignado,,,1
+expost-30093893,30093893,holdout,Centro de Salud Familiar (cesfam),CENTRO DE SALUD FAMILIAR (CESFAM),CENTRO DE SALUD FAMILIAR (CESFAM),L1,asignado,,,1
+expost-30094106,30094106,holdout,Rellenos Sanitarios Con Operación Mecánica y Manual,VEHÍCULOS DE CARGA DE GRAN TONELAJE PARA RESIDUOS SÓLIDOS DOMICILIARIOS Y ASIMILABLES,VEHÍCULOS DE CARGA DE GRAN TONELAJE PARA RESIDUOS SÓLIDOS DOMICILIARIOS Y ASIMILABLES,residual,ambiguo,ambiguo,,1
+expost-30094328,30094328,holdout,Teatro,TEATRO,TEATRO,L1,asignado,,,1
+expost-30094405,30094405,holdout,Vias Vialidad Urbana Intermedia,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,residual,ambiguo,ambiguo,,1
+expost-30094768,30094768,holdout,Colector Aguas Lluvias,COLECTOR AGUAS LLUVIAS,COLECTOR AGUAS LLUVIAS,L1,asignado,,,1
+expost-30094791,30094791,holdout,Red de Alcantarillado,RED DE ALCANTARILLADO Y AGUA POTABLE,RED DE ALCANTARILLADO Y AGUA POTABLE,L1,asignado,,,1
+expost-30095031,30095031,holdout,Parque,PARQUE,PARQUE,L1,asignado,,,1
+expost-30095185,30095185,holdout,Red de Alcantarillado y Agua Potable,CASETAS SANITARIAS/ALCANTARILLADO/AGUA POTABLE,CASETAS SANITARIAS/ALCANTARILLADO/AGUA POTABLE,residual,ambiguo,ambiguo,,1
+expost-30095328,30095328,holdout,Vias Vialidad Urbana Intermedia,GESTION DE TRANSITO,GESTION DE TRANSITO,L1,asignado,,,1
+expost-30095384,30095384,holdout,Red de Alcantarillado y Planta Tratamiento Aguas Servidas,RED DE ALCANTARILLADO Y PLANTA TRATAMIENTO AGUAS SERVIDAS,RED DE ALCANTARILLADO Y PLANTA TRATAMIENTO AGUAS SERVIDAS,L1,asignado,,,1
+expost-30095393,30095393,holdout,Estabilizacion de Taludes,,,residual,sin_match,ambiguo,,1
+expost-30095445,30095445,holdout,Jardin Infantil y Sala Cuna,JARDIN INFANTIL Y SALA CUNA,JARDIN INFANTIL Y SALA CUNA,L1,asignado,,,1
+expost-30095598,30095598,holdout,Camino Basico Intermedio,RUTA,RUTA,L1,asignado,,,1
+expost-30095861,30095861,holdout,Posta Rural,POSTA RURAL,POSTA RURAL,L1,asignado,,,1
+expost-30095889,30095889,holdout,Puente Urbano,PUENTE URBANO,PUENTE URBANO,L1,asignado,,,1
+expost-30096040,30096040,holdout,Cuartel Bomberos,CUARTEL BOMBEROS,CUARTEL BOMBEROS,L1,asignado,,,1
+expost-30096770,30096770,holdout,Extensión Linea Media Tensión y Baja Tensión,EXTENSION LINEA MEDIA TENSION Y BAJA TENSION,EXTENSION LINEA MEDIA TENSION Y BAJA TENSION,L1,asignado,,,1
+expost-30097343,30097343,holdout,SAR,HOSPITAL DE BAJA COMPLEJIDAD,HOSPITAL DE BAJA COMPLEJIDAD,L1,asignado,,,1
+expost-30097967,30097967,holdout,Vias Urbanas Estructurantes,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,residual,ambiguo,sin_match,,1
+expost-30098256,30098256,holdout,Terminal de Buses,TERMINAL DE BUSES,TERMINAL DE BUSES,L1,asignado,,,1
+expost-30099433,30099433,holdout,Muelle,MUELLE,MUELLE,L1,asignado,,,1
+expost-30099704,30099704,holdout,Fondo Concursable de Espacios Publicos,PLAZA,PLAZA,L1,asignado,,,1
+expost-30099967,30099967,holdout,CENTRO DE CUMPLIMIENTO PENITENCIARIO (CCP),UNIDAD ESPECIAL DE ALTA SEGURIDAD (UEAS),UNIDAD ESPECIAL DE ALTA SEGURIDAD (UEAS),L1,asignado,,,1
+expost-30100225,30100225,holdout,Cuartel Bomberos,CUARTEL BOMBEROS,CUARTEL BOMBEROS,L1,asignado,,,1
+expost-30100352,30100352,holdout,Jardin Infantil y Sala Cuna,JARDIN INFANTIL Y SALA CUNA,JARDIN INFANTIL Y SALA CUNA,L1,asignado,,,1
+expost-30100399,30100399,holdout,Extensión Linea Media Tensión y Baja Tensión,EXTENSION LINEA MEDIA TENSION Y BAJA TENSION,EXTENSION LINEA MEDIA TENSION Y BAJA TENSION,L1,asignado,,,1
+expost-30100599,30100599,holdout,Internado,INTERNADO,INTERNADO,L2,sin_match,asignado,,2
+expost-30100678,30100678,holdout,Ruta,RUTA,RUTA,L1,asignado,,,1
+expost-30100880,30100880,holdout,Liceo Técnico Profesional,LICEO TECNICO PROFESIONAL,LICEO TECNICO PROFESIONAL,L1,asignado,,,1
+expost-30101181,30101181,holdout,Gestion de Transito,GESTION DE TRANSITO,GESTION DE TRANSITO,L1,asignado,,,1
+expost-30101328,30101328,holdout,Aceras Vialidad Peatonal,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,residual,ambiguo,ambiguo,,1
+expost-30101446,30101446,holdout,Puente,PUENTE,PUENTE,residual,ambiguo,ambiguo,,1
+expost-30101802,30101802,holdout,Vias Vialidad Urbana Intermedia,GESTION DE TRANSITO,GESTION DE TRANSITO,residual,ambiguo,ambiguo,,1
+expost-30102102,30102102,holdout,Vias Vialidad Urbana Intermedia,GESTION DE TRANSITO,GESTION DE TRANSITO,residual,ambiguo,sin_match,,1
+expost-30102258,30102258,holdout,Ruta,RUTA,RUTA,L1,asignado,,,1
+expost-30102313,30102313,holdout,Alumbrado Publico,ALUMBRADO PUBLICO,ALUMBRADO PUBLICO,L1,asignado,,,1
+expost-30102485,30102485,holdout,Vias Vialidad Urbana Intermedia,ACERAS VIALIDAD PEATONAL,ACERAS VIALIDAD PEATONAL,residual,ambiguo,sin_match,,1
+expost-30102529,30102529,holdout,Centro de Salud Familiar (cesfam),CENTRO DE SALUD FAMILIAR (CESFAM),CENTRO DE SALUD FAMILIAR (CESFAM),residual,ambiguo,ambiguo,,1
+expost-30102581,30102581,holdout,Vias Urbanas Estructurantes,GESTION DE TRANSITO,GESTION DE TRANSITO,residual,ambiguo,sin_match,,1
+expost-30102678,30102678,holdout,Vias Vialidad Urbana Intermedia,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,L1,asignado,,,1
+expost-30103125,30103125,holdout,Casetas Sanitarias/alcantarillado,CASETAS SANITARIAS/ALCANTARILLADO/PLANTA DE TRATAMIENTO,CASETAS SANITARIAS/ALCANTARILLADO/PLANTA DE TRATAMIENTO,L1,asignado,,,1
+expost-30103210,30103210,holdout,Casetas Sanitarias/alcantarillado/agua Potable,CASETAS SANITARIAS/ALCANTARILLADO/AGUA POTABLE,CASETAS SANITARIAS/ALCANTARILLADO/AGUA POTABLE,residual,ambiguo,ambiguo,,1
+expost-30103215,30103215,holdout,Parque,PARQUE,PARQUE,L1,asignado,,,1
+expost-30103225,30103225,holdout,Casetas Sanitarias/alcantarillado/agua Potable,CASETAS SANITARIAS/ALCANTARILLADO/AGUA POTABLE,CASETAS SANITARIAS/ALCANTARILLADO/AGUA POTABLE,residual,ambiguo,ambiguo,,1
+expost-30103594,30103594,holdout,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,SISTEMA AGUA POTABLE RURAL,L1,asignado,,,1
+expost-30103626,30103626,holdout,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,SISTEMA AGUA POTABLE RURAL,L1,asignado,,,1
+expost-30103963,30103963,holdout,Multicancha (equipada),MULTICANCHA (EQUIPADA),MULTICANCHA (EQUIPADA),residual,ambiguo,ambiguo,,1
+expost-30103983,30103983,holdout,Ruta,CAMINO BASICO INTERMEDIO,CAMINO BASICO INTERMEDIO,L1,asignado,,,1
+expost-30104007,30104007,holdout,Edificacion Publica,,,residual,sin_match,sin_match,,1
+expost-30104073,30104073,holdout,Cuartel Bomberos,CUARTEL BOMBEROS,CUARTEL BOMBEROS,L1,asignado,,,1
+expost-30104110,30104110,holdout,Sede Social,SEDE SOCIAL,SEDE SOCIAL,L1,asignado,,,1
+expost-30104152,30104152,holdout,LADO TERRESTRE INFRAESTRUCTURA HORIZONTAL/VERTICAL,LADO TERRESTRE INFRAESTRUCTURA HORIZONTAL/VERTICAL,LADO TERRESTRE INFRAESTRUCTURA HORIZONTAL/VERTICAL,residual,ambiguo,ambiguo,,1
+expost-30104185,30104185,holdout,Escuela Basica,ESCUELA BASICA MAS KINDER Y/O PREKINDER,ESCUELA BASICA MAS KINDER Y/O PREKINDER,L1,asignado,,,1
+expost-30104223,30104223,holdout,Terminal de Buses,TERMINAL DE BUSES,TERMINAL DE BUSES,L1,asignado,,,1
+expost-30104240,30104240,holdout,Vias Vialidad Urbana Intermedia,GESTION DE TRANSITO,GESTION DE TRANSITO,residual,ambiguo,ambiguo,,1
+expost-30104300,30104300,holdout,Edificacion Publica,EDIFICACION PUBLICA,EDIFICACION PUBLICA,L2,sin_match,asignado,,2
+expost-30104310,30104310,holdout,Parque,PARQUE,PARQUE,L1,asignado,,,1
+expost-30104428,30104428,holdout,Reten Carabineros,RETEN CARABINEROS,RETEN CARABINEROS,L1,asignado,,,1
+expost-30104476,30104476,holdout,Planes de Cierre de Vertederos O Basurales,PLANES DE CIERRE DE VERTEDEROS O BASURALES,PLANES DE CIERRE DE VERTEDEROS O BASURALES,L2,ambiguo,asignado,,2
+expost-30104596,30104596,holdout,Tenencia Carabineros,TENENCIA CARABINEROS,TENENCIA CARABINEROS,L1,asignado,,,1
+expost-30104673,30104673,holdout,Otros Deporte Competitivo,ESTADIO DE FUTBOL PROFESIONAL,ESTADIO DE FUTBOL PROFESIONAL,L1,asignado,,,1
+expost-30104696,30104696,holdout,Comisaria Carabineros,COMISARIA CARABINEROS,COMISARIA CARABINEROS,L1,asignado,,,1
+expost-30104752,30104752,holdout,Comisaria Carabineros,COMISARIA CARABINEROS,COMISARIA CARABINEROS,L1,asignado,,,1
+expost-30104885,30104885,holdout,Comisaria Carabineros,COMISARIA CARABINEROS,COMISARIA CARABINEROS,residual,ambiguo,sin_match,,1
+expost-30104953,30104953,holdout,Prefectura Carabineros,PREFECTURA CARABINEROS,PREFECTURA CARABINEROS,residual,ambiguo,ambiguo,,1
+expost-30104968,30104968,holdout,Estabilizacion de Taludes,ESTABILIZACION DE TALUDES,ESTABILIZACION DE TALUDES,residual,ambiguo,ambiguo,,1
+expost-30105928,30105928,holdout,Otros Espacios Publicos,PASEO PEATONAL,PASEO PEATONAL,residual,ambiguo,ambiguo,,1
+expost-30106087,30106087,holdout,Parque,PARQUE,PARQUE,L1,asignado,,,1
+expost-30106450,30106450,holdout,Sede Social,SEDE SOCIAL,SEDE SOCIAL,L1,asignado,,,1
+expost-30106701,30106701,holdout,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,SISTEMA AGUA POTABLE RURAL,L1,asignado,,,1
+expost-30107298,30107298,holdout,Caleta,CALETA,CALETA,L1,asignado,,,1
+expost-30107342,30107342,holdout,Red de Distribucion de Eléctrica,EXTENSION LINEA MEDIA TENSION Y BAJA TENSION,EXTENSION LINEA MEDIA TENSION Y BAJA TENSION,residual,ambiguo,ambiguo,,1
+expost-30107370,30107370,holdout,Juzgado (poder Judicial - Capj),JUZGADO (PODER JUDICIAL - CAPJ),JUZGADO (PODER JUDICIAL - CAPJ),L1,asignado,,,1
+expost-30108008,30108008,holdout,Posta Rural,POSTA RURAL,POSTA RURAL,L1,asignado,,,1
+expost-30108398,30108398,holdout,Vias Vialidad Urbana Intermedia,VIAS VIALIDAD URBANA INTERMEDIA,VIAS VIALIDAD URBANA INTERMEDIA,L2,ambiguo,asignado,,2
+expost-30108428,30108428,holdout,Alumbrado Publico,ALUMBRADO PUBLICO,ALUMBRADO PUBLICO,L1,asignado,,,1
+expost-30108433,30108433,holdout,Vias Vialidad Urbana Intermedia,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,residual,ambiguo,ambiguo,,1
+expost-30108442,30108442,holdout,Medialuna Recreativa O de Entrenamiento,MEDIALUNA RECREATIVA O DE ENTRENAMIENTO,MEDIALUNA RECREATIVA O DE ENTRENAMIENTO,L1,asignado,,,1
+expost-30108556,30108556,holdout,"Otros Defensas Fluviales, Maritimas y Cauces Artificiales","OTROS DEFENSAS FLUVIALES, MARITIMAS Y CAUCES ARTIFICIALES","OTROS DEFENSAS FLUVIALES, MARITIMAS Y CAUCES ARTIFICIALES",L1,asignado,,,1
+expost-30108942,30108942,holdout,Cancha de Futbol Carpeta Sintetica (estandar),CANCHA DE FUTBOL CARPETA PASTO (ESTANDAR),CANCHA DE FUTBOL CARPETA PASTO (ESTANDAR),residual,ambiguo,ambiguo,,1
+expost-30108971,30108971,holdout,Red de Alcantarillado y Planta Tratamiento Aguas Servidas,RED DE ALCANTARILLADO Y PLANTA TRATAMIENTO AGUAS SERVIDAS,RED DE ALCANTARILLADO Y PLANTA TRATAMIENTO AGUAS SERVIDAS,L1,asignado,,,1
+expost-30109398,30109398,holdout,Plaza,PLAZA,PLAZA,L1,asignado,,,1
+expost-30109788,30109788,holdout,Vias Vialidad Urbana Intermedia,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,residual,ambiguo,ambiguo,,1
+expost-30109823,30109823,holdout,Otros Espacios Publicos,PLAZA CIVICA,PLAZA CIVICA,L1,asignado,,,1
+expost-30109929,30109929,holdout,Vias Vialidad Urbana Intermedia,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,residual,ambiguo,ambiguo,,1
+expost-30110264,30110264,holdout,Unidad de Tratamiento Intermedio (uti),UNIDAD DE TRATAMIENTO INTERMEDIO (UTI),UNIDAD DE TRATAMIENTO INTERMEDIO (UTI),L1,asignado,,,1
+expost-30110438,30110438,holdout,Estabilizacion de Taludes,ESTABILIZACION DE TALUDES,ESTABILIZACION DE TALUDES,residual,ambiguo,sin_match,,1
+expost-30110533,30110533,holdout,Cancha de Futbol Carpeta Sintetica (estandar),ESTADIO FUTBOL EQUIPADO (AMATEUR),ESTADIO FUTBOL EQUIPADO (AMATEUR),L2,ambiguo,asignado,,2
+expost-30111100,30111100,holdout,Red de Alcantarillado y Planta Tratamiento Aguas Servidas,RED DE ALCANTARILLADO Y PLANTA TRATAMIENTO AGUAS SERVIDAS,RED DE ALCANTARILLADO Y PLANTA TRATAMIENTO AGUAS SERVIDAS,L1,asignado,,,1
+expost-30112189,30112189,holdout,Parque,PARQUE,PARQUE,L1,asignado,,,1
+expost-30112504,30112504,holdout,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,SISTEMA AGUA POTABLE RURAL,L1,asignado,,,1
+expost-30112905,30112905,holdout,Intersubsectorial Multisector,,,residual,sin_match,sin_match,,1
+expost-30113099,30113099,holdout,Colector Aguas Lluvias,COLECTOR AGUAS LLUVIAS Y LAGUNA DE RETENCION,COLECTOR AGUAS LLUVIAS Y LAGUNA DE RETENCION,residual,ambiguo,sin_match,,1
+expost-30113410,30113410,holdout,Polideportivo Con Nave Multifuncional y Salones Deportivos Adicionales,POLIDEPORTIVO CON NAVE MULTIFUNCIONAL Y SALONES DEPORTIVOS ADICIONALES,POLIDEPORTIVO CON NAVE MULTIFUNCIONAL Y SALONES DEPORTIVOS ADICIONALES,residual,ambiguo,ambiguo,,1
+expost-30113414,30113414,holdout,Colector Aguas Lluvias,COLECTOR AGUAS LLUVIAS Y LAGUNA DE RETENCION,COLECTOR AGUAS LLUVIAS Y LAGUNA DE RETENCION,residual,ambiguo,ambiguo,,1
+expost-30113923,30113923,holdout,Terminal de Buses,TERMINAL DE BUSES,TERMINAL DE BUSES,L1,asignado,,,1
+expost-30114266,30114266,holdout,Museo,MUSEO,MUSEO,L1,asignado,,,1
+expost-30114461,30114461,holdout,Otros Espacios Publicos,PLAZA,PLAZA,L1,asignado,,,1
+expost-30114915,30114915,holdout,Vias Urbanas Estructurantes,ACERAS VIALIDAD PEATONAL,ACERAS VIALIDAD PEATONAL,L1,asignado,,,1
+expost-30115199,30115199,holdout,Parque,PARQUE,PARQUE,L1,asignado,,,1
+expost-30115272,30115272,holdout,Cancha de Futbol Carpeta Sintetica (estandar),ESTADIO FUTBOL EQUIPADO (AMATEUR),ESTADIO FUTBOL EQUIPADO (AMATEUR),residual,ambiguo,ambiguo,,1
+expost-30115427,30115427,holdout,Escuela Basica Mas Kinder Y/o Prekinder,ESCUELA BASICA,ESCUELA BASICA,residual,ambiguo,ambiguo,,1
+expost-30115973,30115973,holdout,Establecimiento de Larga Estadia,VIVIENDAS TUTELADAS,VIVIENDAS TUTELADAS,L1,asignado,,,1
+expost-30116475,30116475,holdout,Escuela Basica,INTERNADO,INTERNADO,L2,ambiguo,asignado,,2
+expost-30116479,30116479,holdout,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,SISTEMA AGUA POTABLE RURAL,residual,ambiguo,ambiguo,,1
+expost-30116708,30116708,holdout,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,SISTEMA AGUA POTABLE RURAL,L1,asignado,,,1
+expost-30116838,30116838,holdout,Aceras y Soleras Vialidad Urbana Intermedia,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,residual,ambiguo,ambiguo,,1
+expost-30117891,30117891,holdout,Vias Vialidad Urbana Intermedia,VIALIDAD LOCAL,VIALIDAD LOCAL,L1,asignado,,,1
+expost-30118049,30118049,holdout,Vias Vialidad Urbana Intermedia,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,residual,ambiguo,sin_match,,1
+expost-30118605,30118605,holdout,Vias Vialidad Urbana Intermedia,ACERAS VIALIDAD PEATONAL,ACERAS VIALIDAD PEATONAL,residual,ambiguo,sin_match,,1
+expost-30118958,30118958,holdout,Parque,PARQUE,PARQUE,L1,asignado,,,1
+expost-30119618,30119618,holdout,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,SISTEMA AGUA POTABLE RURAL,L1,asignado,,,1
+expost-30120537,30120537,holdout,Instalaciones Turisticas en Areas Silvestres Protegidas,SEÑALÉTICA Y PORTALES DE ACCESO,SEÑALÉTICA Y PORTALES DE ACCESO,residual,ambiguo,ambiguo,,1
+expost-30120616,30120616,holdout,Extensión Linea Media Tensión y Baja Tensión,EXTENSION LINEA MEDIA TENSION Y BAJA TENSION,EXTENSION LINEA MEDIA TENSION Y BAJA TENSION,L1,asignado,,,1
+expost-30120763,30120763,holdout,Universidad,UNIVERSIDAD,UNIVERSIDAD,L1,asignado,,,1
+expost-30121400,30121400,holdout,Vias Vialidad Urbana Intermedia,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,residual,ambiguo,sin_match,,1
+expost-30121545,30121545,holdout,Reten Carabineros,RETEN CARABINEROS,RETEN CARABINEROS,L1,asignado,,,1
+expost-30121924,30121924,holdout,Camino Basico Intermedio,CAMINO BASICO INTERMEDIO,CAMINO BASICO INTERMEDIO,L1,asignado,,,1
+expost-30122072,30122072,holdout,Puente,PUENTE,PUENTE,residual,ambiguo,ambiguo,,1
+expost-30122174,30122174,holdout,Aceras Vialidad Peatonal,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,L1,asignado,,,1
+expost-30122180,30122180,holdout,Iglesia/templo,IGLESIA/TEMPLO,IGLESIA/TEMPLO,L2,ambiguo,asignado,,2
+expost-30122631,30122631,holdout,Viviendas Tuteladas,VIVIENDAS TUTELADAS,VIVIENDAS TUTELADAS,L1,asignado,,,1
+expost-30123516,30123516,holdout,Reten Carabineros,RETEN CARABINEROS,RETEN CARABINEROS,residual,ambiguo,sin_match,,1
+expost-30123562,30123562,holdout,Reten Carabineros,RETEN CARABINEROS,RETEN CARABINEROS,L1,asignado,,,1
+expost-30123693,30123693,holdout,Jardin Infantil y Sala Cuna,JARDIN INFANTIL Y SALA CUNA,JARDIN INFANTIL Y SALA CUNA,L1,asignado,,,1
+expost-30123746,30123746,holdout,Establecimiento de Larga Estadia,VIVIENDAS TUTELADAS,VIVIENDAS TUTELADAS,residual,ambiguo,ambiguo,,1
+expost-30124255,30124255,holdout,Comisaria Carabineros,COMISARIA CARABINEROS,COMISARIA CARABINEROS,L1,asignado,,,1
+expost-30124443,30124443,holdout,Sistema Agua Potable Rural,,,residual,sin_match,sin_match,,1
+expost-30124944,30124944,holdout,Alumbrado Publico,ALUMBRADO PUBLICO,ALUMBRADO PUBLICO,L1,asignado,,,1
+expost-30124992,30124992,holdout,Macrourbanizacion,MACROURBANIZACION,MACROURBANIZACION,L1,asignado,,,1
+expost-30125568,30125568,holdout,Fotovoltaico,TECHOS SOLARES,TECHOS SOLARES,residual,ambiguo,ambiguo,,1
+expost-30125603,30125603,holdout,Alumbrado Publico,ALUMBRADO PUBLICO,ALUMBRADO PUBLICO,L1,asignado,,,1
+expost-30125756,30125756,holdout,Vias Urbanas Estructurantes,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,residual,ambiguo,ambiguo,,1
+expost-30127062,30127062,holdout,Estabilizacion de Taludes,ESTABILIZACION DE TALUDES,ESTABILIZACION DE TALUDES,L1,asignado,,,1
+expost-30127254,30127254,holdout,Camino Basico Intermedio,RUTA,RUTA,L1,asignado,,,1
+expost-30128148,30128148,holdout,Vias Vialidad Urbana Intermedia,VIAS VIALIDAD URBANA INTERMEDIA,VIAS VIALIDAD URBANA INTERMEDIA,residual,ambiguo,ambiguo,,1
+expost-30128325,30128325,holdout,Colector Aguas Lluvias,COLECTOR AGUAS LLUVIAS Y LAGUNA DE RETENCION,COLECTOR AGUAS LLUVIAS Y LAGUNA DE RETENCION,residual,ambiguo,ambiguo,,1
+expost-30128366,30128366,holdout,Otros Cultura,ARCHIVOS,ARCHIVOS,residual,ambiguo,ambiguo,,1
+expost-30129209,30129209,holdout,Alumbrado Publico,ALUMBRADO PUBLICO,ALUMBRADO PUBLICO,L1,asignado,,,1
+expost-30129357,30129357,holdout,Reten Carabineros,RETEN CARABINEROS,RETEN CARABINEROS,residual,ambiguo,sin_match,,1
+expost-30129445,30129445,holdout,Extensión Linea Media Tensión y Baja Tensión,EXTENSION LINEA MEDIA TENSION Y BAJA TENSION,EXTENSION LINEA MEDIA TENSION Y BAJA TENSION,L1,asignado,,,1
+expost-30129794,30129794,holdout,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,SISTEMA AGUA POTABLE RURAL,L1,asignado,,,1
+expost-30130022,30130022,holdout,Parque,PARQUE,PARQUE,L1,asignado,,,1
+expost-30130155,30130155,holdout,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,SISTEMA AGUA POTABLE RURAL,residual,ambiguo,ambiguo,,1
+expost-30130800,30130800,holdout,Borde Costero,BORDE COSTERO,BORDE COSTERO,L1,asignado,,,1
+expost-30130996,30130996,holdout,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,SISTEMA AGUA POTABLE RURAL,L1,asignado,,,1
+expost-30131080,30131080,holdout,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,SISTEMA AGUA POTABLE RURAL,L1,asignado,,,1
+expost-30131172,30131172,holdout,Vias Vialidad Urbana Intermedia,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,residual,ambiguo,ambiguo,,1
+expost-30131688,30131688,holdout,Ruta,RUTA,RUTA,L1,asignado,,,1
+expost-30131913,30131913,holdout,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,SISTEMA AGUA POTABLE RURAL,L1,asignado,,,1
+expost-30132034,30132034,holdout,Borde Costero,BORDE COSTERO,BORDE COSTERO,L1,asignado,,,1
+expost-30132269,30132269,holdout,Vias Vialidad Urbana Intermedia,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,residual,ambiguo,ambiguo,,1
+expost-30132653,30132653,holdout,Vias Vialidad Urbana Intermedia,ACERAS VIALIDAD PEATONAL,ACERAS VIALIDAD PEATONAL,L1,asignado,,,1
+expost-30133119,30133119,holdout,Vias Vialidad Urbana Intermedia,VIALIDAD LOCAL,VIALIDAD LOCAL,residual,ambiguo,ambiguo,,1
+expost-30133957,30133957,holdout,Vias Vialidad Urbana Intermedia,ACERAS VIALIDAD PEATONAL,ACERAS VIALIDAD PEATONAL,L1,asignado,,,1
+expost-30134490,30134490,holdout,Plaza,PLAZA,PLAZA,L1,asignado,,,1
+expost-30134705,30134705,holdout,Pozos de Absorcion,COLECTOR AGUAS LLUVIAS Y LAGUNA DE RETENCION,COLECTOR AGUAS LLUVIAS Y LAGUNA DE RETENCION,residual,ambiguo,ambiguo,,1
+expost-30134720,30134720,holdout,Centro Comunitario,,,residual,sin_match,sin_match,,1
+expost-30134800,30134800,holdout,Plaza,PLAZA,PLAZA,L1,asignado,,,1
+expost-30134906,30134906,holdout,Plaza Civica,PLAZA,PLAZA,residual,ambiguo,ambiguo,,1
+expost-30134930,30134930,holdout,Estadio Futbol Equipado (amateur),ESTADIO FUTBOL EQUIPADO (AMATEUR),ESTADIO FUTBOL EQUIPADO (AMATEUR),L1,asignado,,,1
+expost-30135401,30135401,holdout,Fondo Concursable de Espacios Publicos,PLAZA CIVICA,PLAZA CIVICA,residual,ambiguo,ambiguo,,1
+expost-30135437,30135437,holdout,Fondo Concursable de Espacios Publicos,ACERAS,ACERAS,residual,ambiguo,sin_match,,1
+expost-30135597,30135597,holdout,Posta Rural,CENTRO DE SALUD FAMILIAR (CESFAM),CENTRO DE SALUD FAMILIAR (CESFAM),L1,asignado,,,1
+expost-30135631,30135631,holdout,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,SISTEMA AGUA POTABLE RURAL,L1,asignado,,,1
+expost-30135961,30135961,holdout,Vias Vialidad Urbana Intermedia,GESTION DE TRANSITO,GESTION DE TRANSITO,residual,ambiguo,sin_match,,1
+expost-30136775,30136775,holdout,Cancha de Futbol Carpeta Sintetica (estandar),CANCHA DE FUTBOL CARPETA SINTETICA (ESTANDAR),CANCHA DE FUTBOL CARPETA SINTETICA (ESTANDAR),residual,ambiguo,ambiguo,,1
+expost-30136865,30136865,holdout,Sede Social,SEDE SOCIAL,SEDE SOCIAL,L1,asignado,,,1
+expost-30137344,30137344,holdout,Terminal de Buses,TERMINAL DE BUSES,TERMINAL DE BUSES,L1,asignado,,,1
+expost-30185572,30185572,holdout,Escuela Basica,ESCUELA BASICA,ESCUELA BASICA,L1,asignado,,,1
+expost-30195573,30195573,holdout,Casa de Adulto Mayor,CENTRO DE DIA ADULTO MAYOR (SENAMA),CENTRO DE DIA ADULTO MAYOR (SENAMA),residual,ambiguo,ambiguo,,1
+expost-30197473,30197473,holdout,Red de Alcantarillado,RED DE ALCANTARILLADO Y AGUA POTABLE,RED DE ALCANTARILLADO Y AGUA POTABLE,residual,ambiguo,ambiguo,,1
+expost-30198322,30198322,holdout,Otros Protección Civil,COMISARIA CARABINEROS,COMISARIA CARABINEROS,L1,asignado,,,1
+expost-30200172,30200172,holdout,Casetas Sanitarias/alcantarillado,CASETAS SANITARIAS/ALCANTARILLADO,CASETAS SANITARIAS/ALCANTARILLADO,residual,ambiguo,ambiguo,,1
+expost-30203322,30203322,holdout,Planta Tratamiento Aguas Servidas,RED DE ALCANTARILLADO Y PLANTA TRATAMIENTO AGUAS SERVIDAS,RED DE ALCANTARILLADO Y PLANTA TRATAMIENTO AGUAS SERVIDAS,L1,asignado,,,1
+expost-30204674,30204674,holdout,Red de Alcantarillado y Planta Tratamiento Aguas Servidas,CASETAS SANITARIAS/ALCANTARILLADO/PLANTA DE TRATAMIENTO,CASETAS SANITARIAS/ALCANTARILLADO/PLANTA DE TRATAMIENTO,L1,asignado,,,1
+expost-30212322,30212322,holdout,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,SISTEMA AGUA POTABLE RURAL,L1,asignado,,,1
+expost-30244373,30244373,holdout,Alumbrado Publico,ALUMBRADO PUBLICO,ALUMBRADO PUBLICO,L1,asignado,,,1
+expost-30245372,30245372,holdout,Polideportivo Con Nave Multifuncional y Salones Deportivos Adicionales,MULTICANCHA (EQUIPADA),MULTICANCHA (EQUIPADA),L1,asignado,,,1
+expost-30249372,30249372,holdout,Estadio Futbol Equipado (amateur),CANCHA DE FUTBOL CARPETA SINTETICA (ESTANDAR),CANCHA DE FUTBOL CARPETA SINTETICA (ESTANDAR),residual,ambiguo,ambiguo,,1
+expost-30257223,30257223,holdout,Complejo Deportivo,ESTADIO FUTBOL EQUIPADO (AMATEUR),ESTADIO FUTBOL EQUIPADO (AMATEUR),residual,ambiguo,ambiguo,,1
+expost-30267924,30267924,holdout,Centro Comunitario de Salud Familiar (cecosf),CENTRO COMUNITARIO DE SALUD FAMILIAR (CECOSF),CENTRO COMUNITARIO DE SALUD FAMILIAR (CECOSF),L1,asignado,,,1
+expost-30273124,30273124,holdout,Aceras Vialidad Peatonal,ACERAS VIALIDAD PEATONAL,ACERAS VIALIDAD PEATONAL,residual,ambiguo,ambiguo,,1
+expost-30283072,30283072,holdout,Paseo Peatonal,PASEO PEATONAL,PASEO PEATONAL,residual,ambiguo,ambiguo,,1
+expost-30285222,30285222,holdout,Cuartel Bomberos,CUARTEL BOMBEROS,CUARTEL BOMBEROS,L1,asignado,,,1
+expost-30291735,30291735,holdout,Cancha de Futbol Carpeta Sintetica (estandar),ESTADIO MUNICIPAL,ESTADIO MUNICIPAL,L1,asignado,,,1
+expost-30292774,30292774,holdout,Otros Protección Civil,COMISARIA CARABINEROS,COMISARIA CARABINEROS,L1,asignado,,,1
+expost-30299222,30299222,holdout,Plaza,FONDO CONCURSABLE DE ESPACIOS PUBLICOS,FONDO CONCURSABLE DE ESPACIOS PUBLICOS,residual,ambiguo,ambiguo,,1
+expost-30302973,30302973,holdout,Centro Comunitario de Salud Familiar (cecosf),CENTRO COMUNITARIO DE SALUD FAMILIAR (CECOSF),CENTRO COMUNITARIO DE SALUD FAMILIAR (CECOSF),L2,ambiguo,asignado,,2
+expost-30323623,30323623,holdout,Estadio Municipal,ESTADIO MUNICIPAL,ESTADIO MUNICIPAL,L1,asignado,,,1
+expost-30328773,30328773,holdout,Centro Comunitario de Salud Familiar (cecosf),CENTRO COMUNITARIO DE SALUD FAMILIAR (CECOSF),CENTRO COMUNITARIO DE SALUD FAMILIAR (CECOSF),L1,asignado,,,1
+expost-30328923,30328923,holdout,SAR,SAPU - SUR,SAPU - SUR,residual,ambiguo,ambiguo,,1
+expost-30336022,30336022,holdout,Planes de Cierre de Vertederos O Basurales,RELLENOS SANITARIOS CON OPERACIÓN MECÁNICA Y MANUAL,RELLENOS SANITARIOS CON OPERACIÓN MECÁNICA Y MANUAL,residual,ambiguo,ambiguo,,1
+expost-30344426,30344426,holdout,Museo,MUSEO,MUSEO,L1,asignado,,,1
+expost-30350774,30350774,holdout,Vialidad Local,ACERAS VIALIDAD PEATONAL,ACERAS VIALIDAD PEATONAL,residual,ambiguo,ambiguo,,1
+expost-30352027,30352027,holdout,Ciclovias Urbanas,CICLOVIAS URBANAS,CICLOVIAS URBANAS,L1,asignado,,,1
+expost-30356528,30356528,holdout,Jardin Infantil y Sala Cuna,SALA CUNA,SALA CUNA,L1,asignado,,,1
+expost-30356577,30356577,holdout,Jardin Infantil y Sala Cuna,JARDIN INFANTIL Y SALA CUNA,JARDIN INFANTIL Y SALA CUNA,residual,ambiguo,ambiguo,,1
+expost-30359927,30359927,holdout,Ciclovias Urbanas,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,residual,ambiguo,ambiguo,,1
+expost-30360378,30360378,holdout,Posta Rural,POSTA RURAL,POSTA RURAL,L1,asignado,,,1
+expost-30361325,30361325,holdout,Escuela Basica,ESCUELA BASICA MAS KINDER Y/O PREKINDER,ESCUELA BASICA MAS KINDER Y/O PREKINDER,residual,ambiguo,ambiguo,,1
+expost-30362230,30362230,holdout,Jardin Infantil y Sala Cuna,JARDIN INFANTIL Y SALA CUNA,JARDIN INFANTIL Y SALA CUNA,L1,asignado,,,1
+expost-30363375,30363375,holdout,Caleta,INFRAESTRUCTURA PORTUARIA,INFRAESTRUCTURA PORTUARIA,residual,ambiguo,ambiguo,,1
+expost-30363972,30363972,holdout,Jardin Infantil y Sala Cuna,JARDIN INFANTIL Y SALA CUNA,JARDIN INFANTIL Y SALA CUNA,L1,asignado,,,1
+expost-30366825,30366825,holdout,Jardin Infantil y Sala Cuna,JARDIN INFANTIL Y SALA CUNA,JARDIN INFANTIL Y SALA CUNA,L1,asignado,,,1
+expost-30367627,30367627,holdout,Centro Comunitario de Salud Familiar (cecosf),CENTRO COMUNITARIO DE SALUD FAMILIAR (CECOSF),CENTRO COMUNITARIO DE SALUD FAMILIAR (CECOSF),L1,asignado,,,1
+expost-30368722,30368722,holdout,Centro Comunitario de Salud Familiar (cecosf),CENTRO COMUNITARIO DE SALUD FAMILIAR (CECOSF),CENTRO COMUNITARIO DE SALUD FAMILIAR (CECOSF),L1,asignado,,,1
+expost-30368730,30368730,holdout,SAR,SAR,SAR,L1,asignado,,,1
+expost-30368972,30368972,holdout,Centros de Asistencia,CENTRO DE DIA ADULTO MAYOR (SENAMA),CENTRO DE DIA ADULTO MAYOR (SENAMA),residual,ambiguo,ambiguo,,1
+expost-30369027,30369027,holdout,Jardin Infantil y Sala Cuna,JARDIN INFANTIL Y SALA CUNA,JARDIN INFANTIL Y SALA CUNA,L1,asignado,,,1
+expost-30373076,30373076,holdout,Centro Comunitario de Salud Familiar (cecosf),CENTRO COMUNITARIO DE SALUD FAMILIAR (CECOSF),CENTRO COMUNITARIO DE SALUD FAMILIAR (CECOSF),L1,asignado,,,1
+expost-30373773,30373773,holdout,Centro Comunitario de Salud Familiar (cecosf),CENTRO COMUNITARIO DE SALUD FAMILIAR (CECOSF),CENTRO COMUNITARIO DE SALUD FAMILIAR (CECOSF),residual,ambiguo,ambiguo,,1
+expost-30374522,30374522,holdout,Vias Urbanas Estructurantes,GESTION DE TRANSITO,GESTION DE TRANSITO,residual,ambiguo,ambiguo,,1
+expost-30374934,30374934,holdout,SAR,SAPU - SUR,SAPU - SUR,residual,ambiguo,sin_match,,1
+expost-30374973,30374973,holdout,Centro Comunitario de Salud Familiar (cecosf),CENTRO COMUNITARIO DE SALUD FAMILIAR (CECOSF),CENTRO COMUNITARIO DE SALUD FAMILIAR (CECOSF),L1,asignado,,,1
+expost-30374974,30374974,holdout,Centro Comunitario de Salud Familiar (cecosf),CENTRO COMUNITARIO DE SALUD FAMILIAR (CECOSF),CENTRO COMUNITARIO DE SALUD FAMILIAR (CECOSF),L1,asignado,,,1
+expost-30377277,30377277,holdout,Jardin Infantil y Sala Cuna,JARDIN INFANTIL Y SALA CUNA,JARDIN INFANTIL Y SALA CUNA,L1,asignado,,,1
+expost-30380479,30380479,holdout,Establecimiento de Larga Estadia,ESTABLECIMIENTO DE LARGA ESTADIA,ESTABLECIMIENTO DE LARGA ESTADIA,L1,asignado,,,1
+expost-30381295,30381295,holdout,SAR,SAR,SAR,L1,asignado,,,1
+expost-30381779,30381779,holdout,Jardin Infantil y Sala Cuna,JARDIN INFANTIL Y SALA CUNA,JARDIN INFANTIL Y SALA CUNA,L1,asignado,,,1
+expost-30381873,30381873,holdout,Ciclovias Urbanas,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,residual,ambiguo,ambiguo,,1
+expost-30384174,30384174,holdout,Vias Vialidad Urbana Intermedia,PUENTE URBANO,PUENTE URBANO,residual,ambiguo,ambiguo,,1
+expost-30385633,30385633,holdout,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,SISTEMA AGUA POTABLE RURAL,L1,asignado,,,1
+expost-30388128,30388128,holdout,Jardin Infantil y Sala Cuna,JARDIN INFANTIL Y SALA CUNA,JARDIN INFANTIL Y SALA CUNA,L1,asignado,,,1
+expost-30389325,30389325,holdout,Posta Rural,POSTA RURAL,POSTA RURAL,L1,asignado,,,1
+expost-30391222,30391222,holdout,Sede Social,SEDE SOCIAL,SEDE SOCIAL,L1,asignado,,,1
+expost-30391631,30391631,holdout,Jardin Infantil y Sala Cuna,JARDIN INFANTIL Y SALA CUNA,JARDIN INFANTIL Y SALA CUNA,L1,asignado,,,1
+expost-30392972,30392972,holdout,Paseo Peatonal,FONDO CONCURSABLE DE ESPACIOS PUBLICOS,FONDO CONCURSABLE DE ESPACIOS PUBLICOS,L1,asignado,,,1
+expost-30393222,30393222,holdout,Fondo Concursable de Espacios Publicos,PASEO PEATONAL,PASEO PEATONAL,L1,asignado,,,1
+expost-30393278,30393278,holdout,Centro Comunitario de Salud Familiar (cecosf),CENTRO COMUNITARIO DE SALUD FAMILIAR (CECOSF),CENTRO COMUNITARIO DE SALUD FAMILIAR (CECOSF),L1,asignado,,,1
+expost-30399025,30399025,holdout,Vias Vialidad Urbana Intermedia,ACERAS VIALIDAD PEATONAL,ACERAS VIALIDAD PEATONAL,residual,ambiguo,ambiguo,,1
+expost-30401272,30401272,holdout,Parque,PARQUE,PARQUE,L1,asignado,,,1
+expost-30410772,30410772,holdout,Jardin Infantil y Sala Cuna,JARDIN INFANTIL Y SALA CUNA,JARDIN INFANTIL Y SALA CUNA,L1,asignado,,,1
+expost-30414022,30414022,holdout,Juzgado (poder Judicial - Capj),REGISTRO CIVIL E IDENTIFICACION,REGISTRO CIVIL E IDENTIFICACION,residual,ambiguo,ambiguo,,1
+expost-30414228,30414228,holdout,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,SISTEMA AGUA POTABLE RURAL,L1,asignado,,,1
+expost-30419873,30419873,holdout,Vias Vialidad Urbana Intermedia,GESTION DE TRANSITO,GESTION DE TRANSITO,residual,ambiguo,ambiguo,,1
+expost-30426835,30426835,holdout,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,SISTEMA AGUA POTABLE RURAL,L1,asignado,,,1
+expost-30429022,30429022,holdout,SAR,SAR,SAR,L1,asignado,,,1
+expost-30429525,30429525,holdout,Centro Comunitario de Salud Familiar (cecosf),CENTRO COMUNITARIO DE SALUD FAMILIAR (CECOSF),CENTRO COMUNITARIO DE SALUD FAMILIAR (CECOSF),L1,asignado,,,1
+expost-30436637,30436637,holdout,Centro Comunitario de Salud Familiar (cecosf),CENTRO COMUNITARIO DE SALUD FAMILIAR (CECOSF),CENTRO COMUNITARIO DE SALUD FAMILIAR (CECOSF),L1,asignado,,,1
+expost-30438324,30438324,holdout,Alumbrado Publico,ALUMBRADO PUBLICO,ALUMBRADO PUBLICO,L1,asignado,,,1
+expost-30443126,30443126,holdout,Jardin Infantil y Sala Cuna,JARDIN INFANTIL Y SALA CUNA,JARDIN INFANTIL Y SALA CUNA,L1,asignado,,,1
+expost-30444075,30444075,holdout,SAR,SAR,SAR,L1,asignado,,,1
+expost-30444372,30444372,holdout,Vias Vialidad Urbana Intermedia,,,residual,sin_match,sin_match,,1
+expost-30446522,30446522,holdout,Aceras,FONDO CONCURSABLE DE ESPACIOS PUBLICOS,FONDO CONCURSABLE DE ESPACIOS PUBLICOS,residual,ambiguo,ambiguo,,1
+expost-30446674,30446674,holdout,Plaza,PLAZA CIVICA,PLAZA CIVICA,residual,ambiguo,ambiguo,,1
+expost-30447772,30447772,holdout,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,SISTEMA AGUA POTABLE RURAL,residual,ambiguo,ambiguo,,1
+expost-30453924,30453924,holdout,Complejo Deportivo,COMPLEJO DEPORTIVO,COMPLEJO DEPORTIVO,L1,asignado,,,1
+expost-30455322,30455322,holdout,Jardin Infantil y Sala Cuna,JARDIN INFANTIL Y SALA CUNA,JARDIN INFANTIL Y SALA CUNA,L1,asignado,,,1
+expost-30455672,30455672,holdout,Posta Rural,POSTA RURAL,POSTA RURAL,L1,asignado,,,1
+expost-30457126,30457126,holdout,Parque,PARQUE,PARQUE,residual,ambiguo,ambiguo,,1
+expost-30457128,30457128,holdout,Extensión Linea Media Tensión y Baja Tensión,EXTENSION LINEA MEDIA TENSION Y BAJA TENSION,EXTENSION LINEA MEDIA TENSION Y BAJA TENSION,L1,asignado,,,1
+expost-30458537,30458537,holdout,Ruta,RUTA,RUTA,L1,asignado,,,1
+expost-30458624,30458624,holdout,SAR,SAR,SAR,L1,asignado,,,1
+expost-30460859,30460859,holdout,Mercado,MERCADO,MERCADO,L1,asignado,,,1
+expost-30462580,30462580,holdout,Cancha de Futbol Carpeta Sintetica (estandar),ESTADIO FUTBOL EQUIPADO (AMATEUR),ESTADIO FUTBOL EQUIPADO (AMATEUR),residual,ambiguo,ambiguo,,1
+expost-30463053,30463053,holdout,Red de Alcantarillado y Planta Tratamiento Aguas Servidas,RED DE ALCANTARILLADO Y PLANTA TRATAMIENTO AGUAS SERVIDAS,RED DE ALCANTARILLADO Y PLANTA TRATAMIENTO AGUAS SERVIDAS,residual,ambiguo,sin_match,,1
+expost-30464690,30464690,holdout,Paseo Peatonal,PASEO PEATONAL,PASEO PEATONAL,L1,asignado,,,1
+expost-30466941,30466941,holdout,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,SISTEMA AGUA POTABLE RURAL,L1,asignado,,,1
+expost-30467138,30467138,holdout,Plaza,PLAZA CIVICA,PLAZA CIVICA,residual,ambiguo,ambiguo,,1
+expost-30467605,30467605,holdout,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,SISTEMA AGUA POTABLE RURAL,L1,asignado,,,1
+expost-30467638,30467638,holdout,Jardin Infantil y Sala Cuna,JARDIN INFANTIL Y SALA CUNA,JARDIN INFANTIL Y SALA CUNA,L1,asignado,,,1
+expost-30467683,30467683,holdout,Jardin Infantil y Sala Cuna,JARDIN INFANTIL Y SALA CUNA,JARDIN INFANTIL Y SALA CUNA,L1,asignado,,,1
+expost-30469836,30469836,holdout,Planes de Cierre de Vertederos O Basurales,PLANTA DE RECICLAJE MUNICIPAL,PLANTA DE RECICLAJE MUNICIPAL,residual,ambiguo,ambiguo,,1
+expost-30471335,30471335,holdout,SAR,SAR,SAR,L1,asignado,,,1
+expost-30473137,30473137,holdout,Colector Aguas Lluvias,COLECTOR AGUAS LLUVIAS,COLECTOR AGUAS LLUVIAS,L1,asignado,,,1
+expost-30474792,30474792,holdout,Planta Tratamiento Aguas Servidas,RED DE ALCANTARILLADO Y PLANTA TRATAMIENTO AGUAS SERVIDAS,RED DE ALCANTARILLADO Y PLANTA TRATAMIENTO AGUAS SERVIDAS,L1,asignado,,,1
+expost-30474793,30474793,holdout,Ciclovias Urbanas,CICLOVIAS URBANAS,CICLOVIAS URBANAS,residual,ambiguo,ambiguo,,1
+expost-30474936,30474936,holdout,Ruta,RUTA,RUTA,L1,asignado,,,1
+expost-30476488,30476488,holdout,Sala Cuna,SALA CUNA,SALA CUNA,residual,ambiguo,sin_match,,1
+expost-30477347,30477347,holdout,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,SISTEMA AGUA POTABLE RURAL,L1,asignado,,,1
+expost-30478792,30478792,holdout,Jardin Infantil y Sala Cuna,JARDIN INFANTIL Y SALA CUNA,JARDIN INFANTIL Y SALA CUNA,L1,asignado,,,1
+expost-30480862,30480862,holdout,Aceras Vialidad Peatonal,ACERAS VIALIDAD PEATONAL,ACERAS VIALIDAD PEATONAL,residual,ambiguo,ambiguo,,1
+expost-30481461,30481461,holdout,Jardin Infantil y Sala Cuna,JARDIN INFANTIL Y SALA CUNA,JARDIN INFANTIL Y SALA CUNA,L1,asignado,,,1
+expost-30481683,30481683,holdout,Fotovoltaico,FOTOVOLTAICO,FOTOVOLTAICO,residual,ambiguo,ambiguo,,1
+expost-30482595,30482595,holdout,Red de Alcantarillado,RED DE ALCANTARILLADO Y AGUA POTABLE,RED DE ALCANTARILLADO Y AGUA POTABLE,L1,asignado,,,1
+expost-30484410,30484410,holdout,Ciclovias Urbanas,CICLOVIAS URBANAS,CICLOVIAS URBANAS,L1,asignado,,,1
+expost-30485451,30485451,holdout,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,SISTEMA AGUA POTABLE RURAL,L1,asignado,,,1
+expost-30485570,30485570,holdout,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,SISTEMA AGUA POTABLE RURAL,L1,asignado,,,1
+expost-30485723,30485723,holdout,Vias Vialidad Urbana Intermedia,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,L1,asignado,,,1
+expost-30486093,30486093,holdout,Infraestructura Portuaria,INFRAESTRUCTURA PORTUARIA,INFRAESTRUCTURA PORTUARIA,residual,ambiguo,sin_match,,1
+expost-40000026,40000026,holdout,Puente Urbano,PUENTE URBANO,PUENTE URBANO,L1,asignado,,,1
+expost-40000095,40000095,holdout,Cuartel Bomberos,CUARTEL BOMBEROS,CUARTEL BOMBEROS,L1,asignado,,,1
+expost-40000342,40000342,holdout,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,SISTEMA AGUA POTABLE RURAL,L1,asignado,,,1
+expost-40000726,40000726,holdout,Plaza,PLAZA,PLAZA,L1,asignado,,,1
+expost-40001015,40001015,holdout,Red de Distribucion de Gas,RED DE DISTRIBUCION DE GAS,RED DE DISTRIBUCION DE GAS,L1,asignado,,,1
+expost-40001298,40001298,holdout,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,SISTEMA AGUA POTABLE RURAL,L1,asignado,,,1
+expost-40001576,40001576,holdout,Vias Vialidad Urbana Intermedia,GESTION DE TRANSITO,GESTION DE TRANSITO,L1,asignado,,,1
+expost-40001793,40001793,holdout,Vias Urbanas Estructurantes,PUENTE URBANO,PUENTE URBANO,L1,asignado,,,1
+expost-40002194,40002194,holdout,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE URBANA,SISTEMA AGUA POTABLE URBANA,L2,ambiguo,asignado,,2
+expost-40002586,40002586,holdout,Ruta,RUTA,RUTA,residual,ambiguo,ambiguo,,1
+expost-40003019,40003019,holdout,Colector Aguas Lluvias,COLECTOR AGUAS LLUVIAS,COLECTOR AGUAS LLUVIAS,L1,asignado,,,1
+expost-40004876,40004876,holdout,Vias Vialidad Urbana Intermedia,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,residual,ambiguo,ambiguo,,1
+expost-40005352,40005352,holdout,Posta Rural,POSTA RURAL,POSTA RURAL,L1,asignado,,,1
+expost-40006044,40006044,holdout,Alumbrado Publico,ALUMBRADO PUBLICO,ALUMBRADO PUBLICO,L1,asignado,,,1
+expost-40006344,40006344,holdout,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,SISTEMA AGUA POTABLE RURAL,L1,asignado,,,1
+expost-40007611,40007611,holdout,Plaza,PLAZA,PLAZA,L1,asignado,,,1
+expost-40007619,40007619,holdout,Alumbrado Publico,ALUMBRADO PUBLICO,ALUMBRADO PUBLICO,L1,asignado,,,1
+expost-40009301,40009301,holdout,Camino Basico Intermedio,CAMINO BASICO INTERMEDIO,CAMINO BASICO INTERMEDIO,L1,asignado,,,1
+expost-40009784,40009784,holdout,Alumbrado Publico,ALUMBRADO PUBLICO,ALUMBRADO PUBLICO,L1,asignado,,,1
+expost-40010240,40010240,holdout,Vias Urbanas Estructurantes,ACERAS VIALIDAD PEATONAL,ACERAS VIALIDAD PEATONAL,residual,ambiguo,sin_match,,1
+expost-40011534,40011534,holdout,Alumbrado Publico,ALUMBRADO PUBLICO,ALUMBRADO PUBLICO,L1,asignado,,,1
+expost-40012738,40012738,holdout,Skatepark,SKATEPARK,SKATEPARK,L1,asignado,,,1
+expost-40014187,40014187,holdout,CASETAS SANITARIAS /ALCANTARILLADO/AGUA POTABLE/ENERGIA,CASETAS SANITARIAS/ALCANTARILLADO/AGUA POTABLE,CASETAS SANITARIAS/ALCANTARILLADO/AGUA POTABLE,L1,asignado,,,1
+expost-40016365,40016365,holdout,Plaza,PLAZA,PLAZA,L1,asignado,,,1
+expost-40016862,40016862,holdout,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,SISTEMA AGUA POTABLE RURAL,L1,asignado,,,1
+expost-40017777,40017777,holdout,Vias Vialidad Urbana Intermedia,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,residual,ambiguo,ambiguo,,1
+expost-40017812,40017812,holdout,Vias Vialidad Urbana Intermedia,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,residual,ambiguo,ambiguo,,1
+expost-40019107,40019107,holdout,Fotovoltaico,FOTOVOLTAICO,FOTOVOLTAICO,L1,asignado,,,1
+expost-40019595,40019595,holdout,Vias Vialidad Urbana Intermedia,VIAS URBANAS ESTRUCTURANTES,VIAS URBANAS ESTRUCTURANTES,residual,ambiguo,ambiguo,,1
+expost-40020359,40020359,holdout,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,SISTEMA AGUA POTABLE RURAL,L1,asignado,,,1
+expost-40020618,40020618,holdout,Semaforizacion,SEMAFORIZACION,SEMAFORIZACION,L1,asignado,,,1
+expost-40025257,40025257,holdout,Ruta,RUTA,RUTA,L1,asignado,,,1
+expost-40029707,40029707,holdout,Rampa Portuaria,EXPLANADA Y RAMPA,EXPLANADA Y RAMPA,L1,asignado,,,1
+expost-40030078,40030078,holdout,Paseo Peatonal,FONDO CONCURSABLE DE ESPACIOS PUBLICOS,FONDO CONCURSABLE DE ESPACIOS PUBLICOS,residual,ambiguo,ambiguo,,1
+expost-40032210,40032210,holdout,Estabilizacion de Taludes,ESTABILIZACION DE TALUDES,ESTABILIZACION DE TALUDES,residual,ambiguo,sin_match,,1
+expost-40033030,40033030,holdout,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,SISTEMA AGUA POTABLE RURAL,residual,ambiguo,ambiguo,,1
+expost-40034910,40034910,holdout,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,SISTEMA AGUA POTABLE RURAL,L1,asignado,,,1
+expost-40035147,40035147,holdout,Aceras,PASEO PEATONAL,PASEO PEATONAL,L1,asignado,,,1
+expost-40035320,40035320,holdout,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,SISTEMA AGUA POTABLE RURAL,L1,asignado,,,1
+expost-40047478,40047478,holdout,Cancha de Futbol Carpeta Sintetica (estandar),CANCHA DE FUTBOL CARPETA PASTO (ESTANDAR),CANCHA DE FUTBOL CARPETA PASTO (ESTANDAR),L1,asignado,,,1

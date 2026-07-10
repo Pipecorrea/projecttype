@@ -1,7 +1,9 @@
-# Umbrales de gate CI para eval L1+L2 (baseline Submuestra 2026-06-19).
+# Umbrales gate CI estrato expost (baseline medido 2026-07-09, n=2.357).
+# Fuente: informe_expost.duckdb → golden_tipo_proyecto.jsonl (PT-17).
+# precision_l1_l2=0.7947, cobertura_l1_l2=0.6674 (eval con L3 mock, L1+L2 reales).
 # NUNCA bajar sin decisión anotada en DECISIONES.md.
 umbrales:
   - metrica: precision_l1_l2
-    minimo: 0.798
+    minimo: 0.794
   - metrica: cobertura_l1_l2
-    minimo: 0.656
+    minimo: 0.667

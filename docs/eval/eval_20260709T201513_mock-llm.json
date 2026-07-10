@@ -1,0 +1,15 @@
+{
+  "golden_version": "2.0.0-expost",
+  "modelo": "mock-llm",
+  "prompt_version": "52a1c94be16e",
+  "timestamp": "2026-07-09T20:15:13.995956Z",
+  "metricas": {
+    "precision_l1_l2": 0.7946598855689765,
+    "cobertura_l1_l2": 0.6673737802291048,
+    "exactos_l1_l2": 1250.0,
+    "asignados_l1_l2": 1573.0,
+    "total": 2357.0,
+    "casos_estrato": 2357.0
+  },
+  "por_caso": []
+}

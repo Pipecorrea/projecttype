@@ -4,12 +4,13 @@ build-backend = "hatchling.build"
 
 [project]
 name = "projecttype"
-version = "0.1.0"
+version = "0.2.0"
 description = "Clasificador en cascada (L1 keywords -> L2 embeddings -> L3 LLM) de tipo de proyecto BIP/SNI."
 requires-python = ">=3.12"
 license = { text = "Proprietary" }
 dependencies = [
     "sni-commons[store]",
+    "google-genai>=1.0.0",
     "typer>=0.12",
     "polars>=1.0.0",
     "pyarrow>=15.0.0",  # puente Arrow: DuckDB lee el DataFrame polars al publicar al store (PT-5)
@@ -18,7 +19,6 @@ dependencies = [
     "fastexcel>=0.7.0",
     "sentence-transformers>=3.0.0",
     "numpy>=1.26.0",
-    "openai>=1.0.0",
     "pydantic>=2.0.0",
     "python-dotenv>=1.0.0",
 ]
@@ -48,7 +48,7 @@ ignore = ["E501", "UP042"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["src"]
+pythonpath = ["src", "."]
 
 [tool.mypy]
 python_version = "3.12"
