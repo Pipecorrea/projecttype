@@ -206,5 +206,70 @@ def enrich(
     typer.echo(diag.summary())
 
 
+@app.command(name="verify-llm")
+def verify_llm(
+    provider: Annotated[
+        str | None,
+        typer.Option("--provider", help="Override del proveedor (default: LLM_PROVIDER o gemini)."),
+    ] = None,
+    model: Annotated[
+        str | None,
+        typer.Option("--model", help="Override del modelo (default: resuelto del proveedor)."),
+    ] = None,
+) -> None:
+    """Smoke del proveedor LLM configurado: credenciales + chat + salida estructurada.
+
+    Verifica el mismo camino que usa L3 en producción (PT-25): primero un chat
+    simple (conectividad/credenciales), luego un ``structured_output`` real con
+    ``L3ResponseModel`` (el schema exacto que fuerza el backend en cada fila L3).
+    Falla temprano con mensaje accionable en vez de descubrir credenciales/ADC
+    vencidas a mitad de una corrida de ``enrich --enable-l3``.
+    """
+    import asyncio
+
+    from sni_commons.llm import Message
+
+    from projecttype.l3_schema import L3ResponseModel
+    from projecttype.llm.provider import build_provider, check_provider_available, describe_provider
+
+    typer.echo(f"Proveedor: {describe_provider(provider)}")
+    try:
+        check_provider_available(provider)
+    except RuntimeError as exc:
+        typer.echo(f"Error: {exc}", err=True)
+        raise typer.Exit(code=1) from exc
+
+    llm_provider = build_provider(provider, model=model)
+
+    try:
+        chat_resp = asyncio.run(
+            llm_provider.chat([Message(role="user", content="Responde solo: OK")], max_tokens=32)
+        )
+        typer.echo(f"[1/2] Chat simple → {chat_resp.text!r}")
+    except Exception as exc:  # noqa: BLE001 — cualquier fallo del backend es diagnóstico aquí
+        typer.echo(f"[1/2] Falló la llamada simple: {exc}", err=True)
+        raise typer.Exit(code=1) from exc
+
+    try:
+        structured_resp = asyncio.run(
+            llm_provider.structured_output(
+                [
+                    Message(
+                        role="system",
+                        content="Sos un clasificador. Devuelve tipo_id=null y confianza=0.0.",
+                    ),
+                    Message(role="user", content="Smoke test, sin proyecto real."),
+                ],
+                L3ResponseModel,
+            )
+        )
+        typer.echo(f"[2/2] Salida estructurada → {structured_resp.data.model_dump()}")
+    except Exception as exc:  # noqa: BLE001
+        typer.echo(f"[2/2] Falló la llamada estructurada: {exc}", err=True)
+        raise typer.Exit(code=1) from exc
+
+    typer.echo("\nOK — el proveedor está listo para L3.")
+
+
 if __name__ == "__main__":  # pragma: no cover
     app()

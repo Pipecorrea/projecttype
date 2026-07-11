@@ -10,7 +10,7 @@ from pydantic import ValidationError
 
 from .aliases import resolve_sector_subsector
 from .l3_schema import L3ResponseModel
-from .llm_client import JSONParseError, LLMClient, LLMConfig, create_llm_client
+from .llm_client import LLMClient, LLMConfig, create_llm_client
 from .progress import ProgressCallback
 from .prompts import (
     build_l3_messages,
@@ -318,7 +318,7 @@ class ClassifierL3:
                 user=messages["user"],
                 cached_content=cached_content,
             )
-        except (JSONParseError, RuntimeError, TimeoutError, OSError) as exc:
+        except (RuntimeError, TimeoutError, OSError) as exc:
             err = ResultadoClasificacion(
                 estado=EstadoClasificacion.SIN_MATCH,
                 sector_resuelto=sector_res,

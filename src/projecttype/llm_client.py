@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import json
 import os
-import re
 import urllib.error
 import urllib.request
 from dataclasses import dataclass
@@ -77,24 +76,6 @@ class LLMConfig:
         return os.environ.get(self.ollama_base_url_env) or self.ollama_base_url
 
 
-class JSONParseError(ValueError):
-    """Respuesta LLM no parseable como JSON."""
-
-
-def _extract_json(text: str) -> dict[str, Any]:
-    text = text.strip()
-    if text.startswith("```"):
-        text = re.sub(r"^```(?:json)?\s*", "", text)
-        text = re.sub(r"\s*```$", "", text)
-    try:
-        data = json.loads(text)
-    except json.JSONDecodeError as exc:
-        raise JSONParseError(str(exc)) from exc
-    if not isinstance(data, dict):
-        raise JSONParseError(f"se esperaba un objeto JSON, llegó {type(data).__name__}")
-    return data
-
-
 def list_ollama_models(*, base_url: str | None = None, timeout_seconds: float = 10.0) -> list[str]:
     """Lista modelos disponibles en Ollama (`GET /api/tags`)."""
     root = (base_url or os.environ.get("OLLAMA_BASE_URL") or "http://localhost:11434").rstrip("/")
@@ -155,9 +136,19 @@ class SniCommonsLLMClient:
         user: str,
         cached_content: str | None = None,
     ) -> dict[str, Any]:
+        """Llama L3 con salida estructurada (response_schema/tool-use nativo).
+
+        Antes pedía texto libre (``chat``) y parseaba JSON con regex propia: un
+        JSON truncado o con markdown fallaba silencioso, sin pasar por el
+        proveedor. Con ``structured_output`` el backend fuerza el schema y
+        valida con Pydantic; un mismatch llega como ``LLMResponseError``
+        (mismo patrón que OBSRATE, PT-25).
+        """
         import asyncio
 
         from sni_commons.llm import Message
+
+        from .l3_schema import L3ResponseModel
 
         if cached_content:
             messages = [Message(role="user", content=user)]
@@ -168,8 +159,10 @@ class SniCommonsLLMClient:
                 Message(role="user", content=user),
             ]
             cache_kw = {}
-        resp = asyncio.run(self._provider.chat(messages, **cache_kw))
-        return _extract_json(resp.text)
+        resp = asyncio.run(
+            self._provider.structured_output(messages, L3ResponseModel, **cache_kw)
+        )
+        return resp.data.model_dump(mode="json")
 
 
 class MockLLMClient:

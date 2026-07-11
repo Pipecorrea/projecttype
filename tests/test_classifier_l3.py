@@ -14,7 +14,7 @@ from projecttype.classifier_l3 import (
     _result_from_l3,
     parse_l3_response,
 )
-from projecttype.llm_client import MockLLMClient, _extract_json
+from projecttype.llm_client import MockLLMClient
 from projecttype.paths import DEFAULT_TAXONOMY
 from projecttype.prompts import build_l3_user_prompt, format_tipo_option
 from projecttype.scorer import EstadoClasificacion
@@ -27,12 +27,6 @@ class TestL3Parsing(unittest.TestCase):
         resp = parse_l3_response(raw)
         self.assertEqual(resp.tipo_id, "A.B.C")
         self.assertAlmostEqual(resp.confianza, 0.9)
-
-    def test_extract_json_markdown(self) -> None:
-        text = '```json\n{"tipo_id": null, "confianza": 0.1}\n```'
-        data = _extract_json(text)
-        self.assertIsNone(data["tipo_id"])
-
 
 class TestL3Classifier(unittest.TestCase):
     @classmethod

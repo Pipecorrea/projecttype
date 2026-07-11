@@ -14,13 +14,14 @@ actualizado: 2026-07-10
 > **Estado:** **enriquecedor** funcionando, ciclo **store→store completo** (PT-6):
 > `projecttype enrich --from-store` lee CONSULTAS_EBI, clasifica y publica
 > `enr_tipo_proyecto`. Cliente LLM unificado en sni-commons (PT-4). py3.12.
-> **105 tests** (**pytest**, PT-8/9/10/14/15/16/17/18/23/24), mypy **--strict**, ruff
-> limpio, golden real n=2.357 en gate CI — commits `7f776b1`/`5f7f2e3`/`d9ccc3f`
-> (2026-07-10). Diagnóstico SOTA: `DIAGNOSTICO_Y_PLAN_SOTA_2026-07.md` (tickets
-> PT-15…PT-22). Cascada L1 (keywords) → L2 (embeddings) → L3 (LLM).
+> **108 tests** (**pytest**, PT-8/9/10/14/15/16/17/18/23/24/25), mypy **--strict**,
+> ruff limpio, golden real n=2.357 en gate CI — commits `7f776b1`/`5f7f2e3`/`d9ccc3f`
+> (2026-07-10) + PT-25 (transporte LLM vía `structured_output` + `verify-llm`).
+> Diagnóstico SOTA: `DIAGNOSTICO_Y_PLAN_SOTA_2026-07.md` (tickets PT-15…PT-22).
+> Cascada L1 (keywords) → L2 (embeddings) → L3 (LLM).
 
 ## Verde antes de commitear
-`uv run pytest` (105) · `uv run ruff check src scripts tests` · `uv run mypy src`
+`uv run pytest` (108) · `uv run ruff check src scripts tests` · `uv run mypy src`
 (--strict) · `uv run python scripts/eval_golden.py --ci` — **lo mismo que corre CI (bloqueante)**.
 
 ---
@@ -253,35 +254,39 @@ Dep: SC-17 + PT-18 + PT-19.
 
 Patrón config-router OBSRATE + eval obligatorio. Gated: PT-17 + PT-20.
 
-#### [PT-25] Transporte LLM: paridad de robustez con OBSRATE — **M, creado 2026-07-10**
+#### [PT-25] Transporte LLM: paridad de robustez con OBSRATE — **✅ código HECHO 2026-07-10; falta smoke real 👤**
 
 **Origen.** Diagnóstico 2026-07-10: los "problemas con Google Cloud" que OBSRATE no
-tiene venían de tres brechas del transporte L3. La primera ya está cerrada en
-commons; quedan dos en este repo.
+tiene venían de tres brechas del transporte L3.
 
 1. **✅ (SC-19, commons)** Los 429 con `retryDelay` del servidor ya se respetan:
    `RetryProvider` espera lo que pide Google (tope 90 s) en vez del backoff ciego
    0.5→4 s que agotaba los 4 retries en ~7 s dentro de la misma ventana de throttle
-   y tiraba la fila a "Error LLM" residual. PT lo hereda sin tocar código
-   (`llm/provider.py` construye con `max_retries=4`). `vertex.py` de commons ahora
-   también extrae el `retryDelay` (antes solo AI Studio).
-2. **Pendiente — L3 vía `structured_output`.** Hoy `SniCommonsLLMClient.complete_json`
-   usa `chat` + `_extract_json` (regex de fences + `json.loads`): un JSON truncado o
-   con markdown cae como `JSONParseError` **no reintentable**, y un mismatch de schema
-   cae silencioso a residual (`parse_l3_response` → confianza 0). OBSRATE usa
-   `structured_output` (response_schema nativo en Vertex/Gemini, validación Pydantic
-   en el backend; mismatch = `LLMResponseError` reintentable). Migrar al patrón
-   `structured_sync` de `OBSRATE/src/obsrate/llm/provider.py` con `L3ResponseModel`.
-3. **Pendiente — `projecttype verify-llm`.** Smoke del proveedor configurado (patrón
-   `make verify-llm` OBSRATE). Hoy `check_provider_available` solo se llama en
-   `scripts/classify_cascade.py`; el camino de producción (`enrich --from-store
-   --enable-l3`) descubre credenciales/ADC vencidas a mitad de corrida.
+   y tiraba la fila a "Error LLM" residual. PT lo hereda sin tocar código.
+   `vertex.py` de commons ahora también extrae el `retryDelay` (antes solo AI Studio).
+2. **✅ L3 vía `structured_output`.** `SniCommonsLLMClient.complete_json` ya no usa
+   `chat` + `_extract_json` (regex de fences + `json.loads`, eliminados junto con
+   `JSONParseError`) — llama `provider.structured_output(messages, L3ResponseModel,
+   ...)`. El backend (Vertex/Gemini `response_schema` nativo, Anthropic tool-use)
+   fuerza el schema y valida con Pydantic; un mismatch ya no cae silencioso a
+   confianza 0 — llega como `LLMResponseError` (`LLMError`), que
+   `_classify_one_l3_row` en `pipeline_cascade.py` sigue capturando igual que
+   antes (row a residual "Error LLM (lote protegido)", contado en `l3_failures` —
+   **sin regresión**: `classify_row` deliberadamente NO atrapa `LLMError`, para
+   que el conteo de fallos del lote siga funcionando en el nivel que corresponde).
+3. **✅ `projecttype verify-llm [--provider --model]`.** Smoke de dos pasos (chat
+   simple + `structured_output` con `L3ResponseModel`, el mismo camino exacto que
+   usa L3 en producción) antes de correr `enrich --enable-l3`; falla temprano con
+   mensaje accionable si faltan credenciales/ADC en vez de descubrirlo a mitad
+   de una corrida pagada.
 
-**Done-cuando:** `_extract_json` fuera del camino L3 real (queda solo para mocks si
-hace falta); test: respuesta no-JSON del stub → reintento, no residual silencioso;
-`projecttype verify-llm` exit 0 con proveedor OK y exit 1 con mensaje accionable sin
-credenciales; suite + `eval_golden --ci` verdes; smoke real 👤 (~5 filas `--enable-l3
---limit 5 --dry-run`).
+**Verificado:** 108 tests (3 nuevos: `test_verify_llm.py` + reescritura de
+`test_sni_commons_client.py` sobre `structured_output`); ruff 0; mypy --strict 0;
+`eval_golden --ci` gate aprobado, `prompt_version` sin cambios (no invalida caché).
+
+**Pendiente (👤):** smoke real contra Vertex/AI Studio de verdad
+(`projecttype verify-llm` con credenciales reales) — lo anterior solo verificó
+con providers stub/echo, sin red.
 
 #### [PT-24] Multi-tipo L3 (fallback extremo) — **✅ HECHO 2026-07-10**
 

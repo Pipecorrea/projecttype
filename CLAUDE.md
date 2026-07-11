@@ -24,6 +24,9 @@ uv run pytest && uv run ruff check src scripts tests && uv run mypy src   # mypy
 uv run projecttype enrich --from-store | --from-selection <id>   # excluyentes; SNI publica sel_tipo_proyecto_<id>
                           [--enable-l3] [--limit N --dry-run]
 
+# Smoke del proveedor LLM (PT-25) — antes de una corrida real con --enable-l3
+uv run projecttype verify-llm [--provider <p> --model <m>]
+
 # Camino CSV (calibración/eval; vivo a propósito, PT-5)
 uv run python scripts/classify_cascade.py [--enable-l3 --l3-provider google --l3-limit 100]
 uv run python scripts/enrich_to_store.py data/output/resultados_l1_l2_l3.csv
@@ -68,6 +71,7 @@ Eval contra etiquetado manual: `evaluation.py` / `load_expost_manual()` sobre
   filas (lo protege `test_bip_code_normalized_for_join`).
 - ⚠️ **Publish parcial:** publicar con `--limit` marca el resto
   `_present_in_latest=false`; el CLI advierte y pide confirmación. Pilotos → `--dry-run`.
-- El LLM L3 va por `sni_commons.llm` (`SniCommonsLLMClient`; PT-4/PT-16).
+- El LLM L3 va por `sni_commons.llm` (`SniCommonsLLMClient`; PT-4/PT-16). Salida
+  vía `structured_output` (schema `L3ResponseModel`, no texto libre + regex; PT-25).
 - `store_publish.py` proyecta al `ENR_TIPO_PROYECTO_CONTRACT` y hace upsert **no
   destructivo** con `writer=` (ledger v1.1) — no escribir al store por otra vía.
