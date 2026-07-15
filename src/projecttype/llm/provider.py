@@ -145,8 +145,10 @@ def build_provider(
         provider=kind,
         model=model or default_llm_model(),
         api_key=api_key,
+        # "global" enruta a cualquier región con capacidad (remedio oficial a los
+        # 429 de la Dynamic Shared Quota); una región fija solo si el .env la pide.
+        location=_env("GOOGLE_CLOUD_REGION", "global") or None,
         project=_env("GOOGLE_CLOUD_PROJECT") or None,
-        location=_env("GOOGLE_CLOUD_REGION", "us-east5") or None,
         max_retries=4,
         request_interval_seconds=interval,
     )

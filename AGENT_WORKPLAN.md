@@ -309,9 +309,16 @@ tiene venían de tres brechas del transporte L3.
 `test_sni_commons_client.py` sobre `structured_output`); ruff 0; mypy --strict 0;
 `eval_golden --ci` gate aprobado, `prompt_version` sin cambios (no invalida caché).
 
-**Pendiente (👤):** smoke real contra Vertex/AI Studio de verdad
-(`projecttype verify-llm` con credenciales reales) — lo anterior solo verificó
-con providers stub/echo, sin red.
+**Cerrado (2026-07-15):** el smoke real corrió — y destapó la capa que faltaba:
+el 429 de Vertex (Dynamic Shared Quota) **no trae `retryDelay`**, así que SC-19
+nunca mordía ahí. Resuelto con SC-20 en commons (backoff piso 4 s + equal jitter),
+endpoint **`global`** (default nuevo de `provider.py`; us-east5 perdió 90/100
+llamadas en corrida real) y migración a **`gemini-3.1-flash-lite`** (D-20 —
+2.5-flash se retira 2026-10-16 y su capacidad DSQ decrece). Validado con
+`eval_golden --l3-pure 100` sobre dev: **0×429**, precisión L3 puro 85.7%
+(84/98) vs 84.8% (84/99) de 2.5-flash, 6.2 min (vs ~13 con tormenta de 429).
+Pendiente estructural (candidato PT-26): corridas masivas vía **Vertex Batch
+API** (−50% costo, sin pelear el pool online).
 
 #### [PT-24] Multi-tipo L3 (fallback extremo) — **✅ HECHO 2026-07-10**
 
