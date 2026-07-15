@@ -17,7 +17,7 @@ from typing import Annotated
 import typer
 
 from projecttype.inference_metadata import prompt_version, taxonomy_hash
-from projecttype.paths import DEFAULT_L3_CACHE_JSONL, DEFAULT_TAXONOMY
+from projecttype.paths import DEFAULT_L3_CACHE_JSONL, DEFAULT_L3_PROGRESS_JSONL, DEFAULT_TAXONOMY
 from projecttype.store_publish import enricher_version
 
 app = typer.Typer(
@@ -29,6 +29,9 @@ app = typer.Typer(
 @app.callback()
 def _main() -> None:
     """Mantiene el modo subcomando (``projecttype enrich …``)."""
+    from projecttype.env import load_project_env
+
+    load_project_env()
 
 
 @app.command()
@@ -59,6 +62,17 @@ def enrich(
             help="Solo clasificar proyectos sin clasificación vigente con la misma taxonomía/prompt.",
         ),
     ] = False,
+    only_classified: Annotated[
+        bool,
+        typer.Option(
+            "--only-classified",
+            help=(
+                "Con --from-store: restringe a los EBI_CODIGO que YA existen en "
+                "enr_tipo_proyecto (re-publish acotado, PT-18) — evita clasificar el "
+                "universo completo de CONSULTAS_EBI por accidente con --incremental."
+            ),
+        ),
+    ] = False,
     force_selection: Annotated[
         bool,
         typer.Option(
@@ -78,6 +92,17 @@ def enrich(
         int | None,
         typer.Option("--l3-concurrency", help="Hilos paralelos L3 (default: LLM_MAX_CONCURRENCY o 5)."),
     ] = None,
+    l3_progress_file: Annotated[
+        Path | None,
+        typer.Option(
+            "--l3-progress-file",
+            help=f"JSONL de avance L3 para seguimiento (`tail -f`); default {DEFAULT_L3_PROGRESS_JSONL}.",
+        ),
+    ] = None,
+    l3_progress_interval: Annotated[
+        int,
+        typer.Option("--l3-progress-interval", help="Cada cuántas filas L3 imprimir avance."),
+    ] = 1,
     dry_run: Annotated[
         bool,
         typer.Option("--dry-run", help="Clasificar y mostrar el diff del store sin escribir."),
@@ -108,6 +133,8 @@ def enrich(
         raise typer.BadParameter("--force-selection solo aplica con --from-selection.")
     if incremental and from_selection is not None:
         raise typer.BadParameter("--incremental no aplica con --from-selection (usa el anti-join por defecto).")
+    if only_classified and from_selection is not None:
+        raise typer.BadParameter("--only-classified no aplica con --from-selection.")
 
     from projecttype.classifier_cascade import ClassifierCascade
     from projecttype.incremental import filter_pending
@@ -130,8 +157,13 @@ def enrich(
         source_label = f"seleccion:{from_selection}"
         mark_missing = False
     else:
+        existing_bips: list[str] | None = None
+        if only_classified:
+            existing_bips = _load_existing_classified_bips(data_dir)
+            typer.echo(f"→ Restringiendo a {len(existing_bips)} EBI_CODIGO ya en enr_tipo_proyecto…")
+            mark_missing = False
         typer.echo("→ Leyendo proyectos del store (CONSULTAS_EBI)…")
-        df = load_cascade_input_from_store(data_dir, limit=limit)
+        df = load_cascade_input_from_store(data_dir, limit=limit, bips=existing_bips)
         if incremental:
             mark_missing = False
 
@@ -163,11 +195,22 @@ def enrich(
 
     cascade = ClassifierCascade.from_yaml(DEFAULT_TAXONOMY, enable_l3=enable_l3)
     typer.echo(f"→ Clasificando (L1→L2{'→L3' if enable_l3 else ''})…")
+
+    progress_file = None
+    if enable_l3:
+        progress_file = l3_progress_file or DEFAULT_L3_PROGRESS_JSONL
+        progress_file.parent.mkdir(parents=True, exist_ok=True)
+        progress_file.write_text("", encoding="utf-8")
+        typer.echo(f"  Avance L3 → {progress_file}")
+        typer.echo(f"  Seguimiento: tail -f {progress_file}")
+
     result = classify_cascade_dataframe(
         df,
         cascade,
         l3_limit=l3_limit,
         l3_concurrency=l3_concurrency,
+        l3_progress_interval=l3_progress_interval,
+        l3_progress_file=progress_file,
         l3_cache_path=DEFAULT_L3_CACHE_JSONL if enable_l3 else None,
     )
 
@@ -204,6 +247,28 @@ def enrich(
         typer.echo(formatear_resumen_gate(exc.resultado), err=True)
         raise typer.Exit(code=1) from exc
     typer.echo(diag.summary())
+
+
+def _load_existing_classified_bips(data_dir: str | None) -> list[str]:
+    """EBI_CODIGO ya presentes en ``enr_tipo_proyecto`` (para ``--only-classified``)."""
+    import os
+    from pathlib import Path as _Path
+
+    from sni_commons.store import BipDataStore, StoreError
+
+    base = data_dir or os.environ.get("BIP_DATA_DIR")
+    if not base:
+        raise typer.BadParameter("--only-classified requiere --data-dir o BIP_DATA_DIR.")
+    store = BipDataStore(_Path(base))
+    try:
+        df = store.read_polars("enr_tipo_proyecto", only_present=True)
+    except StoreError as exc:
+        raise typer.BadParameter(
+            "enr_tipo_proyecto no existe aún en el store; --only-classified no aplica."
+        ) from exc
+    if df.height == 0:
+        raise typer.BadParameter("enr_tipo_proyecto está vacío; --only-classified no aplica.")
+    return sorted({str(c).strip() for c in df.get_column("EBI_CODIGO").to_list() if c})
 
 
 @app.command(name="verify-llm")
