@@ -27,6 +27,9 @@ uv run projecttype enrich --from-store | --from-selection <id>   # excluyentes; 
 # Smoke del proveedor LLM (PT-25) — antes de una corrida real con --enable-l3
 uv run projecttype verify-llm [--provider <p> --model <m>]
 
+# UI HITL (PT-19): revisión + clasificación manual + editor de prompts (puerto 8788)
+uv run projecttype serve [--data-dir <store> --port 8788]   # read-only sobre el store (D-13)
+
 # Camino CSV (calibración/eval; vivo a propósito, PT-5)
 uv run python scripts/classify_cascade.py [--enable-l3 --l3-provider google --l3-limit 100]
 uv run python scripts/enrich_to_store.py data/output/resultados_l1_l2_l3.csv
@@ -75,3 +78,8 @@ Eval contra etiquetado manual: `evaluation.py` / `load_expost_manual()` sobre
   vía `structured_output` (schema `L3ResponseModel`, no texto libre + regex; PT-25).
 - `store_publish.py` proyecta al `ENR_TIPO_PROYECTO_CONTRACT` y hace upsert **no
   destructivo** con `writer=` (ledger v1.1) — no escribir al store por otra vía.
+- **UI HITL (`projecttype serve`, PT-19) es read-only sobre el store (D-13):** los
+  veredictos van a `data/review/veredictos_tipo.jsonl`; el publish al store solo por
+  el loop de salida (PT-21). El editor de config (`/api/config`) escribe prompts
+  (`l3.yaml`/`reglas_discriminantes.yaml`/`few_shot_examples.yaml`, cambian
+  `prompt_version`); la taxonomía es de **solo lectura** (cambia `taxonomy_hash` → PT-22).

@@ -271,5 +271,46 @@ def verify_llm(
     typer.echo("\nOK — el proveedor está listo para L3.")
 
 
+@app.command()
+def serve(
+    host: Annotated[
+        str,
+        typer.Option("--host", help="Host de escucha (default 127.0.0.1)."),
+    ] = "127.0.0.1",
+    port: Annotated[
+        int,
+        typer.Option("--port", help="Puerto (default 8788 o PROJECTTYPE_UI_PORT)."),
+    ] = 0,
+    data_dir: Annotated[
+        Path | None,
+        typer.Option("--data-dir", help="Store canónico (default BIP_DATA_DIR)."),
+    ] = None,
+    reload: Annotated[
+        bool,
+        typer.Option("--reload", help="Autoreload (solo desarrollo)."),
+    ] = False,
+) -> None:
+    """Levanta la UI HITL (revisión + clasificación manual + editor de prompts).
+
+    Read-only sobre el store (D-13): los veredictos van a un JSONL aparte; el
+    publish al store solo por el loop de salida (PT-21).
+    """
+    import os
+
+    import uvicorn
+
+    from projecttype.api.main import DEFAULT_PORT, create_app
+
+    resolved_port = port or int(os.environ.get("PROJECTTYPE_UI_PORT", str(DEFAULT_PORT)))
+    application = create_app(data_dir=data_dir, load_snapshot=True)
+    summary = application.state.review_store.summary()
+    typer.echo(
+        f"→ Snapshot: {summary.total_clasificados} clasificados "
+        f"({summary.revisados} revisados) · taxonomy_hash={summary.taxonomy_hash}"
+    )
+    typer.echo(f"→ UI HITL en http://{host}:{resolved_port}")
+    uvicorn.run(application, host=host, port=resolved_port, reload=reload)
+
+
 if __name__ == "__main__":  # pragma: no cover
     app()

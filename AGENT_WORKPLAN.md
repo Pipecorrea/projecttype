@@ -14,14 +14,12 @@ actualizado: 2026-07-10
 > **Estado:** **enriquecedor** funcionando, ciclo **store→store completo** (PT-6):
 > `projecttype enrich --from-store` lee CONSULTAS_EBI, clasifica y publica
 > `enr_tipo_proyecto`. Cliente LLM unificado en sni-commons (PT-4). py3.12.
-> **108 tests** (**pytest**, PT-8/9/10/14/15/16/17/18/23/24/25), mypy **--strict**,
-> ruff limpio, golden real n=2.357 en gate CI — commits `7f776b1`/`5f7f2e3`/`d9ccc3f`
-> (2026-07-10) + PT-25 (transporte LLM vía `structured_output` + `verify-llm`).
-> Diagnóstico SOTA: `DIAGNOSTICO_Y_PLAN_SOTA_2026-07.md` (tickets PT-15…PT-22).
-> Cascada L1 (keywords) → L2 (embeddings) → L3 (LLM).
+> **117 tests** (**pytest**, PT-8/9/10/14/15/16/17/18/19/23/24/25), mypy **--strict**,
+> ruff limpio, golden real n=2.357 en gate CI. Cascada L1→L2→L3 + **UI HITL backend
+> (PT-19): `projecttype serve`**. Diagnóstico SOTA: `DIAGNOSTICO_Y_PLAN_SOTA_2026-07.md`.
 
 ## Verde antes de commitear
-`uv run pytest` (108) · `uv run ruff check src scripts tests` · `uv run mypy src`
+`uv run pytest` (117) · `uv run ruff check src scripts tests` · `uv run mypy src`
 (--strict) · `uv run python scripts/eval_golden.py --ci` — **lo mismo que corre CI (bloqueante)**.
 
 ---
@@ -237,13 +235,29 @@ Split dev/holdout 80/20 estratificado (`golden_split.py`); golden v2.1.0 con tag
 `eval_golden.py --estrato dev|holdout --real` reporta métricas cascada y L3; `--l3-limit` para piloto.
 Gate CI sigue solo L1+L2 estrato `expost`. Publish al store **después** de holdout aceptable.
 
-#### [PT-19] Backend HITL — **L, pendiente**
+#### [PT-19] Backend HITL — **✅ HECHO 2026-07-15**
 
-`review/` + `api/` FastAPI; `projecttype serve` puerto 8788. Dep: holdout PT-23 👤.
+FastAPI read-only sobre el store (D-13 intacto: veredictos a JSONL aparte).
+`src/projecttype/review/` (hitl_base `JsonlHitlStore[T]`, schemas `RevisionTipoRecord`
++ `Veredicto`, `TipoReviewStore` = snapshot memoria de enr_tipo_proyecto + contexto
+CONSULTAS_EBI + CoT del caché L3 + veredictos) y `src/projecttype/api/` (create_app,
+mount_spa, routers). Endpoints: `/api/health`, `/api/review/{summary,queue,item/{ebi},
+item/{ebi}/verdict,reload}`, `/api/manual/{subsectores,pendientes,clasificar/{ebi}}`,
+`/api/catalogo/arbol`, `/api/config/{files,file/{kind}}` (editor de prompts, base PT-22).
+CLI `projecttype serve` puerto 8788. Deps: fastapi/uvicorn (+httpx dev). 9 tests
+TestClient (test_api_hitl.py). Boot real de uvicorn verificado.
 
-#### [PT-20] SPA v1 — **L, pendiente**
+**Nota de alcance (D-19 revisado 2026-07-15):** el snapshot NO exige el re-publish
+👤 de PT-18. La cola de revisión se llena con lo que haya en el store (hoy poco),
+pero `/manual` (clasificar subsectores sin cobertura sobre CONSULTAS_EBI + taxonomía)
+y `/config` (afinar prompts/casos borde) son **usables ya**, sin la tanda pagada.
+El editor de la taxonomía queda de solo-lectura (cambia taxonomy_hash → PT-22).
 
-React/Vite clon OBSRATE; `/revision` + `/manual`. CI job `web` bloqueante.
+#### [PT-20] SPA v1 — **L, pendiente (PRÓXIMO)**
+
+React/Vite clon OBSRATE; `/revision` + `/manual` + `/config` (editor prompts) +
+`/catalogo`. Consume la API de PT-19 (ya lista). CI job `web` bloqueante.
+Vite dev 5176 (proxy `/api`→8788). `web/dist` → `mount_spa` ya lo sirve.
 
 #### [PT-21] Loop salida HITL — **M, pendiente**
 
