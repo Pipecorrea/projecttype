@@ -21,9 +21,9 @@ Casa de Adulto Mayor,CENTRO DE DIA ADULTO MAYOR (SENAMA),3
 Casa de Adulto Mayor,CENTROS DE ASISTENCIA,1
 Casetas Sanitarias/alcantarillado,PLANTA TRATAMIENTO AGUAS SERVIDAS,1
 Casetas Sanitarias/alcantarillado,RED DE ALCANTARILLADO Y PLANTA TRATAMIENTO AGUAS SERVIDAS,1
-Casetas Sanitarias/alcantarillado/agua Potable,CASETAS SANITARIAS/ALCANTARILLADO/PLANTA DE TRATAMIENTO,4
+Casetas Sanitarias/alcantarillado/agua Potable,CASETAS SANITARIAS/ALCANTARILLADO/PLANTA DE TRATAMIENTO,5
 Casetas Sanitarias/alcantarillado/agua Potable,RED DE ALCANTARILLADO Y AGUA POTABLE,4
-Casetas Sanitarias/alcantarillado/agua Potable,RED DE ALCANTARILLADO Y PLANTA TRATAMIENTO AGUAS SERVIDAS,6
+Casetas Sanitarias/alcantarillado/agua Potable,RED DE ALCANTARILLADO Y PLANTA TRATAMIENTO AGUAS SERVIDAS,5
 Casetas Sanitarias/alcantarillado/planta de Tratamiento,RED DE ALCANTARILLADO Y PLANTA TRATAMIENTO AGUAS SERVIDAS,2
 Centro Comunitario,SEDE SOCIAL,6
 Centro Comunitario de Salud Familiar (cecosf),CENTRO DE SALUD FAMILIAR (CESFAM),1
@@ -40,10 +40,9 @@ Ciclovias Urbanas,CORREDOR TRANSPORTE PUBLICO,3
 Ciclovias Urbanas,GESTION DE TRANSITO,1
 Ciclovias Urbanas,PUENTE URBANO,2
 Ciclovias Urbanas,VIAS URBANAS ESTRUCTURANTES,1
-Colegio Basica/media Cientifico Humanista,INTERNADO,1
-Colegio Basica/media Cientifico Humanista,LICEO CIENTIFICO HUMANISTA,1
+Colegio Basica/media Cientifico Humanista,LICEO CIENTIFICO HUMANISTA,2
 Colegio Prebasica/basica/media Cientifico Humanista,COLEGIO BASICA/MEDIA CIENTIFICO HUMANISTA,1
-Colegio Prebasica/basica/media Cientifico Humanista,ESCUELA BASICA MAS KINDER Y/O PREKINDER,2
+Colegio Prebasica/basica/media Cientifico Humanista,ESCUELA BASICA MAS KINDER Y/O PREKINDER,3
 Colegio Prebasica/basica/media Cientifico Humanista,LICEO CIENTIFICO HUMANISTA,1
 Complejo Deportivo,ESTADIO FUTBOL EQUIPADO (AMATEUR),1
 Complejo Deportivo,PISCINA SEMIOLIMPICA TEMPERADA,1
@@ -144,7 +143,7 @@ Red de Agua Potable Rural,RED DE AGUA POTABLE URBANA,2
 Red de Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,5
 Red de Agua Potable Urbana,RED DE AGUA POTABLE RURAL,1
 Red de Alcantarillado,CASETAS SANITARIAS/ALCANTARILLADO,1
-Red de Alcantarillado y Agua Potable,CASETAS SANITARIAS /ALCANTARILLADO/AGUA POTABLE/ENERGIA,1
+Red de Alcantarillado y Agua Potable,RED DE ALCANTARILLADO Y PLANTA TRATAMIENTO AGUAS SERVIDAS,1
 Red de Alcantarillado y Planta Tratamiento Aguas Servidas,CASETAS SANITARIAS/ALCANTARILLADO/PLANTA DE TRATAMIENTO,4
 Red de Distribucion de Eléctrica,EXTENSION LINEA MEDIA TENSION Y BAJA TENSION,2
 Rellenos Sanitarios Con Operación Mecánica y Manual,VEHÍCULOS DE CARGA DE GRAN TONELAJE PARA RESIDUOS SÓLIDOS DOMICILIARIOS Y ASIMILABLES,5

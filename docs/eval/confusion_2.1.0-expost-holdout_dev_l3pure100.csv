@@ -9,23 +9,23 @@ expost-20100873,20100873,dev,Puente Urbano,PUENTE URBANO,PUENTE URBANO,Coinciden
 expost-20106461,20106461,dev,Ruta,CAMINO BASICO INTERMEDIO,RUTA,Coincidencia exacta,L3,asignado,,asignado,3
 expost-20109498,20109498,dev,Centro de Salud Familiar (cesfam),CENTRO DE SALUD FAMILIAR (CESFAM),CENTRO DE SALUD FAMILIAR (CESFAM),Coincidencia exacta,L3,ambiguo,ambiguo,asignado,3
 expost-20109682,20109682,dev,Vias Urbanas Estructurantes,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,VIAS URBANAS ESTRUCTURANTES,Coincidencia exacta,L3,ambiguo,sin_match,asignado,3
-expost-20116978,20116978,dev,Casetas Sanitarias/alcantarillado/agua Potable,RED DE ALCANTARILLADO Y PLANTA TRATAMIENTO AGUAS SERVIDAS,RED DE ALCANTARILLADO Y PLANTA TRATAMIENTO AGUAS SERVIDAS,Discrepancia,residual,ambiguo,ambiguo,ambiguo,1
+expost-20116978,20116978,dev,Casetas Sanitarias/alcantarillado/agua Potable,RED DE ALCANTARILLADO Y PLANTA TRATAMIENTO AGUAS SERVIDAS,RED DE ALCANTARILLADO Y PLANTA TRATAMIENTO AGUAS SERVIDAS,Discrepancia,L3,ambiguo,ambiguo,asignado,3
 expost-20119349,20119349,dev,Escuela Basica,INTERNADO,ESCUELA BASICA,Coincidencia exacta,L3,ambiguo,asignado,asignado,3
 expost-20119870,20119870,dev,Posta Rural,POSTA RURAL,POSTA RURAL,Coincidencia exacta,L3,asignado,,asignado,3
 expost-20120871,20120871,dev,Red de Alcantarillado y Planta Tratamiento Aguas Servidas,RED DE ALCANTARILLADO Y PLANTA TRATAMIENTO AGUAS SERVIDAS,RED DE ALCANTARILLADO Y PLANTA TRATAMIENTO AGUAS SERVIDAS,Coincidencia exacta,L3,ambiguo,ambiguo,asignado,3
 expost-20124073,20124073,dev,Edificacion Publica,,EDIFICACION PUBLICA,Coincidencia exacta,L3,sin_match,sin_match,asignado,3
 expost-20134266,20134266,dev,Hospital de Baja Complejidad,HOSPITAL DE BAJA COMPLEJIDAD,HOSPITAL DE BAJA COMPLEJIDAD,Coincidencia exacta,L3,asignado,,asignado,3
 expost-20135325,20135325,dev,Escuela Basica,INTERNADO,ESCUELA BASICA,Coincidencia exacta,L3,ambiguo,asignado,asignado,3
-expost-20137860,20137860,dev,Colegio Basica/media Cientifico Humanista,INTERNADO,INTERNADO,Discrepancia,L1,asignado,,ambiguo,1
+expost-20137860,20137860,dev,Colegio Basica/media Cientifico Humanista,INTERNADO,LICEO CIENTIFICO HUMANISTA,Discrepancia,L3,asignado,,asignado,3
 expost-20138267,20138267,dev,Ruta,PARADERO INTERURBANO,RUTA,Coincidencia exacta,L3,ambiguo,ambiguo,asignado,3
 expost-20139273,20139273,dev,Ruta,RUTA,RUTA,Coincidencia exacta,L3,asignado,,asignado,3
 expost-20139376,20139376,dev,Edificacion Publica,EDIFICACION PUBLICA,EDIFICACION PUBLICA,Coincidencia exacta,L3,sin_match,asignado,asignado,3
 expost-20139695,20139695,dev,Vias Vialidad Urbana Intermedia,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,VIAS VIALIDAD URBANA INTERMEDIA,Coincidencia exacta,L3,asignado,,asignado,3
-expost-20141049,20141049,dev,Colegio Prebasica/basica/media Cientifico Humanista,ESCUELA BASICA,COLEGIO PREBASICA/BASICA/MEDIA CIENTIFICO HUMANISTA,Coincidencia exacta,L3,ambiguo,ambiguo,asignado,3
+expost-20141049,20141049,dev,Colegio Prebasica/basica/media Cientifico Humanista,ESCUELA BASICA,ESCUELA BASICA MAS KINDER Y/O PREKINDER,Discrepancia,L3,ambiguo,ambiguo,asignado,3
 expost-20142765,20142765,dev,Escuela Basica,ESCUELA BASICA,ESCUELA BASICA,Coincidencia exacta,L3,asignado,,asignado,3
 expost-20144976,20144976,dev,Edificacion Publica,,EDIFICACION PUBLICA,Coincidencia exacta,L3,sin_match,sin_match,asignado,3
 expost-20145656,20145656,dev,Casetas Sanitarias/alcantarillado/agua Potable,RED DE ALCANTARILLADO Y AGUA POTABLE,RED DE ALCANTARILLADO Y PLANTA TRATAMIENTO AGUAS SERVIDAS,Discrepancia,L3,ambiguo,ambiguo,asignado,3
-expost-20150130,20150130,dev,Casetas Sanitarias/alcantarillado/agua Potable,CASETAS SANITARIAS/ALCANTARILLADO/PLANTA DE TRATAMIENTO,CASETAS SANITARIAS/ALCANTARILLADO/PLANTA DE TRATAMIENTO,Discrepancia,L3,ambiguo,ambiguo,asignado,3
+expost-20150130,20150130,dev,Casetas Sanitarias/alcantarillado/agua Potable,CASETAS SANITARIAS/ALCANTARILLADO/PLANTA DE TRATAMIENTO,CASETAS SANITARIAS/ALCANTARILLADO/PLANTA DE TRATAMIENTO,Discrepancia,residual,ambiguo,ambiguo,sin_match,1
 expost-20151114,20151114,dev,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,SISTEMA AGUA POTABLE RURAL,Coincidencia exacta,L3,asignado,,asignado,3
 expost-20151227,20151227,dev,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,SISTEMA AGUA POTABLE RURAL,Coincidencia exacta,L3,asignado,,asignado,3
 expost-20151325,20151325,dev,Sistema Agua Potable Rural,SISTEMA AGUA POTABLE RURAL,SISTEMA AGUA POTABLE RURAL,Coincidencia exacta,L3,asignado,,asignado,3
@@ -35,7 +35,7 @@ expost-20154766,20154766,dev,Ruta,RUTA,RUTA,Coincidencia exacta,L3,asignado,,asi
 expost-20155835,20155835,dev,Centro de Reinsercion Social (crs),CENTRO DE REINSERCION SOCIAL (CRS),CENTRO DE REINSERCION SOCIAL (CRS),Coincidencia exacta,L3,asignado,,asignado,3
 expost-20155934,20155934,dev,Escuela Basica Mas Kinder Y/o Prekinder,ESCUELA BASICA MAS KINDER Y/O PREKINDER,ESCUELA BASICA MAS KINDER Y/O PREKINDER,Coincidencia exacta,L3,asignado,,asignado,3
 expost-20156427,20156427,dev,Escuela Basica Mas Kinder Y/o Prekinder,ESCUELA BASICA MAS KINDER Y/O PREKINDER,ESCUELA BASICA MAS KINDER Y/O PREKINDER,Coincidencia exacta,L3,ambiguo,ambiguo,asignado,3
-expost-20156686,20156686,dev,Casetas Sanitarias/alcantarillado/agua Potable,CASETAS SANITARIAS/ALCANTARILLADO/PLANTA DE TRATAMIENTO,CASETAS SANITARIAS/ALCANTARILLADO/PLANTA DE TRATAMIENTO,Discrepancia,L1,asignado,,sin_match,1
+expost-20156686,20156686,dev,Casetas Sanitarias/alcantarillado/agua Potable,CASETAS SANITARIAS/ALCANTARILLADO/PLANTA DE TRATAMIENTO,RED DE ALCANTARILLADO Y PLANTA TRATAMIENTO AGUAS SERVIDAS,Discrepancia,L3,asignado,,asignado,3
 expost-20156920,20156920,dev,Centro de Salud Familiar (cesfam),CENTRO DE SALUD FAMILIAR (CESFAM),CENTRO DE SALUD FAMILIAR (CESFAM),Coincidencia exacta,L3,ambiguo,ambiguo,asignado,3
 expost-20159588,20159588,dev,Jardin Infantil y Sala Cuna,JARDIN INFANTIL Y SALA CUNA,JARDIN INFANTIL Y SALA CUNA,Coincidencia exacta,L3,asignado,,asignado,3
 expost-20159752,20159752,dev,Jardin Infantil,JARDIN INFANTIL,JARDIN INFANTIL,Coincidencia exacta,L3,asignado,,asignado,3
@@ -70,34 +70,34 @@ expost-20181893,20181893,dev,Centro de Salud Familiar (cesfam),CENTRO COMUNITARI
 expost-20182024,20182024,dev,Escuela Basica Mas Kinder Y/o Prekinder,ESCUELA BASICA,ESCUELA BASICA MAS KINDER Y/O PREKINDER,Coincidencia exacta,L3,ambiguo,ambiguo,asignado,3
 expost-20182175,20182175,dev,Vias Urbanas Estructurantes,GESTION DE TRANSITO,VIAS URBANAS ESTRUCTURANTES,Coincidencia exacta,L3,asignado,,asignado,3
 expost-20182369,20182369,dev,Instalaciones Turisticas en Areas Silvestres Protegidas,CENTRO DE INFORMACION TURISTICA,INSTALACIONES TURISTICAS EN AREAS SILVESTRES PROTEGIDAS,Coincidencia exacta,L3,ambiguo,ambiguo,asignado,3
-expost-20182393,20182393,dev,Red de Alcantarillado y Agua Potable,CASETAS SANITARIAS/ALCANTARILLADO/PLANTA DE TRATAMIENTO,CASETAS SANITARIAS /ALCANTARILLADO/AGUA POTABLE/ENERGIA,Discrepancia,L3,ambiguo,ambiguo,asignado,3
+expost-20182393,20182393,dev,Red de Alcantarillado y Agua Potable,CASETAS SANITARIAS/ALCANTARILLADO/PLANTA DE TRATAMIENTO,RED DE ALCANTARILLADO Y PLANTA TRATAMIENTO AGUAS SERVIDAS,Discrepancia,L3,ambiguo,ambiguo,asignado,3
 expost-20182452,20182452,dev,Jardin Infantil y Sala Cuna,JARDIN INFANTIL,JARDIN INFANTIL Y SALA CUNA,Coincidencia exacta,L3,asignado,,asignado,3
 expost-20183310,20183310,dev,Control Aluvional,CONTROL ALUVIONAL,CONTROL ALUVIONAL,Coincidencia exacta,L3,asignado,,asignado,3
 expost-20183321,20183321,dev,Control Aluvional,CONTROL ALUVIONAL,CONTROL ALUVIONAL,Coincidencia exacta,L3,asignado,,asignado,3
 expost-20184451,20184451,dev,Fiscalia (ministerio Publico),REGISTRO CIVIL E IDENTIFICACION,FISCALIA (MINISTERIO PUBLICO),Coincidencia exacta,L3,ambiguo,ambiguo,asignado,3
 expost-20185744,20185744,dev,Ruta,RUTA,RUTA,Coincidencia exacta,L3,asignado,,asignado,3
-expost-20186582,20186582,dev,Intersubsectorial Multisector,,INTERSUBSECTORIAL MULTISECTOR,Coincidencia exacta,L3,sin_match,sin_match,asignado,3
+expost-20186582,20186582,dev,Intersubsectorial Multisector,,,Sin clasificación L1,residual,sin_match,sin_match,sin_match,1
 expost-20186784,20186784,dev,Puente,PUENTE,PUENTE,Coincidencia exacta,L3,ambiguo,sin_match,asignado,3
 expost-20187820,20187820,dev,Ruta,RUTA,RUTA,Coincidencia exacta,L3,asignado,,asignado,3
 expost-20188080,20188080,dev,Vias Urbanas Estructurantes,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,VIAS URBANAS ESTRUCTURANTES,Coincidencia exacta,L3,ambiguo,ambiguo,asignado,3
-expost-20188809,20188809,dev,Casetas Sanitarias/alcantarillado/agua Potable,CASETAS SANITARIAS/ALCANTARILLADO/PLANTA DE TRATAMIENTO,RED DE ALCANTARILLADO Y PLANTA TRATAMIENTO AGUAS SERVIDAS,Discrepancia,L3,ambiguo,ambiguo,asignado,3
+expost-20188809,20188809,dev,Casetas Sanitarias/alcantarillado/agua Potable,CASETAS SANITARIAS/ALCANTARILLADO/PLANTA DE TRATAMIENTO,CASETAS SANITARIAS/ALCANTARILLADO/PLANTA DE TRATAMIENTO,Discrepancia,L3,ambiguo,ambiguo,asignado,3
 expost-20189912,20189912,dev,Colector Aguas Lluvias,COLECTOR AGUAS LLUVIAS Y LAGUNA DE RETENCION,COLECTOR AGUAS LLUVIAS,Coincidencia exacta,L3,ambiguo,ambiguo,asignado,3
 expost-20190013,20190013,dev,Centro de Salud Familiar (cesfam),CENTRO DE SALUD FAMILIAR (CESFAM),CENTRO DE SALUD FAMILIAR (CESFAM),Coincidencia exacta,L3,asignado,,asignado,3
 expost-20191138,20191138,dev,Vias Urbanas Estructurantes,GESTION DE TRANSITO,VIAS URBANAS ESTRUCTURANTES,Coincidencia exacta,L3,ambiguo,ambiguo,asignado,3
 expost-20191520,20191520,dev,Vias Urbanas Estructurantes,GESTION DE TRANSITO,VIAS URBANAS ESTRUCTURANTES,Coincidencia exacta,L3,ambiguo,ambiguo,asignado,3
 expost-20191620,20191620,dev,Cuartel Bomberos,CUARTEL BOMBEROS,CUARTEL BOMBEROS,Coincidencia exacta,L3,asignado,,asignado,3
-expost-20191836,20191836,dev,CASETAS SANITARIAS /ALCANTARILLADO/AGUA POTABLE/ENERGIA,CASETAS SANITARIAS/ALCANTARILLADO/PLANTA DE TRATAMIENTO,RED DE ALCANTARILLADO Y PLANTA TRATAMIENTO AGUAS SERVIDAS,Discrepancia,L3,ambiguo,ambiguo,asignado,3
-expost-20191865,20191865,dev,CASETAS SANITARIAS /ALCANTARILLADO/AGUA POTABLE/ENERGIA,RED DE ALCANTARILLADO Y PLANTA TRATAMIENTO AGUAS SERVIDAS,RED DE ALCANTARILLADO Y PLANTA TRATAMIENTO AGUAS SERVIDAS,Discrepancia,residual,ambiguo,ambiguo,sin_match,1
+expost-20191836,20191836,dev,CASETAS SANITARIAS /ALCANTARILLADO/AGUA POTABLE/ENERGIA,CASETAS SANITARIAS/ALCANTARILLADO/PLANTA DE TRATAMIENTO,CASETAS SANITARIAS/ALCANTARILLADO/PLANTA DE TRATAMIENTO,Discrepancia,L3,ambiguo,ambiguo,asignado,3
+expost-20191865,20191865,dev,CASETAS SANITARIAS /ALCANTARILLADO/AGUA POTABLE/ENERGIA,RED DE ALCANTARILLADO Y PLANTA TRATAMIENTO AGUAS SERVIDAS,RED DE ALCANTARILLADO Y PLANTA TRATAMIENTO AGUAS SERVIDAS,Discrepancia,L3,ambiguo,ambiguo,asignado,3
 expost-20192035,20192035,dev,Puente Urbano,ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA,VIAS URBANAS ESTRUCTURANTES,Discrepancia,L3,ambiguo,ambiguo,asignado,3
 expost-20192432,20192432,dev,Registro Civil E Identificacion,REGISTRO CIVIL E IDENTIFICACION,REGISTRO CIVIL E IDENTIFICACION,Coincidencia exacta,L3,asignado,,asignado,3
-expost-20192885,20192885,dev,CASETAS SANITARIAS /ALCANTARILLADO/AGUA POTABLE/ENERGIA,CASETAS SANITARIAS/ALCANTARILLADO/PLANTA DE TRATAMIENTO,CASETAS SANITARIAS/ALCANTARILLADO/PLANTA DE TRATAMIENTO,Discrepancia,residual,ambiguo,ambiguo,ambiguo,1
+expost-20192885,20192885,dev,CASETAS SANITARIAS /ALCANTARILLADO/AGUA POTABLE/ENERGIA,CASETAS SANITARIAS/ALCANTARILLADO/PLANTA DE TRATAMIENTO,RED DE ALCANTARILLADO Y PLANTA TRATAMIENTO AGUAS SERVIDAS,Discrepancia,L3,ambiguo,ambiguo,asignado,3
 expost-20195441,20195441,dev,Fiscalia (ministerio Publico),REGISTRO CIVIL E IDENTIFICACION,FISCALIA (MINISTERIO PUBLICO),Coincidencia exacta,L3,ambiguo,ambiguo,asignado,3
 expost-20196817,20196817,dev,Infraestructura Apoyo,CALETA,INFRAESTRUCTURA APOYO,Coincidencia exacta,L3,asignado,,asignado,3
 expost-20197007,20197007,dev,Urbanizacion,URBANIZACION,URBANIZACION,Coincidencia exacta,L3,asignado,,asignado,3
 expost-20197092,20197092,dev,Paseo Peatonal,PASEO PEATONAL,PASEO PEATONAL,Coincidencia exacta,L3,asignado,,asignado,3
 expost-20197380,20197380,dev,CASETAS SANITARIAS /ALCANTARILLADO/AGUA POTABLE/ENERGIA,CASETAS SANITARIAS/ALCANTARILLADO/AGUA POTABLE,CASETAS SANITARIAS /ALCANTARILLADO/AGUA POTABLE/ENERGIA,Coincidencia exacta,L3,ambiguo,ambiguo,asignado,3
 expost-30002249,30002249,dev,Colector Aguas Lluvias,COLECTOR AGUAS LLUVIAS,COLECTOR AGUAS LLUVIAS,Coincidencia exacta,L3,asignado,,asignado,3
-expost-30002482,30002482,dev,Casetas Sanitarias/alcantarillado/agua Potable,RED DE ALCANTARILLADO Y PLANTA TRATAMIENTO AGUAS SERVIDAS,RED DE ALCANTARILLADO Y PLANTA TRATAMIENTO AGUAS SERVIDAS,Discrepancia,residual,ambiguo,ambiguo,ambiguo,1
+expost-30002482,30002482,dev,Casetas Sanitarias/alcantarillado/agua Potable,RED DE ALCANTARILLADO Y PLANTA TRATAMIENTO AGUAS SERVIDAS,CASETAS SANITARIAS/ALCANTARILLADO/PLANTA DE TRATAMIENTO,Discrepancia,L3,ambiguo,ambiguo,asignado,3
 expost-30002841,30002841,dev,Puente Urbano,PUENTE URBANO,PUENTE URBANO,Coincidencia exacta,L3,asignado,,asignado,3
 expost-30004024,30004024,dev,Escuela Basica Mas Kinder Y/o Prekinder,ESCUELA BASICA MAS KINDER Y/O PREKINDER,ESCUELA BASICA MAS KINDER Y/O PREKINDER,Coincidencia exacta,L1,asignado,,,1
 expost-30004257,30004257,dev,Caleta,CALETA,CALETA,Coincidencia exacta,L1,asignado,,,1
