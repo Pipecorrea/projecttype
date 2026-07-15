@@ -284,7 +284,9 @@ class TipoReviewStore:
                 continue
             key = (ctx.sector, ctx.subsector)
             slot = counts.setdefault(key, [0, 0])
-            if ebi in self._proposals:
+            # "Clasificado" = tiene tipo del sistema (store) o veredicto humano.
+            # Consistente con pendientes(), que excluye ambos.
+            if ebi in self._proposals or ebi in self._verdicts_by_ebi:
                 slot[0] += 1
             else:
                 slot[1] += 1

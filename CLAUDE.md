@@ -27,8 +27,10 @@ uv run projecttype enrich --from-store | --from-selection <id>   # excluyentes; 
 # Smoke del proveedor LLM (PT-25) — antes de una corrida real con --enable-l3
 uv run projecttype verify-llm [--provider <p> --model <m>]
 
-# UI HITL (PT-19): revisión + clasificación manual + editor de prompts (puerto 8788)
+# UI HITL (PT-19/20): revisión + clasificación manual + editor de prompts (puerto 8788)
 uv run projecttype serve [--data-dir <store> --port 8788]   # read-only sobre el store (D-13)
+# SPA en web/ (React+Vite+TanStack, PT-20): npm --prefix web run dev (Vite 5176, proxy /api→8788)
+#   o npm --prefix web run build → web/dist, que `serve` sirve en el mismo origen.
 
 # Camino CSV (calibración/eval; vivo a propósito, PT-5)
 uv run python scripts/classify_cascade.py [--enable-l3 --l3-provider google --l3-limit 100]

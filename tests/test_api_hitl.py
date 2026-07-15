@@ -195,6 +195,11 @@ class TestApiHitl(unittest.TestCase):
                 "/api/manual/pendientes", params={"subsector": "ALUMBRADO PUBLICO"}
             ).json()
             self.assertEqual(pend["total"], 2)
+            # El badge de cobertura refleja el veredicto humano (2 sistema + 1 manual).
+            subs = client.get("/api/manual/subsectores").json()
+            energia = [s for s in subs["items"] if s["subsector"] == "ALUMBRADO PUBLICO"][0]
+            self.assertEqual(energia["n_clasificados"], 3)
+            self.assertEqual(energia["n_pendientes"], 2)
 
 
 class TestApiConfig(unittest.TestCase):

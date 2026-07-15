@@ -50,3 +50,7 @@ outputs/
 .cursor/
 .DS_Store
 Thumbs.db
+
+# SPA (PT-20)
+web/node_modules/
+web/dist/

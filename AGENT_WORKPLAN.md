@@ -253,11 +253,22 @@ pero `/manual` (clasificar subsectores sin cobertura sobre CONSULTAS_EBI + taxon
 y `/config` (afinar prompts/casos borde) son **usables ya**, sin la tanda pagada.
 El editor de la taxonomía queda de solo-lectura (cambia taxonomy_hash → PT-22).
 
-#### [PT-20] SPA v1 — **L, pendiente (PRÓXIMO)**
+#### [PT-20] SPA v1 — **🟡 EN CURSO: `/manual` HECHO 2026-07-15; faltan `/revision`, `/config`, `/catalogo`**
 
-React/Vite clon OBSRATE; `/revision` + `/manual` + `/config` (editor prompts) +
-`/catalogo`. Consume la API de PT-19 (ya lista). CI job `web` bloqueante.
-Vite dev 5176 (proxy `/api`→8788). `web/dist` → `mount_spa` ya lo sirve.
+Scaffold `web/` (React 18.3 + Vite 5.4 + TS strict + TanStack Router/Query +
+Tailwind v4; routing **por código**, sin plugin codegen). `lib/api.ts` tipado
+contra los DTOs de PT-19, `Shell` con sidebar (pestañas futuras marcadas "pronto").
+
+**`/manual` completa y verificada en navegador real:** panel de subsectores por
+cobertura (badges pendientes/clasif./tipos, orden menor-cobertura-primero) +
+lista de pendientes + clasificar (picker de tipos del subsector, revisor
+obligatorio persistido en localStorage, "sin tipo aplicable") → POST
+`/api/manual/clasificar`. Flujo probado end-to-end: clasificar persiste el JSONL,
+baja el contador y re-ordena la lista. `npm run build` verde (tsc strict + vite).
+
+**Pendiente:** `/revision` (cola de propuestas — necesita store poblado / re-publish
+👤), `/config` (editor de prompts, API ya lista), `/catalogo`. CI job `web`
+bloqueante (Node 20, `npm ci`, `npm run build`) — falta añadirlo al workflow.
 
 #### [PT-21] Loop salida HITL — **M, pendiente**
 
