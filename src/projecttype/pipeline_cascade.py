@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import sys
 import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
@@ -21,6 +22,16 @@ from .llm_client import LLMConfig
 from .pipeline import classify_dataframe, save_results
 from .progress import BatchProgress, ProgressCallback
 from .scorer import EstadoClasificacion, ResultadoClasificacion, ScorerConfig
+
+
+def _diag(msg: str) -> None:
+    """Diagnóstico de la corrida → stderr con flush (igual que ``BatchProgress``).
+
+    stdout se bufferiza al redirigir a un log (``| tee``) y el buffer se pierde si
+    la corrida se interrumpe — justo cuando el diagnóstico importa (p. ej. saber si
+    la caché Vertex se creó u ``omitida`` durante una tormenta de 429).
+    """
+    print(msg, file=sys.stderr, flush=True)
 
 
 def _l2_to_dict(result: ResultadoClasificacion | None) -> dict[str, Any]:
@@ -381,7 +392,7 @@ def classify_cascade_dataframe(
                 )
                 pending_rows = l3_df.to_dicts()
                 if pending_rows and workers > 1:
-                    print(f"L3: {len(pending_rows)} llamadas (concurrency={workers})")
+                    _diag(f"L3: {len(pending_rows)} llamadas (concurrency={workers})")
 
                 from .l3_vertex_cache import create_subsector_cache, unwrap_vertex_provider
 
@@ -424,12 +435,12 @@ def classify_cascade_dataframe(
                                 model=l3_model or None,
                             )
                             cached_name = sub_cache.name
-                            print(
+                            _diag(
                                 f"L3 Vertex cache: {sec} / {sub} "
                                 f"({len(group_rows)} filas) → {cached_name}"
                             )
                         except Exception as exc:  # noqa: BLE001
-                            print(
+                            _diag(
                                 f"L3 Vertex cache omitida ({sec}/{sub}): {exc}"
                             )
                             sub_cache = None
@@ -461,17 +472,17 @@ def classify_cascade_dataframe(
                 muestra = ", ".join(l3_failures[:10])
                 if len(l3_failures) > 10:
                     muestra += ", …"
-                print(
+                _diag(
                     f"L3: {len(l3_failures)} proyecto(s) sin clasificar por error LLM "
                     f"transitorio (lote no abortado): {muestra}"
                 )
 
             if l3_cache is not None and (l3_cache.hits or l3_cache.api_calls):
-                    print(
-                        f"L3 caché: {l3_cache.hits} desde disco, "
-                        f"{l3_cache.api_calls} llamadas API nuevas "
-                        f"({l3_cache.size} total en {l3_cache.path})"
-                    )
+                _diag(
+                    f"L3 caché: {l3_cache.hits} desde disco, "
+                    f"{l3_cache.api_calls} llamadas API nuevas "
+                    f"({l3_cache.size} total en {l3_cache.path})"
+                )
 
     l2_df = pl.DataFrame(
         l2_rows,
