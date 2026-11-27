@@ -93,10 +93,7 @@ class TipoEmbeddingStore:
                 self._matrix = loaded
                 return
 
-        texts = [
-            build_tipo_text(t, max_chars=self.config.max_tipo_chars)
-            for t in tipos
-        ]
+        texts = [build_tipo_text(t, max_chars=self.config.max_tipo_chars) for t in tipos]
         self._matrix = encode_texts(
             texts,
             model_name=self.config.model_name,

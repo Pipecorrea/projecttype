@@ -136,8 +136,7 @@ class L3ResponseModel(BaseModel):
             parts.append("Evidencia: " + " | ".join(self.evidencia[:4]))
         if self.candidatos_descartados:
             desc = "; ".join(
-                f"{d.tipo_id.split('.')[-1]} ({d.motivo})"
-                for d in self.candidatos_descartados[:3]
+                f"{d.tipo_id.split('.')[-1]} ({d.motivo})" for d in self.candidatos_descartados[:3]
             )
             parts.append(f"Descartados: {desc}")
         if self.tipos_secundarios:

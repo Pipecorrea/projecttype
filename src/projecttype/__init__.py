@@ -17,8 +17,6 @@ from .evaluation import (
 from .llm_client import LLMConfig, create_llm_client, list_ollama_models
 from .paths import (
     DEFAULT_EMBEDDINGS_CACHE,
-    DEFAULT_EXPOST_DB,
-    DEFAULT_INPUT_CSV,
     DEFAULT_OUTPUT_CASCADE_CSV,
     DEFAULT_OUTPUT_CASCADE_L3_CSV,
     DEFAULT_OUTPUT_CSV,
@@ -26,8 +24,10 @@ from .paths import (
     DEFAULT_TAXONOMY,
     OUTPUT_DIR,
     PROJECT_ROOT,
-    RAW_DIR,
     TAXONOMY_DIR,
+    default_expost_db,
+    default_input_csv,
+    raw_dir,
 )
 from .pipeline import classify_csv, classify_dataframe, save_results
 from .pipeline_cascade import classify_cascade_csv, classify_cascade_dataframe
@@ -56,12 +56,12 @@ __all__ = [
     "Taxonomia",
     "TipoProyecto",
     "PROJECT_ROOT",
-    "RAW_DIR",
+    "raw_dir",
     "TAXONOMY_DIR",
     "OUTPUT_DIR",
     "DEFAULT_TAXONOMY",
-    "DEFAULT_INPUT_CSV",
-    "DEFAULT_EXPOST_DB",
+    "default_input_csv",
+    "default_expost_db",
     "DEFAULT_OUTPUT_CSV",
     "DEFAULT_OUTPUT_CASCADE_CSV",
     "DEFAULT_OUTPUT_CASCADE_L3_CSV",

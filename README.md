@@ -21,7 +21,7 @@ Contexto del ecosistema: [`ECOSISTEMA.md`](ECOSISTEMA.md) (rol y reglas) ·
 ## Instalación
 
 Requiere Python ≥ 3.12, [uv](https://docs.astral.sh/uv/) y el repo hermano
-`../sni-commons` (se consume por path editable mientras no haya índice privado):
+`sni-commons` v0.3.0 por git (`uv sync --locked`):
 
 ```bash
 git clone <este-repo> ProjectType        # junto a sni-commons

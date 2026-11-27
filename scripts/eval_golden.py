@@ -160,21 +160,22 @@ def main() -> int:
         print(f"ERROR: golden no encontrado: {golden_path}", file=sys.stderr)
         print(
             "Regenerar con: uv run python scripts/convert_expost_to_golden.py "
-            "(requiere data/raw/informe_expost.duckdb, gitignored).",
+            "(requiere informe_expost.duckdb en BIP_DATA_DIR/projecttype, D-11).",
             file=sys.stderr,
         )
         return 2
 
     golden = cargar_golden(golden_path)
-    estrato_eval = args.estrato or ("dev" if args.l3_pure else None) or (ESTRATO_GATE_CI if args.ci else "all")
+    estrato_eval = (
+        args.estrato or ("dev" if args.l3_pure else None) or (ESTRATO_GATE_CI if args.ci else "all")
+    )
     if estrato_eval == "all":
         estrato_eval = None
     estrato_gate = ESTRATO_GATE_CI if args.ci else estrato_eval
 
     if args.ci and args.estrato not in (None, ESTRATO_GATE_CI):
         print(
-            "ERROR: --ci solo gatea L1+L2 sobre estrato expost; "
-            "usa --estrato expost o quita --ci.",
+            "ERROR: --ci solo gatea L1+L2 sobre estrato expost; usa --estrato expost o quita --ci.",
             file=sys.stderr,
         )
         return 2
@@ -201,9 +202,13 @@ def main() -> int:
         )
         return 2
 
-    enable_l3 = args.ci or args.real or estrato_eval in ("dev", "holdout") or args.l3_pure is not None
+    enable_l3 = (
+        args.ci or args.real or estrato_eval in ("dev", "holdout") or args.l3_pure is not None
+    )
     l3_mock = not args.real
-    incluir_cascada = enable_l3 and (args.real or estrato_eval in ("dev", "holdout") or args.l3_pure is not None)
+    incluir_cascada = enable_l3 and (
+        args.real or estrato_eval in ("dev", "holdout") or args.l3_pure is not None
+    )
 
     l3_provider = args.l3_provider or default_llm_provider()
     l3_limit = args.l3_limit

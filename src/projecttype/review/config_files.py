@@ -168,6 +168,4 @@ def _append_version(info: ConfigFileInfo) -> None:
         hist.append(entry)
     versions[info.kind] = hist[-20:]  # últimas 20
     VERSIONS_PATH.parent.mkdir(parents=True, exist_ok=True)
-    VERSIONS_PATH.write_text(
-        json.dumps(versions, indent=2, ensure_ascii=False), encoding="utf-8"
-    )
+    VERSIONS_PATH.write_text(json.dumps(versions, indent=2, ensure_ascii=False), encoding="utf-8")

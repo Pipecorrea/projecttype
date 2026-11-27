@@ -6,18 +6,20 @@ from __future__ import annotations
 import argparse
 from collections import Counter
 
-from projecttype.paths import DEFAULT_INPUT_CSV, DEFAULT_OUTPUT_CSV, DEFAULT_TAXONOMY  # noqa: E402
+from projecttype.env import load_project_env  # noqa: E402
+from projecttype.paths import DEFAULT_OUTPUT_CSV, DEFAULT_TAXONOMY, default_input_csv  # noqa: E402
 from projecttype.pipeline import classify_csv  # noqa: E402
 
 
 def main() -> int:
+    load_project_env()
     parser = argparse.ArgumentParser(
         description="Clasificador Nivel 1 de tipos de proyecto BIP (keywords + scoring)."
     )
     parser.add_argument(
         "--input",
         "-i",
-        default=str(DEFAULT_INPUT_CSV),
+        default=str(default_input_csv()),
         help="CSV de entrada con proyectos BIP",
     )
     parser.add_argument(

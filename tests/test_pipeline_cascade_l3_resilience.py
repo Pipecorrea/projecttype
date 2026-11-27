@@ -35,9 +35,7 @@ def _residual_rows(n: int) -> pl.DataFrame:
 class TestPipelineCascadeL3Resilience(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        cls.cascade = ClassifierCascade.from_yaml(
-            DEFAULT_TAXONOMY, enable_l3=True, l3_mock=True
-        )
+        cls.cascade = ClassifierCascade.from_yaml(DEFAULT_TAXONOMY, enable_l3=True, l3_mock=True)
 
     def test_llm_error_in_one_row_does_not_abort_batch(self) -> None:
         # El cliente L3 falla en la 2.ª llamada (orden = BIP0, BIP1, BIP2, BIP3).
@@ -51,16 +49,12 @@ class TestPipelineCascadeL3Resilience(unittest.TestCase):
         # Las 3 filas sanas se clasificaron en L3 igual que sin el fallo.
         for codigo in ("BIP0", "BIP2", "BIP3"):
             self.assertEqual(by_codigo[codigo]["l3_estado"], "ambiguo")
-            self.assertNotIn(
-                "Error LLM", by_codigo[codigo]["l3_razonamiento"] or ""
-            )
+            self.assertNotIn("Error LLM", by_codigo[codigo]["l3_razonamiento"] or "")
 
         # La fila que falló quedó como residual marcada, sin tumbar el lote.
         fallida = by_codigo["BIP1"]
         self.assertEqual(fallida["l3_estado"], "sin_match")
-        self.assertTrue(
-            (fallida["l3_razonamiento"] or "").startswith("Error LLM (lote protegido)")
-        )
+        self.assertTrue((fallida["l3_razonamiento"] or "").startswith("Error LLM (lote protegido)"))
 
 
 if __name__ == "__main__":

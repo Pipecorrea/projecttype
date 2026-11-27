@@ -8,19 +8,21 @@ from collections import Counter
 
 import polars as pl  # noqa: E402
 
+from projecttype.env import load_project_env
 from projecttype.evaluation import (
     build_revision_dataframe,
     load_expost_manual,
     save_revision_excel,
 )
 from projecttype.paths import (
-    DEFAULT_EXPOST_DB,
     DEFAULT_OUTPUT_CSV,
     DEFAULT_REVISION_XLSX,
+    default_expost_db,
 )
 
 
 def main() -> int:
+    load_project_env()
     parser = argparse.ArgumentParser(
         description="Genera Excel de revisión manual L1 vs etiquetado manual."
     )
@@ -33,7 +35,7 @@ def main() -> int:
     parser.add_argument(
         "--manual",
         "-m",
-        default=str(DEFAULT_EXPOST_DB),
+        default=str(default_expost_db()),
         help="DuckDB con etiquetado manual (ex_post)",
     )
     parser.add_argument(

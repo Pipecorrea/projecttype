@@ -1,7 +1,7 @@
 """PT-6 — input de la cascada directamente del store canónico (CONSULTAS_EBI).
 
 Cierra el ciclo store→store del enriquecedor: en vez de partir de un CSV local
-(`data/raw/base_datos_extracto.csv`), los proyectos se leen del store y se
+(`<BIP_DATA_DIR>/projecttype/*.csv`, legado), los proyectos se leen del store y se
 proyectan al shape que espera la cascada L1→L2→L3:
 
 ==================  =======================================================
@@ -127,9 +127,7 @@ def load_selection_bips(seleccion_id: str, data_dir: str | Path | None = None) -
 
     base = data_dir or os.environ.get("BIP_DATA_DIR")
     if not base:
-        raise RuntimeError(
-            "load_selection_bips requiere data_dir o la variable BIP_DATA_DIR."
-        )
+        raise RuntimeError("load_selection_bips requiere data_dir o la variable BIP_DATA_DIR.")
     tabla = f"sel_tipo_proyecto_{seleccion_id}"
     store = BipDataStore(Path(base))
     try:
@@ -144,7 +142,4 @@ def load_selection_bips(seleccion_id: str, data_dir: str | Path | None = None) -
     if df.height == 0:
         raise ValueError(f"La selección '{tabla}' no tiene proyectos.")
 
-    return [
-        to_store_key(str(c))
-        for c in df.get_column("EBI_CODIGO").cast(pl.Utf8).to_list()
-    ]
+    return [to_store_key(str(c)) for c in df.get_column("EBI_CODIGO").cast(pl.Utf8).to_list()]

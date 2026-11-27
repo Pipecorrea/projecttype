@@ -12,11 +12,12 @@ import polars as pl
 from projecttype.classifier_cascade import ClassifierCascade
 from projecttype.classifier_l3 import ClassifierL3, L3Config
 from projecttype.embeddings import L2Config
+from projecttype.env import load_project_env
 from projecttype.paths import (
-    DEFAULT_INPUT_CSV,
     DEFAULT_L3_PROMPTS,
     DEFAULT_TAXONOMY,
     OUTPUT_DIR,
+    default_input_csv,
 )
 from projecttype.pipeline_cascade import classify_cascade_dataframe
 from projecttype.prompts import load_l3_prompt_config
@@ -31,12 +32,13 @@ def _l3_candidates(df: pl.DataFrame) -> pl.DataFrame:
 
 
 def main() -> int:
+    load_project_env()
     parser = argparse.ArgumentParser(
         description="Exporta prompts L3 para inspección (system + user JSON)."
     )
     parser.add_argument(
         "--input",
-        default=str(DEFAULT_INPUT_CSV),
+        default=str(default_input_csv()),
         help="CSV BIP de entrada (si no hay resultados previos)",
     )
     parser.add_argument(

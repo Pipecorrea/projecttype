@@ -17,7 +17,11 @@ def _seed_store(base: Path) -> None:
             # 30069417 con dos solicitudes: debe ganar la más reciente (20)
             "EBI_CODIGO": ["30069417", "30069417", "40000001"],
             "SOL_CLAVE": ["10", "20", "5"],
-            "EBI_NOMBRE": ["REPOSICION POSTA VIEJA", "REPOSICION POSTA NUEVA", "CONSTRUCCION RUTA X"],
+            "EBI_NOMBRE": [
+                "REPOSICION POSTA VIEJA",
+                "REPOSICION POSTA NUEVA",
+                "CONSTRUCCION RUTA X",
+            ],
             "SEC_CLAVE": ["10", "10", "6"],
             "SBS_CLAVE": ["1061", "1061", "1061"],
             "EBI_DESCRIPCION": ["desc vieja", "desc nueva", "desc ruta"],
@@ -50,9 +54,15 @@ class TestStoreInput(unittest.TestCase):
         self.assertEqual(
             out.columns,
             [
-                "Codigo BIP", "NOMBRE", "SECTOR", "SUBSECTOR",
-                "justificacion_proyecto", "descripción",
-                "descriptor_1", "descriptor_2", "descriptor_3",
+                "Codigo BIP",
+                "NOMBRE",
+                "SECTOR",
+                "SUBSECTOR",
+                "justificacion_proyecto",
+                "descripción",
+                "descriptor_1",
+                "descriptor_2",
+                "descriptor_3",
             ],
         )
 

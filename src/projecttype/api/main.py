@@ -99,7 +99,9 @@ def run() -> None:
 
     import uvicorn
 
-    parser = argparse.ArgumentParser(prog="projecttype serve", description="UI HITL de ProjectType.")
+    parser = argparse.ArgumentParser(
+        prog="projecttype serve", description="UI HITL de ProjectType."
+    )
     parser.add_argument("--host", default=os.environ.get("PROJECTTYPE_UI_HOST", "127.0.0.1"))
     parser.add_argument(
         "--port", type=int, default=int(os.environ.get("PROJECTTYPE_UI_PORT", str(DEFAULT_PORT)))

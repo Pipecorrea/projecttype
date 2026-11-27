@@ -110,7 +110,9 @@ def _row_to_l1_result(row: dict[str, Any]) -> ResultadoClasificacion:
     )
 
 
-def _interim_final(row: dict[str, Any], l2_overrides: dict[int, ResultadoClasificacion]) -> ResultadoClasificacion:
+def _interim_final(
+    row: dict[str, Any], l2_overrides: dict[int, ResultadoClasificacion]
+) -> ResultadoClasificacion:
     idx = row["_row_idx"]
     if idx in l2_overrides:
         return l2_overrides[idx]
@@ -365,9 +367,7 @@ def classify_cascade_dataframe(
             if l3_limit is not None and l3_force_limit is None:
                 uncached_idx = uncached_idx[:l3_limit]
 
-            l3_done = sum(
-                1 for idx in l3_candidate_idx if l3_rows[idx]["l3_estado"] is not None
-            )
+            l3_done = sum(1 for idx in l3_candidate_idx if l3_rows[idx]["l3_estado"] is not None)
             l3_total = l3_done + len(uncached_idx)
 
             progress = l3_progress
@@ -386,9 +386,8 @@ def classify_cascade_dataframe(
                 workers = l3_concurrency
                 if workers is None:
                     workers = 1 if cascade.l3.config.mock else default_l3_concurrency()
-                l3_df = (
-                    with_l1.filter(pl.col("_row_idx").is_in(uncached_idx))
-                    .sort(["sector_resuelto", "subsector_resuelto", "_row_idx"])
+                l3_df = with_l1.filter(pl.col("_row_idx").is_in(uncached_idx)).sort(
+                    ["sector_resuelto", "subsector_resuelto", "_row_idx"]
                 )
                 pending_rows = l3_df.to_dicts()
                 if pending_rows and workers > 1:
@@ -401,7 +400,9 @@ def classify_cascade_dataframe(
                 min_rows_for_cache = cascade.l3._prompt_config.vertex_cache_min_rows
                 if use_vertex_cache:
                     client = cascade.l3.client
-                    provider = getattr(client, "provider", None) or getattr(client, "_provider", None)
+                    provider = getattr(client, "provider", None) or getattr(
+                        client, "_provider", None
+                    )
                     vertex = unwrap_vertex_provider(provider) if provider is not None else None
                     if vertex is None:
                         use_vertex_cache = False
@@ -440,9 +441,7 @@ def classify_cascade_dataframe(
                                 f"({len(group_rows)} filas) → {cached_name}"
                             )
                         except Exception as exc:  # noqa: BLE001
-                            _diag(
-                                f"L3 Vertex cache omitida ({sec}/{sub}): {exc}"
-                            )
+                            _diag(f"L3 Vertex cache omitida ({sec}/{sub}): {exc}")
                             sub_cache = None
                             cached_name = None
                     try:

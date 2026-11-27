@@ -26,7 +26,9 @@ class _StubProvider:
     name = "stub"
     model = "stub-1"
 
-    def __init__(self, instance: L3ResponseModel | None = None, *, error: Exception | None = None) -> None:
+    def __init__(
+        self, instance: L3ResponseModel | None = None, *, error: Exception | None = None
+    ) -> None:
         self._instance = instance
         self._error = error
 

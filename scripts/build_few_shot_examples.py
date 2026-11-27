@@ -7,12 +7,13 @@ import argparse
 from collections import Counter
 from pathlib import Path
 
+from projecttype.env import load_project_env
 from projecttype.few_shot_mining import mine_from_files, write_few_shot_yaml
 from projecttype.paths import (
-    DEFAULT_EXPOST_DB,
     DEFAULT_OUTPUT_CASCADE_CSV,
     DEFAULT_TAXONOMY,
     PROJECT_ROOT,
+    default_expost_db,
 )
 
 PROMPTS_DIR = PROJECT_ROOT / "data" / "prompts"
@@ -20,6 +21,7 @@ DEFAULT_MINED = PROMPTS_DIR / "few_shot_mined.yaml"
 
 
 def main() -> int:
+    load_project_env()
     parser = argparse.ArgumentParser(
         description="Mineria few-shot: proyectos con etiqueta manual donde L1 no acertó."
     )
@@ -28,7 +30,7 @@ def main() -> int:
         default=str(DEFAULT_OUTPUT_CASCADE_CSV),
         help="CSV resultados L1+L2",
     )
-    parser.add_argument("--manual", default=str(DEFAULT_EXPOST_DB))
+    parser.add_argument("--manual", default=str(default_expost_db()))
     parser.add_argument("--taxonomy", default=str(DEFAULT_TAXONOMY))
     parser.add_argument(
         "--output",

@@ -49,8 +49,7 @@ class StoreGateRejectedError(Exception):
         total = resultado.filas_validas.height + len(resultado.filas_rechazadas)
         n_rech = len(resultado.filas_rechazadas)
         super().__init__(
-            f"Gate de publicación rechazó {n_rech}/{total} filas. "
-            f"Resumen: {resultado.resumen}"
+            f"Gate de publicación rechazó {n_rech}/{total} filas. Resumen: {resultado.resumen}"
         )
 
 

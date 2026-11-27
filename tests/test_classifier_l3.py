@@ -28,6 +28,7 @@ class TestL3Parsing(unittest.TestCase):
         self.assertEqual(resp.tipo_id, "A.B.C")
         self.assertAlmostEqual(resp.confianza, 0.9)
 
+
 class TestL3Classifier(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
@@ -77,7 +78,6 @@ class TestL3Classifier(unittest.TestCase):
             nombre="Proyecto genérico",
         )
         self.assertNotEqual(result.estado, EstadoClasificacion.ASIGNADO)
-
 
     def test_invalid_response_validation(self) -> None:
         resp = parse_l3_response({"tipo_id": "X", "confianza": "no-numero"})
@@ -188,7 +188,6 @@ class TestPromptFormat(unittest.TestCase):
         )
         opt = format_tipo_option(tipo, max_def_chars=100)
         self.assertLessEqual(len(opt["definicion"]), 100)
-
 
 
 if __name__ == "__main__":

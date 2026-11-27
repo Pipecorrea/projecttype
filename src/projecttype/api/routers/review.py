@@ -49,7 +49,9 @@ def queue(
 def item(request: Request, ebi: str) -> ItemDetail:
     detail = _store(request).item(ebi)
     if detail is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Sin propuesta para {ebi}.")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail=f"Sin propuesta para {ebi}."
+        )
     return detail
 
 

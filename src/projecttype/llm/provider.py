@@ -88,8 +88,7 @@ def check_provider_available(provider: str | None = None) -> None:
     kind = PROVIDER_ALIASES.get(name)
     if kind is None:
         raise RuntimeError(
-            f"LLM provider desconocido: {name!r}. "
-            f"Válidos: {', '.join(sorted(PROVIDER_ALIASES))}."
+            f"LLM provider desconocido: {name!r}. Válidos: {', '.join(sorted(PROVIDER_ALIASES))}."
         )
     if kind in {"vertex", "anthropic_vertex"}:
         if not _env("GOOGLE_CLOUD_PROJECT"):
@@ -99,9 +98,7 @@ def check_provider_available(provider: str | None = None) -> None:
             )
     elif kind == "gemini":
         if not (_env("GEMINI_API_KEY") or _env("GOOGLE_API_KEY")):
-            raise RuntimeError(
-                "GEMINI_API_KEY requerida para gemini-studio (Google AI Studio)."
-            )
+            raise RuntimeError("GEMINI_API_KEY requerida para gemini-studio (Google AI Studio).")
     elif kind == "anthropic":
         if not _env("ANTHROPIC_API_KEY"):
             raise RuntimeError("ANTHROPIC_API_KEY requerida para provider anthropic.")
@@ -121,8 +118,7 @@ def build_provider(
     kind = PROVIDER_ALIASES.get(name)
     if kind is None:
         raise ValueError(
-            f"LLM provider desconocido: {name!r}. "
-            f"Válidos: {', '.join(sorted(PROVIDER_ALIASES))}."
+            f"LLM provider desconocido: {name!r}. Válidos: {', '.join(sorted(PROVIDER_ALIASES))}."
         )
 
     api_key = None

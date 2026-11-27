@@ -152,9 +152,7 @@ class ClassifierL2:
             build_project_text(
                 nombre=row.get("nombre") or row.get("NOMBRE") or "",
                 descripcion=row.get("descripcion") or row.get("descripción") or "",
-                justificacion=row.get("justificacion")
-                or row.get("justificacion_proyecto")
-                or "",
+                justificacion=row.get("justificacion") or row.get("justificacion_proyecto") or "",
                 descriptores=join_fields(
                     row.get("descriptor_1"),
                     row.get("descriptor_2"),
@@ -185,6 +183,7 @@ class ClassifierL2:
                 )
             )
         return results
+
 
 # El re-export de CascadeResult/ClassifierCascade se eliminó: creaba un ciclo
 # l2→cascade→l2 que dependía del orden de import. Importar desde
