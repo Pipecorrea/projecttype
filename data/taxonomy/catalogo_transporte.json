@@ -1,0 +1,664 @@
+{
+  "sector": "TRANSPORTE",
+  "sector_id": "TRANSPORTE",
+  "fuente": "Tipos_Proyectos_Definiciones_y_Magnitudes_para_BIP.xlsx",
+  "version_taxonomia": 1.0,
+  "total_tipos": 43,
+  "subsectores": [
+    {
+      "subsector": "ADMINISTRACION TRANSPORTE",
+      "subsector_id": "ADMINISTRACION_TRANSPORTE",
+      "tipos": [
+        {
+          "tipo_id": "TRANSPORTE.ADMINISTRACION_TRANSPORTE.EDIFICACION_PUBLICA",
+          "nombre": "EDIFICACION PUBLICA",
+          "definicion": "Considera iniciativas de edificación y equipamiento destinadas al funcionamiento administrativo de instituciones relacionadas con el sector, (por ejemplo: oficinas administrativas de ministerios de Obras Públicas, de Transportes, servicios públicos y sus organismos dependientes, Empresas del Estado portuarias y de transporte público)",
+          "magnitudes": [
+            {
+              "unidad": "METROS CUADRADOS",
+              "especificacion": null
+            },
+            {
+              "unidad": "NUMERO DE FUNCIONARIOS",
+              "especificacion": null
+            },
+            {
+              "unidad": "UNIDAD",
+              "especificacion": "Para la compra de equipos o equipamiento"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "subsector": "INTERSUBSECTORIAL TRANSPORTE",
+      "subsector_id": "INTERSUBSECTORIAL_TRANSPORTE",
+      "tipos": [
+        {
+          "tipo_id": "TRANSPORTE.INTERSUBSECTORIAL_TRANSPORTE.INTERSUBSECTORIAL_TRANSPORTE",
+          "nombre": "INTERSUBSECTORIAL TRANSPORTE",
+          "definicion": "Iniciativas que consideran acciones que agrupan proyectos relacionados con más de un subsector.",
+          "magnitudes": [
+            {
+              "unidad": "METROS LINEALES",
+              "especificacion": null
+            },
+            {
+              "unidad": "METROS CUADRADOS",
+              "especificacion": null
+            },
+            {
+              "unidad": "METROS CUBICOS",
+              "especificacion": null
+            },
+            {
+              "unidad": "METROS CUBICOS DE MATERIAL",
+              "especificacion": null
+            },
+            {
+              "unidad": "KILOMETROS",
+              "especificacion": null
+            },
+            {
+              "unidad": "UNIDAD",
+              "especificacion": null
+            },
+            {
+              "unidad": "SITIOS DE ATRAQUE",
+              "especificacion": null
+            },
+            {
+              "unidad": "NUMERO DE ANDENES",
+              "especificacion": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "subsector": "TRANSPORTE FERROVIARIO",
+      "subsector_id": "TRANSPORTE_FERROVIARIO",
+      "tipos": [
+        {
+          "tipo_id": "TRANSPORTE.TRANSPORTE_FERROVIARIO.TRANSPORTE_FERROVIARIO",
+          "nombre": "TRANSPORTE FERROVIARIO",
+          "definicion": "Iniciativas para el transporte ferroviario urbano e interurbano de empresas del Estado para el transporte público: EFE y METRO.",
+          "magnitudes": [
+            {
+              "unidad": "KILOMETROS",
+              "especificacion": null
+            },
+            {
+              "unidad": "UNIDAD",
+              "especificacion": null
+            },
+            {
+              "unidad": "METROS CUADRADOS",
+              "especificacion": null
+            },
+            {
+              "unidad": "METROS",
+              "especificacion": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "subsector": "TRANSPORTE INTERURBANO",
+      "subsector_id": "TRANSPORTE_INTERURBANO",
+      "tipos": [
+        {
+          "tipo_id": "TRANSPORTE.TRANSPORTE_INTERURBANO.CAMINO_BASICO_INTERMEDIO",
+          "nombre": "CAMINO BASICO INTERMEDIO",
+          "definicion": "Iniciativas de caminos básicos intermedios referidos a obras de mejoramiento en las componentes de geometría, carpeta de rodado, estructura, saneamiento y/o seguridad vial.",
+          "magnitudes": [
+            {
+              "unidad": "KILOMETROS",
+              "especificacion": null
+            }
+          ]
+        },
+        {
+          "tipo_id": "TRANSPORTE.TRANSPORTE_INTERURBANO.SENDAS_MULTIPROPOSITO_CICLOVIAS",
+          "nombre": "SENDAS MULTIPROPOSITO (CICLOVIAS)",
+          "definicion": "Iniciativas de caminos de bajo estandar que permiten la conectividad vehicular motorizado y no motorizado, para fines múltiples.",
+          "magnitudes": [
+            {
+              "unidad": "KILOMETROS",
+              "especificacion": null
+            }
+          ]
+        },
+        {
+          "tipo_id": "TRANSPORTE.TRANSPORTE_INTERURBANO.RUTA",
+          "nombre": "RUTA",
+          "definicion": "Iniciativas de infraestructura vial de caminos nacionales, regionales y comunales que unen ciudades, pueblos, localidades rurales o que permiten el acceso a zonas productivas, turísticas, países vecinos o rutas fronterizas.",
+          "magnitudes": [
+            {
+              "unidad": "KILOMETROS",
+              "especificacion": null
+            }
+          ]
+        },
+        {
+          "tipo_id": "TRANSPORTE.TRANSPORTE_INTERURBANO.SENALETICA",
+          "nombre": "SEÑALETICA",
+          "definicion": "Iniciativas para señalética vial en sendas, caminos, rutas y/o autopistas",
+          "magnitudes": [
+            {
+              "unidad": "UNIDAD",
+              "especificacion": null
+            }
+          ]
+        },
+        {
+          "tipo_id": "TRANSPORTE.TRANSPORTE_INTERURBANO.PARADERO_INTERURBANO",
+          "nombre": "PARADERO INTERURBANO",
+          "definicion": "Iniciativas para paraderos en caminos y rutas interurbanas.",
+          "magnitudes": [
+            {
+              "unidad": "UNIDAD",
+              "especificacion": null
+            },
+            {
+              "unidad": "METROS CUADRADOS",
+              "especificacion": null
+            }
+          ]
+        },
+        {
+          "tipo_id": "TRANSPORTE.TRANSPORTE_INTERURBANO.PUENTE",
+          "nombre": "PUENTE",
+          "definicion": "Iniciativas de puentes en caminos y rutas interurbanas",
+          "magnitudes": [
+            {
+              "unidad": "METROS LINEALES",
+              "especificacion": null
+            }
+          ]
+        },
+        {
+          "tipo_id": "TRANSPORTE.TRANSPORTE_INTERURBANO.MIRADORES",
+          "nombre": "MIRADORES",
+          "definicion": "Iniciativas de infraestructura complementaria a caminos o rutas, consistente en áreas de detención para visualización de paisaje, descanso o recreación.",
+          "magnitudes": [
+            {
+              "unidad": "UNIDAD",
+              "especificacion": null
+            },
+            {
+              "unidad": "METROS CUADRADOS",
+              "especificacion": null
+            }
+          ]
+        },
+        {
+          "tipo_id": "TRANSPORTE.TRANSPORTE_INTERURBANO.PASARELA_PEATONAL",
+          "nombre": "PASARELA PEATONAL",
+          "definicion": "Iniciativas de estructuras que permiten el cruce de peatones en caminos o rutas.",
+          "magnitudes": [
+            {
+              "unidad": "METROS LINEALES",
+              "especificacion": null
+            },
+            {
+              "unidad": "UNIDAD",
+              "especificacion": null
+            }
+          ]
+        },
+        {
+          "tipo_id": "TRANSPORTE.TRANSPORTE_INTERURBANO.SENDAS_DE_PENETRACION",
+          "nombre": "SENDAS DE PENETRACION",
+          "definicion": "Iniciativas de caminos de bajo estandar que otorgan acceso a áreas geográficas que no cuentan con vias de conectividad y que presentan potencialidades para el desarrollo de actividades económicas, productivas o de interés estratégico.",
+          "magnitudes": [
+            {
+              "unidad": "KILOMETROS",
+              "especificacion": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "subsector": "TRANSPORTE MARÍTIMO, FLUVIAL Y LACUSTRE",
+      "subsector_id": "TRANSPORTE_MARITIMO_FLUVIAL_Y_LACUSTRE",
+      "tipos": [
+        {
+          "tipo_id": "TRANSPORTE.TRANSPORTE_MARITIMO_FLUVIAL_Y_LACUSTRE.TERMINAL_DE_PASAJEROS",
+          "nombre": "TERMINAL DE PASAJEROS",
+          "definicion": "Iniciativas de infraestructura para la llegada o salidas de pasajeros y servicios de control de transporte marítimo nacional o internacional.",
+          "magnitudes": [
+            {
+              "unidad": "METROS CUADRADOS",
+              "especificacion": null
+            },
+            {
+              "unidad": "SITIOS DE ATRAQUE",
+              "especificacion": null
+            }
+          ]
+        },
+        {
+          "tipo_id": "TRANSPORTE.TRANSPORTE_MARITIMO_FLUVIAL_Y_LACUSTRE.EMBARCADERO",
+          "nombre": "EMBARCADERO",
+          "definicion": "Iniciativas de infrastructura para embarque de pasajeros y/o de carga y descarga, de embarcaciones menores.",
+          "magnitudes": [
+            {
+              "unidad": "METROS CUADRADOS",
+              "especificacion": null
+            },
+            {
+              "unidad": "SITIOS DE ATRAQUE",
+              "especificacion": null
+            }
+          ]
+        },
+        {
+          "tipo_id": "TRANSPORTE.TRANSPORTE_MARITIMO_FLUVIAL_Y_LACUSTRE.MUELLE",
+          "nombre": "MUELLE",
+          "definicion": "Iniciativas de infrastructura para embarque de pasajeros y/o de carga y descarga, de embarcaciones menores.",
+          "magnitudes": [
+            {
+              "unidad": "METROS CUADRADOS",
+              "especificacion": null
+            },
+            {
+              "unidad": "METROS LINEALES",
+              "especificacion": null
+            }
+          ]
+        },
+        {
+          "tipo_id": "TRANSPORTE.TRANSPORTE_MARITIMO_FLUVIAL_Y_LACUSTRE.RAMPA_PORTUARIA",
+          "nombre": "RAMPA PORTUARIA",
+          "definicion": "Iniciativas para infraestructura de rampas de los terminales de conectividad, para la atención de naves, embarcaciones o artefactos navales de cualquier índole para operaciones de transferecnia de carga y/o pasajeros entre modos marítimos y terrestre.",
+          "magnitudes": [
+            {
+              "unidad": "METROS CUADRADOS",
+              "especificacion": null
+            },
+            {
+              "unidad": "METROS LINEALES",
+              "especificacion": null
+            }
+          ]
+        },
+        {
+          "tipo_id": "TRANSPORTE.TRANSPORTE_MARITIMO_FLUVIAL_Y_LACUSTRE.TERMINAL_PORTUARIO",
+          "nombre": "TERMINAL PORTUARIO",
+          "definicion": "Comprende territorio maritimo y terrestre destinado a la transferencia. Incluye obras de abrigo, muelles, frentes de atraque, áreas de respaldo, edificaciones y equipos destinadas al almacenamiento, intercambio modal, carguío, maniobra y servicios para carga, vehículos y pasajeros.",
+          "magnitudes": [
+            {
+              "unidad": "METROS CUADRADOS",
+              "especificacion": null
+            },
+            {
+              "unidad": "SITIOS DE ATRAQUE",
+              "especificacion": null
+            }
+          ]
+        },
+        {
+          "tipo_id": "TRANSPORTE.TRANSPORTE_MARITIMO_FLUVIAL_Y_LACUSTRE.BORDE_COSTERO",
+          "nombre": "BORDE COSTERO",
+          "definicion": "Espacios públicos que limitan con el mar, lagos o cursos de agua y que requieren proteger bienes ante amenazas y/o presentan oportunidades de mejora o puesta en valor de áreas para la recreación, la actividad física, el esparcimiento y la contemplación.",
+          "magnitudes": [
+            {
+              "unidad": "METROS CUADRADOS",
+              "especificacion": null
+            }
+          ]
+        },
+        {
+          "tipo_id": "TRANSPORTE.TRANSPORTE_MARITIMO_FLUVIAL_Y_LACUSTRE.EXPLANADA",
+          "nombre": "EXPLANADA",
+          "definicion": "Infraestructura consistente en un área horizontal destinada a la transferencia de carga y descarga.",
+          "magnitudes": [
+            {
+              "unidad": "METROS CUADRADOS",
+              "especificacion": null
+            },
+            {
+              "unidad": "METROS CUBICOS DE MATERIAL",
+              "especificacion": null
+            }
+          ]
+        },
+        {
+          "tipo_id": "TRANSPORTE.TRANSPORTE_MARITIMO_FLUVIAL_Y_LACUSTRE.EXPLANADA_Y_RAMPA",
+          "nombre": "EXPLANADA Y RAMPA",
+          "definicion": "Infraestructura consistente en rampa y explanada para operaciones de transferencia de carga y/o pasajeros entre modos marítimos y terrestre.",
+          "magnitudes": [
+            {
+              "unidad": "METROS CUADRADOS",
+              "especificacion": null
+            },
+            {
+              "unidad": "METROS CUBICOS DE MATERIAL",
+              "especificacion": null
+            }
+          ]
+        },
+        {
+          "tipo_id": "TRANSPORTE.TRANSPORTE_MARITIMO_FLUVIAL_Y_LACUSTRE.DEFENSA_MARITIMA",
+          "nombre": "DEFENSA MARITIMA",
+          "definicion": "infraestructura tendiente a proteger zonas del borde costero y evitar inundaciones, daños y socavamientos en áreas litorales o instalaciones portuarias.",
+          "magnitudes": [
+            {
+              "unidad": "METROS LINEALES",
+              "especificacion": null
+            },
+            {
+              "unidad": "METROS CUBICOS",
+              "especificacion": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "subsector": "TRANSPORTE URBANO, Y VIALIDAD PEATONAL",
+      "subsector_id": "TRANSPORTE_URBANO_Y_VIALIDAD_PEATONAL",
+      "tipos": [
+        {
+          "tipo_id": "TRANSPORTE.TRANSPORTE_URBANO_Y_VIALIDAD_PEATONAL.CICLOVIAS_URBANAS",
+          "nombre": "CICLOVIAS URBANAS",
+          "definicion": "Iniciativas para ciclovias o ciclorutas en cuidades y áreas urbanas.",
+          "magnitudes": [
+            {
+              "unidad": "METROS LINEALES",
+              "especificacion": null
+            },
+            {
+              "unidad": "METROS CUADRADOS",
+              "especificacion": null
+            }
+          ]
+        },
+        {
+          "tipo_id": "TRANSPORTE.TRANSPORTE_URBANO_Y_VIALIDAD_PEATONAL.GESTION_DE_TRANSITO",
+          "nombre": "GESTION DE TRANSITO",
+          "definicion": "Conjunto de iniciativas de bajo monto de inversión destinadas al mejoramiento de la gestión de tránsito.",
+          "magnitudes": [
+            {
+              "unidad": "UNIDAD",
+              "especificacion": null
+            }
+          ]
+        },
+        {
+          "tipo_id": "TRANSPORTE.TRANSPORTE_URBANO_Y_VIALIDAD_PEATONAL.TERMINAL_DE_BUSES",
+          "nombre": "TERMINAL DE BUSES",
+          "definicion": "Infraestructura para terminales de pasajeros de transporte público de buses de recorridos interurbanos, localizado en áreas urbanas.",
+          "magnitudes": [
+            {
+              "unidad": "METROS CUADRADOS",
+              "especificacion": null
+            },
+            {
+              "unidad": "NUMERO DE ANDENES",
+              "especificacion": null
+            }
+          ]
+        },
+        {
+          "tipo_id": "TRANSPORTE.TRANSPORTE_URBANO_Y_VIALIDAD_PEATONAL.VIALIDAD_LOCAL",
+          "nombre": "VIALIDAD LOCAL",
+          "definicion": "Infraestructura de calles locales y/o pasajes que conectan con vías troncales, colectoras, de servicios y de acceso a la vivienda.",
+          "magnitudes": [
+            {
+              "unidad": "METROS LINEALES",
+              "especificacion": null
+            },
+            {
+              "unidad": "METROS CUADRADOS",
+              "especificacion": null
+            }
+          ]
+        },
+        {
+          "tipo_id": "TRANSPORTE.TRANSPORTE_URBANO_Y_VIALIDAD_PEATONAL.ACERAS_VIALIDAD_PEATONAL",
+          "nombre": "ACERAS VIALIDAD PEATONAL",
+          "definicion": "Corresponde a proyectos pavimentación de aceras para el transporte peatonal en vias locales",
+          "magnitudes": [
+            {
+              "unidad": "METROS LINEALES",
+              "especificacion": null
+            },
+            {
+              "unidad": "METROS CUADRADOS",
+              "especificacion": null
+            }
+          ]
+        },
+        {
+          "tipo_id": "TRANSPORTE.TRANSPORTE_URBANO_Y_VIALIDAD_PEATONAL.VIAS_URBANAS_ESTRUCTURANTES",
+          "nombre": "VIAS URBANAS ESTRUCTURANTES",
+          "definicion": "Infraestructura de transporte vial que afecta a una o más vías expresas o troncales y en el caso de las vías colectoras considera los procesos de construcción y ampliación (longitudes mayores a 1.000 m)",
+          "magnitudes": [
+            {
+              "unidad": "METROS LINEALES",
+              "especificacion": null
+            },
+            {
+              "unidad": "METROS CUADRADOS",
+              "especificacion": null
+            }
+          ]
+        },
+        {
+          "tipo_id": "TRANSPORTE.TRANSPORTE_URBANO_Y_VIALIDAD_PEATONAL.CORREDOR_TRANSPORTE_PUBLICO",
+          "nombre": "CORREDOR TRANSPORTE PUBLICO",
+          "definicion": "Iniciativas para vias segregadas de uso exclusivo para buses de transporte público urbano.",
+          "magnitudes": [
+            {
+              "unidad": "METROS LINEALES",
+              "especificacion": null
+            },
+            {
+              "unidad": "METROS CUADRADOS",
+              "especificacion": null
+            }
+          ]
+        },
+        {
+          "tipo_id": "TRANSPORTE.TRANSPORTE_URBANO_Y_VIALIDAD_PEATONAL.PUENTE_URBANO",
+          "nombre": "PUENTE URBANO",
+          "definicion": "Iniciativa de estructura de puentes en vías urbanas y obras de conexión y seguridad vial.",
+          "magnitudes": [
+            {
+              "unidad": "METROS LINEALES",
+              "especificacion": null
+            },
+            {
+              "unidad": "METROS CUADRADOS",
+              "especificacion": null
+            }
+          ]
+        },
+        {
+          "tipo_id": "TRANSPORTE.TRANSPORTE_URBANO_Y_VIALIDAD_PEATONAL.VIAS_VIALIDAD_URBANA_INTERMEDIA",
+          "nombre": "VIAS VIALIDAD URBANA INTERMEDIA",
+          "definicion": "Proyectos de obra física en vías de jerarquía intermedia: vías COLECTORAS cuya intervención NO cambia la asignación global de flujos de la ciudad (impacto local o táctico en el mismo eje), o vías DE SERVICIO. Incluye mejoramiento (pavimentar calles de tierra/ripio) y reposición estructural de calzada a lo largo de tramos continuos. Excluye: vías troncales/expresas o colectoras que reasignan flujos de la red (→ estructurantes); calles locales y pasajes de acceso a vivienda (→ vialidad local); intervenciones operacionales acotadas a una intersección como semáforos, señalética o pistas de viraje (→ gestión de tránsito).",
+          "magnitudes": [
+            {
+              "unidad": "METROS LINEALES",
+              "especificacion": null
+            },
+            {
+              "unidad": "METROS CUADRADOS",
+              "especificacion": null
+            }
+          ]
+        },
+        {
+          "tipo_id": "TRANSPORTE.TRANSPORTE_URBANO_Y_VIALIDAD_PEATONAL.ACERAS_Y_SOLERAS_VIALIDAD_URBANA_INTERMEDIA",
+          "nombre": "ACERAS Y SOLERAS VIALIDAD URBANA INTERMEDIA",
+          "definicion": "Corresponde a proyectos pavimentación de aceras y soleras para el transporte peatonal en vias de vialidad intermedia",
+          "magnitudes": [
+            {
+              "unidad": "METROS LINEALES",
+              "especificacion": null
+            },
+            {
+              "unidad": "METROS CUADRADOS",
+              "especificacion": null
+            }
+          ]
+        },
+        {
+          "tipo_id": "TRANSPORTE.TRANSPORTE_URBANO_Y_VIALIDAD_PEATONAL.SEMAFORIZACION",
+          "nombre": "SEMAFORIZACION",
+          "definicion": "Iniciativas para sistemas de semáforos en vias urbanas",
+          "magnitudes": [
+            {
+              "unidad": "UNIDAD",
+              "especificacion": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "subsector": "TRANSPORTE AEREO",
+      "subsector_id": "TRANSPORTE_AEREO",
+      "nota": "RED PRIMARIA / RED SECUNDARIA / PEQUEÑO AERODROMO son agrupadores del Excel (columna TIPO termina en ':'), no tipos. Los tipo_id incluyen el grupo porque los nombres de tipo se repiten.",
+      "tipos": [
+        {
+          "grupo": "RED PRIMARIA",
+          "tipo_id": "TRANSPORTE.TRANSPORTE_AEREO.RED_PRIMARIA_LADO_AIRE_INFRAESTRUCTURA_HORIZONTAL",
+          "nombre": "LADO AIRE INFRAESTRUCTURA HORIZONTAL",
+          "definicion": "Comprende el área movimiento aeronáutico – aterrizaje y rodajes – y de maniobras, plataformas y otras instalaciones de apoyo",
+          "magnitudes": [
+            {
+              "unidad": "METROS CUADRADOS",
+              "especificacion": null
+            }
+          ]
+        },
+        {
+          "grupo": "RED PRIMARIA",
+          "tipo_id": "TRANSPORTE.TRANSPORTE_AEREO.RED_PRIMARIA_LADO_AIRE_INFRAESTRUCTURA_VERTICAL",
+          "nombre": "LADO AIRE INFRAESTRUCTURA VERTICAL",
+          "definicion": "Comprende instalaciones de apoyo como torre de control (tw), servicio salvamento extinción incendios (ssei), edificios dgac, zona de combustibles, hangares y otros.",
+          "magnitudes": [
+            {
+              "unidad": "METROS CUADRADOS",
+              "especificacion": null
+            }
+          ]
+        },
+        {
+          "grupo": "RED PRIMARIA",
+          "tipo_id": "TRANSPORTE.TRANSPORTE_AEREO.RED_PRIMARIA_LADO_TERRESTRE_INFRAESTRUCTURA_HORIZONTALVERTICAL",
+          "nombre": "LADO TERRESTRE INFRAESTRUCTURA HORIZONTAL/VERTICAL",
+          "definicion": "Comprende terminal de pasajeros, terminal de carga, edificios de apoyo, estacionamientos, vialidad pública, accesos y otros",
+          "magnitudes": [
+            {
+              "unidad": "METROS CUADRADOS",
+              "especificacion": null
+            }
+          ]
+        },
+        {
+          "grupo": "RED PRIMARIA",
+          "tipo_id": "TRANSPORTE.TRANSPORTE_AEREO.RED_PRIMARIA_LADO_AIRE_Y_TERRESTRE",
+          "nombre": "LADO AIRE Y TERRESTRE",
+          "definicion": "Combina instalaciones de aire y terrestre.",
+          "magnitudes": [
+            {
+              "unidad": "METROS CUADRADOS",
+              "especificacion": null
+            }
+          ]
+        },
+        {
+          "grupo": "RED SECUNDARIA",
+          "tipo_id": "TRANSPORTE.TRANSPORTE_AEREO.RED_SECUNDARIA_LADO_AIRE_INFRAESTRUCTURA_HORIZONTAL",
+          "nombre": "LADO AIRE INFRAESTRUCTURA HORIZONTAL",
+          "definicion": "Comprende el área movimiento aeronáutico – aterrizaje y rodajes – y de maniobras, plataformas y otras instalaciones de apoyo",
+          "magnitudes": [
+            {
+              "unidad": "METROS CUADRADOS",
+              "especificacion": null
+            }
+          ]
+        },
+        {
+          "grupo": "RED SECUNDARIA",
+          "tipo_id": "TRANSPORTE.TRANSPORTE_AEREO.RED_SECUNDARIA_LADO_AIRE_INFRAESTRUCTURA_VERTICAL",
+          "nombre": "LADO AIRE INFRAESTRUCTURA VERTICAL",
+          "definicion": "Comprende instalaciones de apoyo como torre de control (tw), servicio salvamento extinción incendios (ssei), edificios dgac, zona de combustibles, hangares y otros.",
+          "magnitudes": [
+            {
+              "unidad": "METROS CUADRADOS",
+              "especificacion": null
+            }
+          ]
+        },
+        {
+          "grupo": "RED SECUNDARIA",
+          "tipo_id": "TRANSPORTE.TRANSPORTE_AEREO.RED_SECUNDARIA_LADO_TERRESTRE_INFRAESTRUCTURA_HORIZONTALVERTICAL",
+          "nombre": "LADO TERRESTRE INFRAESTRUCTURA HORIZONTAL/VERTICAL",
+          "definicion": "Comprende terminal de pasajeros, terminal de carga, edificios de apoyo, estacionamientos, vialidad pública, accesos y otros",
+          "magnitudes": [
+            {
+              "unidad": "METROS CUADRADOS",
+              "especificacion": null
+            }
+          ]
+        },
+        {
+          "grupo": "RED SECUNDARIA",
+          "tipo_id": "TRANSPORTE.TRANSPORTE_AEREO.RED_SECUNDARIA_LADO_AIRE_Y_TERRESTRE",
+          "nombre": "LADO AIRE Y TERRESTRE",
+          "definicion": "Combina instalaciones de aire y terrestre.",
+          "magnitudes": [
+            {
+              "unidad": "METROS CUADRADOS",
+              "especificacion": null
+            }
+          ]
+        },
+        {
+          "grupo": "PEQUEÑO AERODROMO",
+          "tipo_id": "TRANSPORTE.TRANSPORTE_AEREO.PEQUENO_AERODROMO_LADO_AIRE_INFRAESTRUCTURA_HORIZONTALVERTICAL",
+          "nombre": "LADO AIRE INFRAESTRUCTURA HORIZONTAL/VERTICAL",
+          "definicion": "Comprende el área movimiento aeronáutico – aterrizaje y rodajes – y de maniobras, plataformas y otras instalaciones de apoyo",
+          "magnitudes": [
+            {
+              "unidad": "METROS CUADRADOS",
+              "especificacion": null
+            }
+          ]
+        },
+        {
+          "grupo": "PEQUEÑO AERODROMO",
+          "tipo_id": "TRANSPORTE.TRANSPORTE_AEREO.PEQUENO_AERODROMO_LADO_TERRESTRE_INFRAESTRUCTURA_HORIZONTALVERTICAL",
+          "nombre": "LADO TERRESTRE INFRAESTRUCTURA HORIZONTAL/VERTICAL",
+          "definicion": "Comprende refugio de pasajeros, zona de carga, edificios de apoyo, estacionamientos, vialidad pública, accesos y otros",
+          "magnitudes": [
+            {
+              "unidad": "METROS CUADRADOS",
+              "especificacion": null
+            }
+          ]
+        },
+        {
+          "grupo": "PEQUEÑO AERODROMO",
+          "tipo_id": "TRANSPORTE.TRANSPORTE_AEREO.PEQUENO_AERODROMO_LADO_AIRE_Y_TERRESTRE",
+          "nombre": "LADO AIRE Y TERRESTRE",
+          "definicion": "Combina instalaciones de aire y terrestre.",
+          "magnitudes": [
+            {
+              "unidad": "METROS CUADRADOS",
+              "especificacion": null
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

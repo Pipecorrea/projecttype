@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import subprocess
 import sys
+import tempfile
 import unittest
+from pathlib import Path
 
 from sni_commons.eval import cargar_golden
 
@@ -105,22 +107,26 @@ class TestEvalGolden(unittest.TestCase):
         self.assertIn("multi_hit_l3_puro", resultado.metricas)
 
     def test_eval_golden_script_ci_exit_code(self) -> None:
-        proc = subprocess.run(
-            [
-                sys.executable,
-                str(PROJECT_ROOT / "scripts" / "eval_golden.py"),
-                "--ci",
-                "--golden",
-                str(DEFAULT_GOLDEN),
-                "--umbrales",
-                str(DEFAULT_UMBRALES),
-            ],
-            cwd=PROJECT_ROOT,
-            capture_output=True,
-            text=True,
-            check=False,
-        )
-        self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            proc = subprocess.run(
+                [
+                    sys.executable,
+                    str(PROJECT_ROOT / "scripts" / "eval_golden.py"),
+                    "--ci",
+                    "--golden",
+                    str(DEFAULT_GOLDEN),
+                    "--umbrales",
+                    str(DEFAULT_UMBRALES),
+                    "--output-dir",
+                    tmp_dir,
+                ],
+                cwd=PROJECT_ROOT,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
+            self.assertTrue(any(Path(tmp_dir).iterdir()))
 
 
 if __name__ == "__main__":

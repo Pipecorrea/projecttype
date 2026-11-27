@@ -27,6 +27,14 @@ SUBSECTOR_ALIASES: dict[tuple[str, str], tuple[str, str]] = {
         "TRANSPORTE",
         "TRANSPORTE MARITIMO, FLUVIAL Y LACUSTRE",
     ): ("TRANSPORTE", "TRANSPORTE MARITIMO, FLUVIAL Y LACUSTRE"),
+    # El BIP llama CAMINERO (SBS_CLAVE 1093) a lo que la taxonomía oficial
+    # llama INTERURBANO: sus tipos son ruta, camino básico, puente, pasarela,
+    # paradero interurbano, señalética. Sin este alias, todo TRANSPORTE
+    # CAMINERO cae en `sin_taxonomia` (583 IDI solo en el quinquenio 2021-2025).
+    (
+        "TRANSPORTE",
+        "TRANSPORTE CAMINERO",
+    ): ("TRANSPORTE", "TRANSPORTE INTERURBANO"),
     (
         "RECURSOS HIDRICOS",
         "DEFENSAS FLUVIALES, MARITIMAS Y CAUCES NATURALES",
