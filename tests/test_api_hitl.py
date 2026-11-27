@@ -26,7 +26,7 @@ def _seed_store(base: Path) -> None:
             "EBI_CODIGO": ["100", "200", "300", "400", "500"],
             "SOL_CLAVE": ["1"] * 5,
             "EBI_NOMBRE": [f"Alumbrado sector {i}" for i in range(1, 6)],
-            "SEC_CLAVE": ["5"] * 5,   # ENERGIA
+            "SEC_CLAVE": ["5"] * 5,  # ENERGIA
             "SBS_CLAVE": ["1088"] * 5,  # ALUMBRADO PUBLICO
             "EBI_DESCRIPCION": ["Reposición luminarias"] * 5,
             "EBI_JUSTIFICACION": ["Seguridad vial"] * 5,

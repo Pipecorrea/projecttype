@@ -64,9 +64,7 @@ class TestEvalGolden(unittest.TestCase):
         )
         ok, _ = gate_golden(resultado, self.umbrales)
         self.assertFalse(ok)
-        self.assertLess(
-            resultado.metricas["cobertura_l1_l2"], self.umbrales.cobertura_l1_l2
-        )
+        self.assertLess(resultado.metricas["cobertura_l1_l2"], self.umbrales.cobertura_l1_l2)
 
     def test_golden_has_dev_holdout_split(self) -> None:
         dev = filtrar_casos_por_estrato(self.golden, "dev")

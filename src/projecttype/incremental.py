@@ -31,9 +31,7 @@ def filter_pending(
 
     base = data_dir or os.environ.get("BIP_DATA_DIR")
     if not base:
-        raise RuntimeError(
-            "filter_pending requiere data_dir o la variable BIP_DATA_DIR."
-        )
+        raise RuntimeError("filter_pending requiere data_dir o la variable BIP_DATA_DIR.")
     store = BipDataStore(Path(base))
     try:
         enr = store.read_polars(_ENR_TABLE, only_present=True)

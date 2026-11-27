@@ -13,18 +13,22 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
-        with:
-          path: repo
 
-      # sni-commons se consume por path editable (../sni-commons): el runner
-      # necesita el repo hermano. ECOSYSTEM_PAT = fine-grained PAT read-only
-      # sobre sni-commons (secrets del repo); github.token basta si es público.
-      - name: Checkout sni-commons (dep por path)
-        uses: actions/checkout@v4
+      - name: Create GitHub App token
+        id: app-token
+        if: ${{ vars.ORG_APP_ID != '' }}
+        uses: actions/create-github-app-token@v1
         with:
-          repository: ${{ github.repository_owner }}/sni-commons
-          token: ${{ secrets.ECOSYSTEM_PAT || github.token }}
-          path: sni-commons
+          app-id: ${{ vars.ORG_APP_ID }}
+          private-key: ${{ secrets.ORG_APP_KEY }}
+
+      - name: Configure git for private sni-commons
+        env:
+          APP_TOKEN: ${{ steps.app-token.outputs.token }}
+          ECOSYSTEM_PAT: ${{ secrets.ECOSYSTEM_PAT }}
+        run: |
+          TOKEN="${APP_TOKEN:-${ECOSYSTEM_PAT:-${{ github.token }}}}"
+          git config --global url."https://x-access-token:${TOKEN}@github.com/".insteadOf "https://github.com/"
 
       - uses: actions/setup-python@v5
         with:
@@ -33,25 +37,19 @@ jobs:
       - uses: astral-sh/setup-uv@v5
         with:
           enable-cache: true
-          cache-dependency-glob: "repo/uv.lock"
+          cache-dependency-glob: "uv.lock"
 
       - name: Sync dependencies
-        working-directory: repo
-        run: uv sync --extra dev
+        run: uv sync --extra dev --locked
 
-      # PT-8 hecho (2026-06-09): pytest + ruff/mypy strict bloqueantes.
       - name: Pytest
-        working-directory: repo
         run: uv run pytest
 
       - name: Ruff
-        working-directory: repo
         run: uv run ruff check src scripts tests
 
       - name: mypy (--strict)
-        working-directory: repo
         run: uv run mypy src
 
       - name: Golden eval gate (PT-10)
-        working-directory: repo
         run: uv run python scripts/eval_golden.py --ci

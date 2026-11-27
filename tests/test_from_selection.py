@@ -31,7 +31,9 @@ def _seed_store(base: Path, *, seleccion_id: str = "testsel") -> None:
         }
     )
     store = BipDataStore(base)
-    store.upsert_dataframe("CONSULTAS_EBI", ebi, key_cols=["EBI_CODIGO", "SOL_CLAVE"], writer="test")
+    store.upsert_dataframe(
+        "CONSULTAS_EBI", ebi, key_cols=["EBI_CODIGO", "SOL_CLAVE"], writer="test"
+    )
 
     sel_rows = []
     for code in ["1", "2", "3", "4", "5"]:
@@ -136,7 +138,9 @@ class TestFromSelection(unittest.TestCase):
         )
         with tempfile.TemporaryDirectory() as d:
             _seed_store(d, seleccion_id="abc")
-            with patch("projecttype.pipeline_cascade.classify_cascade_dataframe", return_value=fake_result):
+            with patch(
+                "projecttype.pipeline_cascade.classify_cascade_dataframe", return_value=fake_result
+            ):
                 runner = CliRunner()
                 r = runner.invoke(
                     app,

@@ -117,9 +117,7 @@ class TestClassifierL1(unittest.TestCase):
         self.assertNotEqual(result.tipo_nombre, "SALA CUNA")
 
     def test_resolve_transporte_urbano(self) -> None:
-        tipos = self.clf.taxonomia.tipos_para(
-            "TRANSPORTE", "TRANSPORTE URBANO,VIALIDAD PEATONAL"
-        )
+        tipos = self.clf.taxonomia.tipos_para("TRANSPORTE", "TRANSPORTE URBANO,VIALIDAD PEATONAL")
         self.assertGreater(len(tipos), 0)
 
 

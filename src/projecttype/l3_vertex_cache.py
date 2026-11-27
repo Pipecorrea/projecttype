@@ -93,10 +93,9 @@ def create_subsector_cache(
         max_def_chars=max_def_chars,
     )
     ttl = ttl_seconds if ttl_seconds is not None else prompt_config.vertex_cache_ttl_seconds
-    display = (
-        f"pt-l3-{_slug(sector)}-{_slug(subsector)}"
-        f"-{prompt_version()}-{taxonomy_hash()}"
-    )[:128]
+    display = (f"pt-l3-{_slug(sector)}-{_slug(subsector)}-{prompt_version()}-{taxonomy_hash()}")[
+        :128
+    ]
     cache = asyncio.run(
         vertex.create_context_cache(
             system_instruction=system,

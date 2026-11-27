@@ -171,7 +171,9 @@ class CompositeIndex:
 
         return cls(tuple(relations))
 
-    def compute_adjustments(self, proyecto: ProyectoTexto, config: ScorerConfig) -> list[CompositeAdjustment]:
+    def compute_adjustments(
+        self, proyecto: ProyectoTexto, config: ScorerConfig
+    ) -> list[CompositeAdjustment]:
         all_text = proyecto.all_norm
         adjustments: list[CompositeAdjustment] = []
         penalize: set[str] = set()

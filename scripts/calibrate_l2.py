@@ -8,8 +8,9 @@ from itertools import product
 
 import polars as pl
 
+from projecttype.env import load_project_env
 from projecttype.evaluation import NivelMatch, clasificar_match, load_expost_manual
-from projecttype.paths import DEFAULT_EXPOST_DB, DEFAULT_OUTPUT_CASCADE_CSV
+from projecttype.paths import DEFAULT_OUTPUT_CASCADE_CSV, default_expost_db
 
 
 def _simulate(
@@ -81,23 +82,30 @@ def _simulate(
 
 
 def main() -> int:
+    load_project_env()
     parser = argparse.ArgumentParser(description="Grid search umbrales L2.")
     parser.add_argument("--cascade", default=str(DEFAULT_OUTPUT_CASCADE_CSV))
-    parser.add_argument("--manual", default=str(DEFAULT_EXPOST_DB))
+    parser.add_argument("--manual", default=str(default_expost_db()))
     parser.add_argument("--top", type=int, default=15)
     args = parser.parse_args()
 
-    man = load_expost_manual(args.manual).with_columns(
-        pl.col("codigo_bip").cast(pl.Utf8).str.strip_chars()
-    ).filter(pl.col("tipo_proyecto").is_not_null())
+    man = (
+        load_expost_manual(args.manual)
+        .with_columns(pl.col("codigo_bip").cast(pl.Utf8).str.strip_chars())
+        .filter(pl.col("tipo_proyecto").is_not_null())
+    )
 
     cas = pl.read_csv(args.cascade).with_columns(
         pl.col("Codigo BIP").cast(pl.Utf8).str.strip_chars().alias("codigo_bip")
     )
     df = man.select("codigo_bip", "tipo_proyecto").join(
         cas.select(
-            "codigo_bip", "l1_estado", "l1_tipo_nombre",
-            "l2_similitud", "l2_margen", "l2_tipo_nombre",
+            "codigo_bip",
+            "l1_estado",
+            "l1_tipo_nombre",
+            "l2_similitud",
+            "l2_margen",
+            "l2_tipo_nombre",
         ),
         on="codigo_bip",
         how="inner",

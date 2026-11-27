@@ -12,8 +12,9 @@ from pathlib import Path
 
 import duckdb
 
+from projecttype.env import load_project_env
 from projecttype.golden_split import assign_dev_holdout_tags, split_summary
-from projecttype.paths import DEFAULT_EXPOST_DB, DEFAULT_GOLDEN, EVAL_DIR
+from projecttype.paths import DEFAULT_GOLDEN, EVAL_DIR, default_expost_db
 
 # Rótulos del informe ex post → nombre canónico en taxonomia_tipos_proyecto.yaml
 TIPO_ALIASES: dict[str, str] = {
@@ -21,18 +22,14 @@ TIPO_ALIASES: dict[str, str] = {
     "Casetas Sanitarias/alcantarillado/agua Potable/energia": (
         "CASETAS SANITARIAS /ALCANTARILLADO/AGUA POTABLE/ENERGIA"
     ),
-    "Centro Cumplimiento Penitenciario (ccp)": (
-        "CENTRO DE CUMPLIMIENTO PENITENCIARIO (CCP)"
-    ),
+    "Centro Cumplimiento Penitenciario (ccp)": ("CENTRO DE CUMPLIMIENTO PENITENCIARIO (CCP)"),
     "Pequeño Aeródromo Lado Aire Infraestructura Horizontal/vertical": (
         "LADO AIRE INFRAESTRUCTURA HORIZONTAL/VERTICAL"
     ),
     "Pequeño Aeródromo Lado Terrestre Infraestructura Horizontal/vertical": (
         "LADO TERRESTRE INFRAESTRUCTURA HORIZONTAL/VERTICAL"
     ),
-    "Red Secundaria Lado Aire Infraestructura Horizontal": (
-        "LADO AIRE INFRAESTRUCTURA HORIZONTAL"
-    ),
+    "Red Secundaria Lado Aire Infraestructura Horizontal": ("LADO AIRE INFRAESTRUCTURA HORIZONTAL"),
 }
 
 _QUERY = """
@@ -151,9 +148,7 @@ def write_cobertura_subsector(
         )
         writer.writeheader()
         for subsector, n in sorted(counts.items(), key=lambda x: (-x[1], x[0])):
-            writer.writerow(
-                {"subsector": subsector, "casos_expost": n, "cubierto": "si"}
-            )
+            writer.writerow({"subsector": subsector, "casos_expost": n, "cubierto": "si"})
         writer.writerow(
             {
                 "subsector": "_resumen",
@@ -184,13 +179,14 @@ def convert_expost(
 
 
 def main() -> int:
+    load_project_env()
     parser = argparse.ArgumentParser(
         description="Convierte informe_expost.duckdb → golden_tipo_proyecto.jsonl"
     )
     parser.add_argument(
         "--db",
-        default=str(DEFAULT_EXPOST_DB),
-        help="DuckDB con tabla ex_post (gitignored en data/raw/)",
+        default=str(default_expost_db()),
+        help="DuckDB con tabla ex_post (<BIP_DATA_DIR>/projecttype/)",
     )
     parser.add_argument(
         "--output",
@@ -226,7 +222,7 @@ def main() -> int:
     if not db.is_file():
         print(f"ERROR: DuckDB no encontrado: {db}", file=sys.stderr)
         print(
-            "Colocar informe_expost.duckdb en data/raw/ (no se commitea; D-11).",
+            "Colocar informe_expost.duckdb en <BIP_DATA_DIR>/projecttype/ (D-11).",
             file=sys.stderr,
         )
         return 2

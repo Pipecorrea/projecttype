@@ -8,11 +8,12 @@ from pathlib import Path
 
 import polars as pl
 
+from projecttype.env import load_project_env
 from projecttype.evaluation import NivelMatch, clasificar_match, load_expost_manual
 from projecttype.paths import (
-    DEFAULT_EXPOST_DB,
     DEFAULT_OUTPUT_CASCADE_CSV,
     DEFAULT_OUTPUT_CSV,
+    default_expost_db,
 )
 from projecttype.text_utils import normalize_tipo_name
 
@@ -79,19 +80,23 @@ def build_analysis_df(
         pl.col("Codigo BIP").cast(pl.Utf8).str.strip_chars().alias("codigo_bip")
     )
 
-    merged = man.select("codigo_bip", "sector", "subsector", "tipo_proyecto").join(
-        l1.select("codigo_bip", "l1_estado", "l1_tipo_nombre"),
-        on="codigo_bip",
-        how="inner",
-    ).join(
-        cas.select(
-            "codigo_bip",
-            "estado_final",
-            "tipo_final_nombre",
-            "nivel_final",
-        ),
-        on="codigo_bip",
-        how="inner",
+    merged = (
+        man.select("codigo_bip", "sector", "subsector", "tipo_proyecto")
+        .join(
+            l1.select("codigo_bip", "l1_estado", "l1_tipo_nombre"),
+            on="codigo_bip",
+            how="inner",
+        )
+        .join(
+            cas.select(
+                "codigo_bip",
+                "estado_final",
+                "tipo_final_nombre",
+                "nivel_final",
+            ),
+            on="codigo_bip",
+            how="inner",
+        )
     )
 
     rows: list[dict] = []
@@ -99,9 +104,7 @@ def build_analysis_df(
         manual_tipo = row["tipo_proyecto"]
         l1_estado = row["l1_estado"]
         estado_final = row["estado_final"]
-        match_l1 = clasificar_match(
-            row["l1_tipo_nombre"], manual_tipo, l1_estado=l1_estado
-        ).value
+        match_l1 = clasificar_match(row["l1_tipo_nombre"], manual_tipo, l1_estado=l1_estado).value
         match_final = clasificar_match(
             row["tipo_final_nombre"], manual_tipo, l1_estado=estado_final
         ).value
@@ -137,12 +140,13 @@ def resumen_por_sector(df: pl.DataFrame) -> pl.DataFrame:
         sector = key[0] if isinstance(key, tuple) else key
         n = group.height
         l1_exact = group.filter(pl.col("match_l1") == NivelMatch.COINCIDENCIA_EXACTA.value).height
-        fin_exact = group.filter(pl.col("match_final") == NivelMatch.COINCIDENCIA_EXACTA.value).height
+        fin_exact = group.filter(
+            pl.col("match_final") == NivelMatch.COINCIDENCIA_EXACTA.value
+        ).height
         l1_asig = group.filter(pl.col("l1_asignado")).height
         fin_asig = group.filter(pl.col("final_asignado")).height
         l1_exact_asig = group.filter(
-            pl.col("l1_asignado")
-            & (pl.col("match_l1") == NivelMatch.COINCIDENCIA_EXACTA.value)
+            pl.col("l1_asignado") & (pl.col("match_l1") == NivelMatch.COINCIDENCIA_EXACTA.value)
         ).height
         fin_exact_asig = group.filter(
             pl.col("final_asignado")
@@ -196,10 +200,11 @@ def resumen_por_subsector(df: pl.DataFrame) -> pl.DataFrame:
 
 
 def main() -> int:
+    load_project_env()
     parser = argparse.ArgumentParser(description="Análisis L2 por sector.")
     parser.add_argument("--l1", default=str(DEFAULT_OUTPUT_CSV))
     parser.add_argument("--cascade", default=str(DEFAULT_OUTPUT_CASCADE_CSV))
-    parser.add_argument("--manual", default=str(DEFAULT_EXPOST_DB))
+    parser.add_argument("--manual", default=str(default_expost_db()))
     parser.add_argument(
         "--output-sector",
         default=str(ROOT / "data/output/l2_analisis_sector.csv"),

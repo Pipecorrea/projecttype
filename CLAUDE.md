@@ -15,9 +15,9 @@ SNI Intelligence lo consume (`--filter tipo_proyecto=`).
 ## Comandos
 
 ```bash
-uv sync --extra dev     # requiere ../sni-commons como repo hermano
+uv sync --extra dev --locked   # sni-commons v0.3.0 por git (sin checkout hermano)
 
-# Verde antes de commitear = CI (bloqueante; CI clona sni-commons con ECOSYSTEM_PAT)
+# Verde antes de commitear = CI (pre-commit: ruff + mypy; pre-push: pytest)
 uv run pytest && uv run ruff check src scripts tests && uv run mypy src   # mypy --strict
 
 # Producción: ciclo store→store (requiere BIP_DATA_DIR)
@@ -56,7 +56,7 @@ Estados (`EstadoClasificacion`): `asignado` (corta la cascada) · `ambiguo`/`sin
 
 ```
 PRODUCCIÓN:  store (CONSULTAS_EBI) → store_input → cascada → store_publish → enr_tipo_proyecto
-CSV (eval):  data/raw/base_datos_extracto.csv → classify_cascade.py → resultados_l1_l2_l3.csv
+CSV (eval):  <BIP_DATA_DIR>/projecttype/*.csv → classify_cascade.py → data/output/
 ```
 
 **Saber de dominio editable sin tocar código** (los ajustes van aquí, no en el código):
@@ -68,7 +68,7 @@ CSV (eval):  data/raw/base_datos_extracto.csv → classify_cascade.py → result
   (hoy TRANSPORTE URBANO), inyectada como contexto de MÁXIMA prioridad en L3.
 
 Eval contra etiquetado manual: `evaluation.py` / `load_expost_manual()` sobre
-`data/raw/informe_expost.duckdb` (golden derivado en `data/golden/`).
+`<BIP_DATA_DIR>/projecttype/informe_expost.duckdb` (golden derivado en `data/golden/`).
 
 ## No romper
 

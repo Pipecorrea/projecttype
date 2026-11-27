@@ -9,7 +9,9 @@ import urllib.request
 from dataclasses import dataclass
 from typing import Any, Literal, Protocol
 
-LLMProvider = Literal["gemini", "gemini-studio", "google", "vertex", "anthropic", "openai", "ollama"]
+LLMProvider = Literal[
+    "gemini", "gemini-studio", "google", "vertex", "anthropic", "openai", "ollama"
+]
 
 
 class LLMClient(Protocol):
@@ -92,24 +94,19 @@ def check_ollama_available(*, base_url: str | None = None, model: str | None = N
         models = list_ollama_models(base_url=root)
     except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as exc:
         raise RuntimeError(
-            f"No se pudo conectar a Ollama en {root}. "
-            "¿Está corriendo? Prueba: ollama serve"
+            f"No se pudo conectar a Ollama en {root}. ¿Está corriendo? Prueba: ollama serve"
         ) from exc
     if not models:
         raise RuntimeError(f"Ollama en {root} no tiene modelos. Instala uno: ollama pull llama3.2")
     if model and model not in models and not any(model in name for name in models):
         available = ", ".join(models[:8])
-        raise RuntimeError(
-            f"Modelo Ollama '{model}' no encontrado. Disponibles: {available}"
-        )
+        raise RuntimeError(f"Modelo Ollama '{model}' no encontrado. Disponibles: {available}")
 
 
 def check_gemini_available(*, api_key: str | None = None) -> None:
     key = api_key or LLMConfig(provider="google").resolved_google_api_key()
     if not key:
-        raise RuntimeError(
-            "Variable de entorno GEMINI_API_KEY (o GOOGLE_API_KEY) no definida."
-        )
+        raise RuntimeError("Variable de entorno GEMINI_API_KEY (o GOOGLE_API_KEY) no definida.")
 
 
 class SniCommonsLLMClient:
@@ -159,9 +156,7 @@ class SniCommonsLLMClient:
                 Message(role="user", content=user),
             ]
             cache_kw = {}
-        resp = asyncio.run(
-            self._provider.structured_output(messages, L3ResponseModel, **cache_kw)
-        )
+        resp = asyncio.run(self._provider.structured_output(messages, L3ResponseModel, **cache_kw))
         return resp.data.model_dump(mode="json")
 
 

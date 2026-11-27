@@ -100,7 +100,9 @@ def score_tipo(proyecto: ProyectoTexto, tipo: TipoProyecto, config: ScorerConfig
             result.detalles.append(ScoreDetalle(kw, config.strong_nombre, "nombre"))
         elif contains_keyword(desc_just, kw):
             result.score += config.strong_desc
-            result.detalles.append(ScoreDetalle(kw, config.strong_desc, "descripcion_justificacion"))
+            result.detalles.append(
+                ScoreDetalle(kw, config.strong_desc, "descripcion_justificacion")
+            )
 
     for kw in tipo.keywords_debiles_norm:
         if contains_keyword(all_text, kw):
@@ -131,9 +133,7 @@ def adjust_composite_scores(
         if score is None:
             continue
         score.score += adjustment.delta
-        score.detalles.append(
-            ScoreDetalle(adjustment.keyword, adjustment.delta, adjustment.campo)
-        )
+        score.detalles.append(ScoreDetalle(adjustment.keyword, adjustment.delta, adjustment.campo))
 
 
 def clasificar_scores(

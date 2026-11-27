@@ -95,10 +95,7 @@ def select_few_shot_examples(
     max_proyecto_chars: int = 450,
 ) -> list[dict[str, Any]]:
     examples = bank or load_few_shot_bank(str(few_shot_path) if few_shot_path else None)
-    scored = [
-        ( _match_score(ex, sector, subsector), ex)
-        for ex in examples
-    ]
+    scored = [(_match_score(ex, sector, subsector), ex) for ex in examples]
     scored.sort(key=lambda x: (-x[0], x[1].id))
     selected: list[dict[str, Any]] = []
     seen_ids: set[str] = set()
@@ -223,9 +220,15 @@ def guia_discriminante_for_subsector(sector: str, subsector: str) -> dict[str, A
     sec = normalize_key(sec_res)
     sub = normalize_key(sub_res)
     for row in _reglas_discriminantes():
-        if normalize_key(resolve_sector_subsector(row.get("sector"), row.get("subsector"))[1]) != sub:
+        if (
+            normalize_key(resolve_sector_subsector(row.get("sector"), row.get("subsector"))[1])
+            != sub
+        ):
             continue
-        if normalize_key(resolve_sector_subsector(row.get("sector"), row.get("subsector"))[0]) != sec:
+        if (
+            normalize_key(resolve_sector_subsector(row.get("sector"), row.get("subsector"))[0])
+            != sec
+        ):
             continue
         guia: dict[str, Any] = {}
         if row.get("procedimiento"):

@@ -100,8 +100,7 @@ def _metricas_clasificacion(
     tipo_fn: Callable[[dict[str, Any]], tuple[str | None, str]],
 ) -> dict[str, float]:
     by_bip = {
-        str(r.get("Codigo BIP") or r.get("codigo_bip") or ""): r
-        for r in resultados.to_dicts()
+        str(r.get("Codigo BIP") or r.get("codigo_bip") or ""): r for r in resultados.to_dicts()
     }
     exactos = 0
     asignados = 0
@@ -191,8 +190,7 @@ def metricas_l3_puro(
     casos = filtrar_casos_por_estrato(golden, estrato) if estrato else list(golden.casos)
     casos = casos[:l3_force_limit]
     by_bip = {
-        str(r.get("Codigo BIP") or r.get("codigo_bip") or ""): r
-        for r in resultados.to_dicts()
+        str(r.get("Codigo BIP") or r.get("codigo_bip") or ""): r for r in resultados.to_dicts()
     }
     raw = _metricas_clasificacion(resultados, casos, tipo_fn=_l3_puro_tipo)
     ejecutados = 0
@@ -235,8 +233,7 @@ def metricas_l3(
     """Métricas solo sobre casos cuyo nivel final de asignación es L3."""
     casos = filtrar_casos_por_estrato(golden, estrato) if estrato else list(golden.casos)
     by_bip = {
-        str(r.get("Codigo BIP") or r.get("codigo_bip") or ""): r
-        for r in resultados.to_dicts()
+        str(r.get("Codigo BIP") or r.get("codigo_bip") or ""): r for r in resultados.to_dicts()
     }
     exactos = 0
     asignados_l3 = 0
@@ -355,16 +352,18 @@ def evaluar_golden_cascada(
             )
         )
     casos_gate = (
-        filtrar_casos_por_estrato(golden, estrato_gate)
-        if estrato_gate
-        else list(golden.casos)
+        filtrar_casos_por_estrato(golden, estrato_gate) if estrato_gate else list(golden.casos)
     )
     casos_eval = (
         filtrar_casos_por_estrato(golden, estrato_metricas)
         if estrato_metricas
         else list(golden.casos)
     )
-    modelo = "mock-llm" if l3_mock else (l3_config.llm.resolved_model() if l3_config and l3_config.llm else "real-llm")
+    modelo = (
+        "mock-llm"
+        if l3_mock
+        else (l3_config.llm.resolved_model() if l3_config and l3_config.llm else "real-llm")
+    )
     resultado = ResultadoEval(
         golden_version=golden.version,
         modelo=modelo,

@@ -8,7 +8,7 @@ from typing import Any
 
 import polars as pl
 
-from .paths import DEFAULT_EXPOST_DB
+from .paths import default_expost_db
 from .text_utils import normalize_tipo_name, pick_column
 
 
@@ -91,15 +91,16 @@ def parse_l3_secundarios_row(row: dict[str, Any]) -> list[str]:
         return []
     return [part.strip() for part in str(raw).split("|") if part.strip()]
 
+
 def load_expost_manual(path: str | Path | None = None) -> pl.DataFrame:
     """Carga etiquetado manual desde ``informe_expost.duckdb`` (tabla ``ex_post``)."""
     import duckdb
 
-    db_path = Path(path or DEFAULT_EXPOST_DB)
+    db_path = Path(path) if path is not None else default_expost_db()
     if not db_path.is_file():
         raise FileNotFoundError(
             f"DuckDB de etiquetado no encontrado: {db_path}. "
-            "Colocar informe_expost.duckdb en data/raw/ (gitignored)."
+            "Colocar informe_expost.duckdb en <BIP_DATA_DIR>/projecttype/ (D-11)."
         )
     con = duckdb.connect(str(db_path), read_only=True)
     try:
@@ -135,7 +136,7 @@ def load_submuestra(path: str | Path) -> pl.DataFrame:
     if p.suffix.lower() == ".duckdb":
         return load_expost_manual(p)
     raise FileNotFoundError(
-        f"Submuestra Excel deprecada ({p}). Usar {DEFAULT_EXPOST_DB} o load_expost_manual()."
+        f"Submuestra Excel deprecada ({p}). Usar {default_expost_db()} o load_expost_manual()."
     )
 
 
@@ -152,7 +153,9 @@ def build_revision_dataframe(
     man = manual.with_columns(pl.col("codigo_bip").cast(pl.Utf8).str.strip_chars())
 
     man_columns = list(man.columns)
-    justificacion_col = pick_column(man_columns, ("justificación_proyecto", "justificacion_proyecto"))
+    justificacion_col = pick_column(
+        man_columns, ("justificación_proyecto", "justificacion_proyecto")
+    )
     descripcion_col = pick_column(man_columns, ("descripción", "descripcion"))
 
     man_select: list[pl.Expr | str] = [
@@ -197,7 +200,9 @@ def build_revision_dataframe(
         .alias("nivel_match")
     )
 
-    justificacion_expr = pl.col("_justificacion") if "_justificacion" in merged.columns else pl.lit("")
+    justificacion_expr = (
+        pl.col("_justificacion") if "_justificacion" in merged.columns else pl.lit("")
+    )
     descripcion_expr = pl.col("_descripcion") if "_descripcion" in merged.columns else pl.lit("")
 
     revision = merged.select(
@@ -218,9 +223,7 @@ def build_revision_dataframe(
 
     return (
         revision.with_columns(
-            pl.col("nivel_match")
-            .replace_strict(_ORDEN_NIVEL, default=99)
-            .alias("_ord")
+            pl.col("nivel_match").replace_strict(_ORDEN_NIVEL, default=99).alias("_ord")
         )
         .sort(["_ord", "l1_score"], descending=[False, True])
         .drop("_ord")
@@ -277,7 +280,12 @@ def save_revision_excel(revision: pl.DataFrame, output: str | Path) -> Path:
             col_idx,
             n_rows,
             col_idx,
-            {"type": "text", "criteria": "containing", "value": "Discrepancia", "format": fmt_discrep},
+            {
+                "type": "text",
+                "criteria": "containing",
+                "value": "Discrepancia",
+                "format": fmt_discrep,
+            },
         )
 
         for i, col in enumerate(revision.columns):

@@ -23,12 +23,12 @@ from projecttype.llm_client import (
 )
 from projecttype.paths import (
     DEFAULT_EMBEDDINGS_CACHE,
-    DEFAULT_INPUT_CSV,
     DEFAULT_L3_CACHE_JSONL,
     DEFAULT_L3_PROGRESS_JSONL,
     DEFAULT_OUTPUT_CASCADE_CSV,
     DEFAULT_OUTPUT_CASCADE_L3_CSV,
     DEFAULT_TAXONOMY,
+    default_input_csv,
 )
 from projecttype.pipeline_cascade import classify_cascade_csv
 from projecttype.scorer import ScorerConfig
@@ -42,7 +42,7 @@ _DEFAULT_LLM = LLMConfig()
 def main() -> int:
     load_project_env()
     parser = argparse.ArgumentParser(description="Clasificador cascada L1 + L2 + L3.")
-    parser.add_argument("-i", "--input", default=str(DEFAULT_INPUT_CSV))
+    parser.add_argument("-i", "--input", default=str(default_input_csv()))
     parser.add_argument("-o", "--output", default=None)
     parser.add_argument("-t", "--taxonomy", default=str(DEFAULT_TAXONOMY))
     parser.add_argument("--cache-dir", default=str(DEFAULT_EMBEDDINGS_CACHE))
@@ -117,7 +117,9 @@ def main() -> int:
         try:
             models = list_ollama_models(base_url=args.ollama_url)
         except (OSError, TimeoutError, json.JSONDecodeError, urllib.error.URLError) as exc:
-            print(f"Error: no se pudo conectar a Ollama en {args.ollama_url}: {exc}", file=sys.stderr)
+            print(
+                f"Error: no se pudo conectar a Ollama en {args.ollama_url}: {exc}", file=sys.stderr
+            )
             return 1
         if not models:
             print("No hay modelos instalados. Ejemplo: ollama pull llama3.2")
@@ -129,7 +131,9 @@ def main() -> int:
 
     output = args.output
     if output is None:
-        output = str(DEFAULT_OUTPUT_CASCADE_L3_CSV if args.enable_l3 else DEFAULT_OUTPUT_CASCADE_CSV)
+        output = str(
+            DEFAULT_OUTPUT_CASCADE_L3_CSV if args.enable_l3 else DEFAULT_OUTPUT_CASCADE_CSV
+        )
 
     llm_config = LLMConfig(
         provider=args.l3_provider,
@@ -201,14 +205,14 @@ def main() -> int:
     print(f"Proyectos procesados: {total}")
     print("\nL1:")
     for estado, count in Counter(result["l1_estado"].to_list()).most_common():
-        print(f"  {estado:15s} {count:5d}  ({100*count/total:.1f}%)")
+        print(f"  {estado:15s} {count:5d}  ({100 * count / total:.1f}%)")
 
     l2_ran = result.filter(pl.col("l2_estado").is_not_null()).height
     print(f"\nL2 ejecutado en: {l2_ran} proyectos (residual L1)")
     if l2_ran:
         l2_subset = result.filter(pl.col("l2_estado").is_not_null())
         for estado, count in Counter(l2_subset["l2_estado"].to_list()).most_common():
-            print(f"  {estado:15s} {count:5d}  ({100*count/l2_ran:.1f}%)")
+            print(f"  {estado:15s} {count:5d}  ({100 * count / l2_ran:.1f}%)")
 
     if args.enable_l3:
         l3_ran = result.filter(pl.col("l3_estado").is_not_null()).height
@@ -217,11 +221,11 @@ def main() -> int:
         if l3_ran:
             l3_subset = result.filter(pl.col("l3_estado").is_not_null())
             for estado, count in Counter(l3_subset["l3_estado"].to_list()).most_common():
-                print(f"  {estado:15s} {count:5d}  ({100*count/l3_ran:.1f}%)")
+                print(f"  {estado:15s} {count:5d}  ({100 * count / l3_ran:.1f}%)")
 
     print("\nFinal (cascada):")
     for estado, count in Counter(result["estado_final"].to_list()).most_common():
-        print(f"  {estado:15s} {count:5d}  ({100*count/total:.1f}%)")
+        print(f"  {estado:15s} {count:5d}  ({100 * count / total:.1f}%)")
 
     by_nivel = Counter(result["nivel_final"].to_list())
     print("\nNivel final:")

@@ -10,7 +10,7 @@ from projecttype.few_shot_mining import (
     mine_from_files,
     resolve_manual_tipo,
 )
-from projecttype.paths import DEFAULT_EXPOST_DB, DEFAULT_OUTPUT_CASCADE_CSV, DEFAULT_TAXONOMY
+from projecttype.paths import DEFAULT_OUTPUT_CASCADE_CSV, DEFAULT_TAXONOMY, default_expost_db
 from projecttype.taxonomy import Taxonomia
 
 
@@ -37,11 +37,12 @@ class TestFewShotMining(unittest.TestCase):
     def test_mine_from_files(self) -> None:
         if not DEFAULT_OUTPUT_CASCADE_CSV.exists():
             self.skipTest("sin resultados cascada")
-        if not DEFAULT_EXPOST_DB.exists():
-            self.skipTest("sin informe_expost.duckdb en data/raw/")
+        expost = default_expost_db()
+        if not expost.exists():
+            self.skipTest("sin informe_expost.duckdb en BIP_DATA_DIR/projecttype")
         examples = mine_from_files(
             resultados_path=DEFAULT_OUTPUT_CASCADE_CSV,
-            manual_path=DEFAULT_EXPOST_DB,
+            manual_path=expost,
             taxonomy_path=DEFAULT_TAXONOMY,
             max_per_subsector=1,
             max_total=5,

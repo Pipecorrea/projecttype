@@ -90,7 +90,9 @@ def enrich(
     ] = None,
     l3_concurrency: Annotated[
         int | None,
-        typer.Option("--l3-concurrency", help="Hilos paralelos L3 (default: LLM_MAX_CONCURRENCY o 5)."),
+        typer.Option(
+            "--l3-concurrency", help="Hilos paralelos L3 (default: LLM_MAX_CONCURRENCY o 5)."
+        ),
     ] = None,
     l3_progress_file: Annotated[
         Path | None,
@@ -132,7 +134,9 @@ def enrich(
     if force_selection and from_selection is None:
         raise typer.BadParameter("--force-selection solo aplica con --from-selection.")
     if incremental and from_selection is not None:
-        raise typer.BadParameter("--incremental no aplica con --from-selection (usa el anti-join por defecto).")
+        raise typer.BadParameter(
+            "--incremental no aplica con --from-selection (usa el anti-join por defecto)."
+        )
     if only_classified and from_selection is not None:
         raise typer.BadParameter("--only-classified no aplica con --from-selection.")
 
@@ -160,7 +164,9 @@ def enrich(
         existing_bips: list[str] | None = None
         if only_classified:
             existing_bips = _load_existing_classified_bips(data_dir)
-            typer.echo(f"→ Restringiendo a {len(existing_bips)} EBI_CODIGO ya en enr_tipo_proyecto…")
+            typer.echo(
+                f"→ Restringiendo a {len(existing_bips)} EBI_CODIGO ya en enr_tipo_proyecto…"
+            )
             mark_missing = False
         typer.echo("→ Leyendo proyectos del store (CONSULTAS_EBI)…")
         df = load_cascade_input_from_store(data_dir, limit=limit, bips=existing_bips)
@@ -175,9 +181,7 @@ def enrich(
             prompt_ver=prompt_ver,
             enricher_ver=enricher_ver,
         )
-        typer.echo(
-            f"  a clasificar: {split.pendientes.height} / saltados: {split.saltados.height}"
-        )
+        typer.echo(f"  a clasificar: {split.pendientes.height} / saltados: {split.saltados.height}")
         if dry_run:
             typer.echo("  (dry-run: no se clasificó ni publicó)")
             return

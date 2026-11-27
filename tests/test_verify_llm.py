@@ -24,7 +24,9 @@ class _FailingChatProvider:
     async def chat(self, *a: object, **k: object) -> ChatResponse:
         raise LLMResponseError("credenciales inválidas")
 
-    async def structured_output(self, *a: object, **k: object) -> StructuredResponse:  # pragma: no cover
+    async def structured_output(
+        self, *a: object, **k: object
+    ) -> StructuredResponse:  # pragma: no cover
         raise NotImplementedError
 
     async def embed(self, *a: object, **k: object):  # pragma: no cover

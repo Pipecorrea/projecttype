@@ -78,14 +78,9 @@ def classify_dataframe(
         "subsector_resuelto": pl.Utf8,
     }
 
-    resultados = (
-        df.select(
-            pl.struct(pl.all())
-            .map_elements(_classify_row, return_dtype=pl.Struct(schema))
-            .alias("_l1")
-        )
-        .unnest("_l1")
-    )
+    resultados = df.select(
+        pl.struct(pl.all()).map_elements(_classify_row, return_dtype=pl.Struct(schema)).alias("_l1")
+    ).unnest("_l1")
 
     return pl.concat([df, resultados], how="horizontal")
 

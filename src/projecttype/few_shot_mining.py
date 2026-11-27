@@ -10,7 +10,7 @@ import polars as pl
 import yaml
 
 from .evaluation import NivelMatch, clasificar_match, load_expost_manual
-from .paths import DEFAULT_EXPOST_DB, DEFAULT_TAXONOMY
+from .paths import DEFAULT_TAXONOMY, default_expost_db
 from .taxonomy import Taxonomia, TipoProyecto
 from .text_utils import join_fields, normalize_key, normalize_text, normalize_tipo_name, pick_column
 from .tipo_embedder import build_project_text
@@ -177,7 +177,9 @@ def mine_few_shot_examples(
     ).filter(pl.col("tipo_proyecto").is_not_null())
 
     man_columns = list(man.columns)
-    justificacion_col = pick_column(man_columns, ("justificación_proyecto", "justificacion_proyecto"))
+    justificacion_col = pick_column(
+        man_columns, ("justificación_proyecto", "justificacion_proyecto")
+    )
     descripcion_col = pick_column(man_columns, ("descripción", "descripcion"))
 
     man_select: list[str | pl.Expr] = [
@@ -400,13 +402,13 @@ def merge_few_shot_banks(
 def mine_from_files(
     *,
     resultados_path: Path,
-    manual_path: Path = DEFAULT_EXPOST_DB,
+    manual_path: Path | None = None,
     taxonomy_path: Path = DEFAULT_TAXONOMY,
     max_per_subsector: int = 2,
     max_total: int = 50,
 ) -> list[MinedExample]:
     tax = Taxonomia.from_yaml(taxonomy_path)
-    manual = load_expost_manual(manual_path)
+    manual = load_expost_manual(manual_path or default_expost_db())
     resultados = pl.read_csv(resultados_path)
     return mine_few_shot_examples(
         resultados,

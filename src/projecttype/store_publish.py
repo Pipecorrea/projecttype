@@ -205,9 +205,7 @@ def publish_to_store(
 
     base = data_dir or os.environ.get("BIP_DATA_DIR")
     if not base:
-        raise RuntimeError(
-            "publish_to_store requiere data_dir o la variable BIP_DATA_DIR."
-        )
+        raise RuntimeError("publish_to_store requiere data_dir o la variable BIP_DATA_DIR.")
     frame = to_enrichment_frame(resultados)
     frame = aplicar_gate_o_abortar(frame, allow_rejected_pct=allow_rejected_pct)
     drop_cols = [c for c in _GATE_ONLY if c in frame.columns]
