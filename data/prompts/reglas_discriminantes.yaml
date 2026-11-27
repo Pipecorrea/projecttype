@@ -11,24 +11,65 @@ subsectores:
     subsector: TRANSPORTE URBANO, Y VIALIDAD PEATONAL
     # Llave maestra: la jerarquía de la vía decide primero; el criterio
     # secundario solo desempata dentro de esa jerarquía.
+    # Criterios de reconocimiento anclados en OGUC Art. 2.3.2 (D.S. N°2, D.O. 16-03-2026).
     procedimiento: |
-      PASO 1 (obligatorio): determina la JERARQUÍA de la vía intervenida
-      (OGUC): pasaje / calle local · colectora · vía de servicio · troncal/expresa.
-      PASO 2: aplica el criterio secundario según la jerarquía (ver reglas).
-      La jerarquía vial PREVALECE sobre los elementos constructivos (aceras, soleras, pavimento).
+      PASO 1 (obligatorio): determina la JERARQUÍA OGUC de la vía intervenida.
+      La OGUC (Art. 2.3.2) clasifica las vías urbanas en: expresa · troncal ·
+      colectora · de servicio · local. Reconócelas por estas señales:
+
+        EXPRESA/TRONCAL — rol intercomunal o regional; conecta zonas urbanas
+          distintas; continuidad >6 km; doble calzada, mediana o bandejón central;
+          par vial; corredor de transporte público; nombre de ruta o autopista.
+          (OGUC: expresa exige ≥50 m entre líneas oficiales; troncal ≥30 m.)
+        COLECTORA — distribuye entre la residencia y los centros de empleo o
+          servicios; reparte hacia o desde la trama vial menor; continuidad >3 km.
+          Señales: "avenida", "Av.", eje que cruza varios barrios, nombre de arteria
+          reconocible de la comuna. (OGUC: ≥20 m entre líneas oficiales.)
+        DE SERVICIO — vía central de un centro o subcentro urbano; da acceso al
+          comercio y servicios de sus márgenes. Señales: "calle comercial",
+          "centro cívico", eje comercial. (OGUC: ≥15 m entre líneas oficiales.)
+        LOCAL — acceso a la vivienda; relaciona con troncales, colectoras y de
+          servicio; sin continuidad funcional para transporte público. Señales:
+          "pasaje", "villa", "población", "loteo", "sector residencial",
+          "acceso a viviendas", cul-de-sac. (OGUC: ≥11 m entre líneas oficiales.)
+
+      PASO 2 (obligatorio si la jerarquía NO es determinable): el texto del BIP
+      rara vez declara la jerarquía, porque según OGUC Art. 2.3.1 esa clasificación
+      la fija el Plan Regulador comunal, no el proyecto. Además, las obras de
+      adecuación en vías existentes (pavimentación, repavimentación, reposición,
+      mejoramiento, conservación, ciclovías, gestión de velocidad) están EXENTAS
+      de cumplir los estándares de diseño, así que los anchos normativos tampoco
+      aparecerán en la descripción.
+      Cuando no puedas determinar la jerarquía con las señales del PASO 1:
+      NO asumas "local" solo porque el nombre suene residencial ni "gestión de
+      tránsito" solo porque aparezca una palabra operacional. El caso base de una
+      calle urbana intervenida sin señales de jerarquía es VIALIDAD URBANA
+      INTERMEDIA, con confianza < 0.75 (ambiguo).
+
+      PASO 3: aplica el criterio secundario según la jerarquía (ver reglas).
+      La jerarquía vial PREVALECE sobre los elementos constructivos (aceras,
+      soleras, pavimento). Para vías COLECTORAS la jerarquía NO basta: hay que
+      evaluar además la naturaleza y magnitud de la obra (ver primera regla).
     reglas:
       - pares: [VIAS VIALIDAD URBANA INTERMEDIA, VIAS URBANAS ESTRUCTURANTES]
         regla: |
           Clasifica según la categoría de la vía y su impacto en la red urbana:
           1. Vía EXPRESA o TRONCAL → siempre ESTRUCTURANTE.
           2. Vía DE SERVICIO → siempre INTERMEDIA.
-          3. Vía COLECTORA → evalúa el flujo vehicular:
-             - Si el proyecto PROVOCA CAMBIOS EN LA ASIGNACIÓN/REASIGNACIÓN DE FLUJOS
-               en la ciudad (vías alternativas afectadas, cambios en la red mayor) → ESTRUCTURANTE.
-             - Si NO CAMBIA LA ASIGNACIÓN DE FLUJOS (impacto estrictamente local o táctico
-               en el mismo eje) → INTERMEDIA.
-          Usa el impacto en el patrón de flujos globales como criterio principal de corte
-          para las vías colectoras.
+          3. Vía COLECTORA → la jerarquía NO basta; evalúa naturaleza y magnitud de la obra:
+             - CONSTRUCCIÓN o AMPLIACIÓN de un eje colector, en longitudes mayores a
+               1.000 m (apertura de trazado nuevo, ensanche, nueva calzada, cambio de
+               perfil) → ESTRUCTURANTE. Este es el criterio de la propia definición del
+               tipo y es el más fácil de verificar en el texto.
+             - MEJORAMIENTO, REPOSICIÓN, PAVIMENTACIÓN o CONSERVACIÓN sobre el trazado
+               existente, sin ampliar la capacidad de la red → INTERMEDIA.
+             - Como criterio de respaldo cuando lo anterior no decide: si el proyecto
+               PROVOCA CAMBIOS EN LA ASIGNACIÓN/REASIGNACIÓN DE FLUJOS en la ciudad
+               (vías alternativas afectadas, cambios en la red mayor) → ESTRUCTURANTE;
+               si el impacto es estrictamente local o táctico en el mismo eje → INTERMEDIA.
+          Ojo con el verbo: "mejoramiento de Avenida X" sobre calzada existente es
+          INTERMEDIA aunque la avenida sea un eje importante. Lo que sube a
+          ESTRUCTURANTE es ampliar la red, no intervenir un eje jerárquico.
       - pares: [VIAS VIALIDAD URBANA INTERMEDIA, VIALIDAD LOCAL]
         regla: |
           Clasifica según la categoría técnica de la vía (taxonomía OGUC):
@@ -36,6 +77,10 @@ subsectores:
              uso vehicular eventual, sin veredas diferenciadas); o Calles Locales (vías de
              acceso a viviendas, industrias o servicios que conectan con la red mayor).
              Nota: en ejecución, Vialidad Local típicamente tiene longitud menor a 1.000 m.
+             CUIDADO: este umbral de 1.000 m es solo un indicio de escala para LOCAL. NO lo
+             confundas con el criterio de 1.000 m del par INTERMEDIA/ESTRUCTURANTE, que aplica
+             únicamente a CONSTRUCCIÓN o AMPLIACIÓN de vías colectoras. Una calle local larga
+             sigue siendo LOCAL; una colectora corta no sube a ESTRUCTURANTE por su longitud.
           2. INTERMEDIA si interviene: Vías Colectoras (distribuyen flujo entre la red
              residencial y la estructurante, siempre que NO cambien la asignación global de
              flujos); o Vías de Servicio (accesibilidad y segregación lateral junto a
@@ -68,6 +113,20 @@ subsectores:
              Vialidad Intermedia.
           Prioridad: jerarquía vial (Local/Pasaje vs Colectora/Servicio) > elementos constructivos
           (solo aceras vs aceras+soleras).
+      - pares: [GESTION DE TRANSITO, SEMAFORIZACION]
+        regla: |
+          Distingue el ALCANCE de la intervención operacional:
+          1. SEMAFORIZACION si el objeto principal y prácticamente único del proyecto son
+             semáforos: instalación, reposición o normalización de equipos semafóricos,
+             cambio a LED, centralización de semáforos, UPS para semáforos.
+          2. GESTION DE TRANSITO si el proyecto es un paquete operacional MÁS AMPLIO donde
+             los semáforos son un componente entre varios: señalización y demarcación,
+             cambios de sentido, islas canalizadoras, bahías de buses, radios de giro,
+             sistemas de control de área (SCAT/SCOOT), estudios y planes de gestión.
+          Desempate: si el texto enumera semáforos JUNTO A otras medidas operacionales
+          → GESTION DE TRANSITO. Si solo hay semáforos → SEMAFORIZACION.
+          Ninguno de los dos aplica si hay obra de calzada a lo largo de un tramo continuo
+          (eso es VIALIDAD INTERMEDIA o ESTRUCTURANTE según la jerarquía del eje).
 
   - sector: RECURSOS HIDRICOS
     subsector: EVACUACION DISPOSICION FINAL AGUAS SERVIDAS
